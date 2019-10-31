@@ -8,8 +8,7 @@
 (defmethod make-wire (&key (receivers cl:CONS))
   (make-instance 'wire :receivers receivers))
 
-(defmethod deliver-message ((wire (eql nil)) (message e/message:message))
-  )
+(defmethod deliver-message ((wire (eql nil)) (message e/message:message)) )
 
 (defmethod deliver-message ((wire e/wire:wire) (message e/message:message))
   ;; we don't copy messages/data - receiver must copy the message-data if it intends to mutate it

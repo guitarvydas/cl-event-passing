@@ -9,7 +9,7 @@ Components are hierarchical. Parts can be Schematics or Leaf-nodes.
 
 Schematics contain other Part instances (its children) plus a wiring list of how the children are connected (piped) together.
 
-I've tried to be very explicit about every kind of object, which results in lots of syntactic noise.  See the diagram in Parts.drawio.  Many parts of this could be optimized better, but are not optimized, for clarity.
+I've tried to be very explicit about every kind of object, which results in lots of syntactic noise.  See the diagram in Parts.drawio (NB it contains two or more tabs).  Many parts of this could be optimized better, but are not optimized, for clarity.
 
 One should be able to use these ideas to build pipelines (a la /bin/*sh).  Hierarchical pipelines allowing for feedback.
 
@@ -48,3 +48,6 @@ Rules of Thumb:
 8. Each Part has an INPUT API *and* an OUTPUT API.
 9. Data is not moved throughout the system using parameters.  SEND is the only data (event) passing mechansim.
 10.  Leaf parts can resort to any language and may use CALL-RETURN protocols internally (along with parameter passing). The selection of leaf-languages is determined by the implementation.  For example, a JS-only implementation is possible (and, e.g. uses JSON to describe Schematic graphs).  For example, any language supported by Linux, is possible if the implemenation of Schematics uses Linux processes (commands), or, if the LOADer employs ELF.
+
+Hints/Comments:
+- Wires hold receivers (pairs: {receiver-part, receiver-pin}).  Receivers are like Listeners, except: (1) that a "wire" "declares" who is listening to what, and (2) a "wire" shows (graphically?) what the Architect intended, there is no dynamic re-wiring, all Listeners are declared at the beginning of time and the network is not dynamically reconfigured(the Architect can provide dynamic reconfiguration Parts, if the solution requires them)
