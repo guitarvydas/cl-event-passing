@@ -1,3 +1,6 @@
+STATUS: still debugging baseline.
+
+
 Event-passing system for CL.
 
 Uses concurrent components (Parts) based on mutual multitasking instead of O/S threads.
