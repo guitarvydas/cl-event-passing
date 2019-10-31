@@ -31,3 +31,17 @@ A Leaf Part consists of "code" that is executed (like a callback) once for every
 Referential Transparency - a Part can be replaced by any Part that has the same pin-out.  It cannot be known whether a Part is implemented as a hierarchical Schematic or as a Leaf.
 
 Time Ordering - an Event sent to a Wire arrives at the destinations "at the same time", i.e. Event delivery is atomic (this matters in a multi-threaded environment, such as hardware with interrupts (i.e. interrupts are masked OFF during delivery of a single event to all destinations on a Wire)).  Time Ordering in a truly distributed environment is currently Undefined and is the resposibility of the Architect (i.e. latency matters in a distributed environment ; methods for handling such cases are described in hardware literature).
+
+Diagrams: cl-event-passing programs can be diagrammed much in the same way as found in Electronics CAD systems.  The feature of full concurrency makes it possible to a network diagram of Parts.
+
+Rules of Thumb:
+1. Keep schematics (and diagrams) down to about 7 plus/minus 2 Parts.
+2. Every schematic must make "sense" on its own.  Children cannot change the behavior of parent Schematics.  Composition, not inheritance, is used.
+3. Top-down and bottom-up design are, both, OK.
+4. Schematics (esp. diagrams of schematics) can be used to discuss and hone the Architecure of a system "in an Agile manner".
+5. Use referential transparency to build a system that works, then "optimize" it later (by replacing pin-compatible Parts).
+6. The combination of Dispatcher-based concurrency and output queues results in minimum dependencies between Parts.
+7. Testing: each Part can be tested on its own, e.g. using a Truth Table as is done with digital hardware ICs.  More elaborate testing processes, e.g. back-to-back, signature tracing, can be used (explore existing literature / tools for hardware testing).
+8. Each Part has an INPUT API *and* an OUTPUT API.
+9. Data is not moved throughout the system using parameters.  SEND is the only data (event) passing mechansim.
+10.  Leaf parts can resort to any language and may use CALL-RETURN protocols internally (along with parameter passing). The selection of leaf-languages is determined by the implementation.  For example, a JS-only implementation is possible (and, e.g. uses JSON to describe Schematic graphs).  For example, any language supported by Linux, is possible if the implemenation of Schematics uses Linux processes (commands), or, if the LOADer employs ELF.
