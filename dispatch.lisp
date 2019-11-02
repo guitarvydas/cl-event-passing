@@ -67,7 +67,7 @@
               (let ((out-pin (e/message:pin message))
                     (data (e/message:data message)))
                 (let ((destination-wire (e/schematic:find-wire-for-pin-inside-schematic schematic part out-pin)))
-                  (e/wire:deliver-message wire message))))
+                  (e/wire:deliver-message destination-wire message))))
           out-list)))
 
 (defmethod @run-part-with-message ((p e/part:part) (m e/message:message))
