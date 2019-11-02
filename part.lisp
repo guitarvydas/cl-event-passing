@@ -7,8 +7,11 @@
    (out-pins :accessor out-pins :initarg :out-pins) ;; list of output pins for this part (for checking legal sends)
    (parent :accessor parent :initform nil :initarg :parent)
    (reactor :accessor reactor :initform nil :initarg :reactor) ;; reactor function / callback (self msg)
-   (first-time-function :accessor first-time-function :initarg :first-time :initform nil))) ;; function((self part))
-  
+   (first-time-function :accessor first-time-function :initarg :first-time :initform nil)) ;; function((self part))
+  (:default-initargs
+   :in-pins (e/pin-collection:make-empty-collection)
+   :out-pins (e/pin-collection:make-empty-collection)))
+
    ;; Essay: Outqueue might seem superfluous, but don't optimize it away - it is
    ;; one of the essential elements of the act of: snipping dependencies and making parts
    ;; be truly *concurrent* (asynchronous).  Parts MUST NOT refer to their
@@ -17,6 +20,7 @@
    ;; can be wired only to peer parts contained in the same schematic
    ;; (hierarchy ==> simplicity ==> scalability) or to output pins
    ;; of the parent schematic
+
 
 (defmethod initialize-instance :after ((self part) &key)
   (e/dispatch:remember-part self))
