@@ -8,6 +8,5 @@
   (make-instance 'message :pin pin :data (data self)))
 
 (defmethod make-message ((pin e/pin:pin) (data T))
-  (let ((pin (e/pin:make-pin sym)))
-    (make-instance 'message :pin pin :data data)))
+  (make-instance 'message :pin pin :data data))
   
