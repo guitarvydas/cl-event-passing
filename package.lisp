@@ -43,6 +43,7 @@
    #:add-instance
    #:add-child-wire
    #:add-input-wire
+   #:push-input
    #:find-wire-for-pin-inside-schematic))
 
 (defpackage :e/leaf

@@ -8,6 +8,7 @@
   :components ((:module "source"
                         :pathname "./"
                         :components ((:file "package")
+                                     (:file "wire0" :depends-on ("package"))
                                      (:file "queue" :depends-on ("package" "message"))
                                      (:file "pin" :depends-on ("package"))
                                      (:file "pin-collection" :depends-on ("package" "pin"))
@@ -17,11 +18,11 @@
                                      (:file "leaf" :depends-on ("package" "pin-collection"))
                                      (:file "send" :depends-on ("package" "message" "part"))
                                      (:file "receive" :depends-on ("package" "part" "message"))
-                                     (:file "wire-list" :depends-on ("package" "wire" "pin"))
-                                     (:file "wire" :depends-on ("package"))
+                                     (:file "wire-list" :depends-on ("package" "wire0" "pin"))
+                                     (:file "wire" :depends-on ("package" "wire0" "message" "part" "schematic"))
                                      (:file "pin-wire" :depends-on ("package" "pin" "wire"))
                                      (:file "part-pin" :depends-on ("package" "part" "pin"))
                                      (:file "dispatch" :depends-on ("package" "part" "message"))
                                      (:file "hello-world" :depends-on ("package" "schematic" "leaf"
                                                                        "pin-collection" "pin" "part-pin" "part"
-                                                                       "wire" "wire-list" "dispatch"))))))
+                                                                       "wire0" "wire" "wire-list" "dispatch"))))))

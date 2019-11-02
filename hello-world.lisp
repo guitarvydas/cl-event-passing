@@ -23,6 +23,20 @@
         (e/schematic:add-child-wire schem sender (e/part:lookup-output-pin sender :out) wire))))
   (e/dispatch:Start-Dispatcher))
 
+(defun hello2 ()
+  ;; wire straight from sender to output of schematic
+  (let ((schem (e/schematic:make-schematic :out-pins (e/pin-collection:from-list '(:schem-out))))
+        (sender (e/leaf:make-leaf
+                 :first-time #'start-sender
+                 :out-pins (e/pin-collection:from-list '(:out)))))
+    (e/schematic:add-instance schem sender)
+    (let ((receiver-pair (e/part-pin:make-pair nil (e/part:lookup-output-pin schem :schem-out))))
+      (let ((wire (e/wire:make-wire :receivers (list receiver-pair))))
+	;; wire is the wire between the sender's output (:out) and the schematic's output (:schem-out)
+	;; wire is added to the schematic's map, as output from sender's :out pin
+        (e/schematic:add-child-wire schem sender (e/part:lookup-output-pin sender :out) wire))))
+  (e/dispatch:Start-Dispatcher))
+
 
 ;; code / callbacks
 

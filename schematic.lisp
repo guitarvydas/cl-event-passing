@@ -7,8 +7,10 @@
   (:default-initargs
    :reactor #'schematic-reactor))
 
-(defun make-schematic ()
-  (make-instance 'schematic))
+(defun make-schematic (&key (out-pins nil))
+  (if (null out-pins)
+      (make-instance 'schematic)
+    (make-instance 'schematic :out-pins out-pins)))
 
 (defmethod make-slot-for-each-output ((child e/part:part))
   (let ((hmap (make-hash-table)))
@@ -67,4 +69,7 @@
       (assert success)
       wire)))
 
+(defmethod push-input ((self schematic) (child (eql nil)) (msg e/message:message))
+  (e/part:ensure-message-contains-valid-input-pin self msg)
+  (e/part:push-input self child msg))
 

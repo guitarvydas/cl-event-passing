@@ -7,3 +7,6 @@
 (defmethod make-pair ((part e/part:part) (pin e/pin:pin))
   (make-instance 'pair :part part :pin pin))
 
+(defmethod make-pair ((self-part (eql nil)) (pin e/pin:pin))
+  (make-instance 'pair :part nil :pin pin))
+

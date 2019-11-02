@@ -8,7 +8,7 @@
   "send a message in from the outside - message already contains correct input :pin
    starts Dispatcher, if not already started"
   (e/part:ensure-message-contains-valid-input-pin self message)
-  (e/part:push-input self message)
+  (e/part:push-input self self message)
   (e/dispatch:Start-Dispatcher))
 
 (defmethod respond (e/part:part e/message:message)
