@@ -38,6 +38,7 @@
           wire)))
 
 (defmethod add-input-wire ((self schematic) (input-pin e/pin:pin) (wire e/wire:wire))
+  ;; add a wire FROM an schematic's own input pin to internal parts (or its own output pin(s))
   (ensure-no-wire (input-wire-map self) pin)
   (setf (gethash pin (input-wire-map self))
         wire))
