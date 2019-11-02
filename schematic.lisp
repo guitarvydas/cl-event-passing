@@ -26,7 +26,8 @@
 (defun ensure-no-wire (hmap pin)
   (multiple-value-bind (val success)
       (gethash pin hmap)
-    (cl:assert (and success (null val)))))
+    (cl:assert (and (not success)))
+    (cl:assert (null val)))))
 
 (defmethod add-child-wire ((self schematic) (child-instance e/part:part) (child-output-pin e/pin:pin) (wire e/wire:wire))
   (multiple-value-bind (child-map success)
