@@ -21,30 +21,30 @@
   (let ((collection (make-instance 'pin-collection)))
     collection))
 
-(defmethod as-list ((pb pin-collection))
+(defmethod as-list ((pc pin-collection))
   "return a list of pins"
   (let ((list nil))
     (maphash #'(lambda (sym pin)
                  (declare (ignore sym))
                  (push pin list))
-             (pin-collection pb))
+             (pin-collection pc))
     list))
 
-(defmethod ensure-member ((pb pin-collection) (pin-sym symbol))
+(defmethod ensure-member ((pc pin-collection) (pin-sym symbol))
   (multiple-value-bind (pin success)
-      (gethash pin-sym (pin-collection pb))
+      (gethash pin-sym (pin-collection pc))
     (assert success)
     pin))
 
-(defmethod ensure-member ((pb pin-collection) (pin e/pin:pin))
+(defmethod ensure-member ((pc pin-collection) (pin e/pin:pin))
   (mapc #'(lambda (other)
             (when (e/pin:pin-equal pin other)
               (return-from ensure-member pin)))
-        (as-list pb))
+        (as-list pc))
   (assert nil))
 
-(defmethod lookup-pin ((pb pin-collection) (pin e/pin:pin))
-  (ensure-member pb pin)) ;; same code as above
+(defmethod lookup-pin ((pc pin-collection) (pin e/pin:pin))
+  (ensure-member pc pin)) ;; same code as above
 
-(defmethod lookup-pin ((pb pin-collection) (pin-sym symbol))
-  (ensure-member pb (e/pin:make-pin pin-sym))) ;; same code as above
+(defmethod lookup-pin ((pc pin-collection) (pin-sym symbol))
+  (ensure-member pc (e/pin:make-pin pin-sym))) ;; same code as above
