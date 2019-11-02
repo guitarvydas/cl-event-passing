@@ -35,9 +35,15 @@
   (let ((pin-sym (e/pin:as-symbol pin)))
     (e/pin-collection:ensure-member (in-pins self) pin-sym)))
 
+(defmethod ensure-is-input-pin ((self part) (pin-symbol cl:symbol))
+  (e/pin-collection:ensure-member (in-pins self) pin-sym))
+
 (defmethod ensure-is-output-pin ((self part) (pin e/pin:pin))
   (let ((pin-sym (e/pin:as-symbol pin)))
     (e/pin-collection:ensure-member (out-pins self) pin-sym)))
+
+(defmethod ensure-is-output-pin ((self part) (pin-sym cl:symbol))
+  (e/pin-collection:ensure-member (out-pins self) pin-sym))
 
 (defmethod ensure-message-contains-valid-input-pin ((self part) (msg e/message:message))
   (let ((pin (e/message:pin msg)))
