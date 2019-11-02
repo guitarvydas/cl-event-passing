@@ -36,5 +36,5 @@
      (error (format nil "unsupported message sent to e:display /~S/" msg)))))
 
 (defmethod start-sender ((self e/part:part))
-  (e/send:send self (e/message:make-message (e/pin:lookup-output-pin :out) "Hello")))
+  (e/send:send self (e/message:make-message (e/part:lookup-output-pin :out) "Hello")))
      
