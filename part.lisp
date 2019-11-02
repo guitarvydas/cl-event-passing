@@ -71,7 +71,7 @@
   (e/queue:q-pop (inqueue self)))
 
 (defmethod outqueue-as-list ((self part))
-  (e/queue:as-list))
+  (e/queue:as-list (outqueue self)))
 
 (defmethod output-pins-as-list ((self part))
   (e/pin-collection:as-list (out-pins self)))
