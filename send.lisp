@@ -6,5 +6,5 @@
 
 (defmethod send ((self e/part:part) (msg e/message:message))
   (e/part:ensure-message-contains-valid-output-pin self msg)
-  (e/part:push-input msg))
+  (e/part:push-output self msg))
 

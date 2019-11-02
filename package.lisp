@@ -22,6 +22,7 @@
    #:push-input
    #:pop-input
    #:has-input-p
+   #:push-output
    #:react
    #:has-first-time-p
    #:first-time-function

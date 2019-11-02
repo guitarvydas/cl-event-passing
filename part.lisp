@@ -60,6 +60,10 @@
   (ensure-message-contains-valid-input-pin self msg)
   (e/queue:q-push (inqueue self) msg))
 
+(defmethod push-output ((self part) (msg e/message:message))
+  (ensure-message-contains-valid-output-pin self msg)
+  (e/queue:q-push (outqueue self) msg))
+
 (defmethod has-input-p ((self part))
   (not (null (inqueue self))))
 
