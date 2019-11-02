@@ -26,7 +26,9 @@
 
 ;; code / callbacks
 
-(defmethod receiver-display ((msg e/message:message))
+(defmethod receiver-display ((self e/part:part) (msg e/message:message))
+  (declare (ignore self))
+
   (case (e/pin:as-symbol (e/message:pin message))
 
     (:print
