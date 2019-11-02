@@ -54,7 +54,7 @@
     (ensure-is-output-pin self pin)))
 
 (defmethod react ((self part) (msg e/message:message))
-  (funcall (reactor part) part msg))
+  (funcall (reactor self) part msg))
 
 (defmethod push-input ((self part) (msg e/message:message))
   (ensure-message-contains-valid-input-pin self msg)
