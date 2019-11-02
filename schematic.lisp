@@ -20,7 +20,7 @@
 
 (defmethod add-instance ((self schematic) (instance e/part:part))
   (push instance (instances self))
-  (setf (gethash (instances self) (child-wire-map self))
+  (setf (gethash instance (child-wire-map self))
         (make-slot-for-each-output instance)))
 
 (defun ensure-no-wire (hmap pin)
