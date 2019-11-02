@@ -85,7 +85,8 @@
 (defun @Call-First-Times ()
   (mapc #'(lambda (part)
             (when (e/part:has-first-time-p part)
-              (funcall (e/part:first-time-function part) part)))
+              (funcall (e/part:first-time-function part) part)
+              (@release-output-queue part)))
         *parts-list*))
 
 (defun Start-Dispatcher ()
