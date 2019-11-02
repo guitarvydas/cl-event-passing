@@ -63,7 +63,7 @@
     (assert success)
     (multiple-value-bind (wire success)
         (gethash child-out-pin child-part-output-map)
-      (assert succes)
+      (assert success)
       wire)))
 
 
