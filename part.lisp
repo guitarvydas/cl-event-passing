@@ -35,7 +35,7 @@
   (let ((pin-sym (e/pin:as-symbol pin)))
     (e/pin-collection:ensure-member (in-pins self) pin-sym)))
 
-(defmethod ensure-is-input-pin ((self part) (pin-symbol cl:symbol))
+(defmethod ensure-is-input-pin ((self part) (pin-sym cl:symbol))
   (e/pin-collection:ensure-member (in-pins self) pin-sym))
 
 (defmethod ensure-is-output-pin ((self part) (pin e/pin:pin))
