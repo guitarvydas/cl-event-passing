@@ -61,7 +61,7 @@
           dest-list)))
 |#
 
-(defmethod @release-output-queue-internally ((schematic cl-medssaging/schematic:schematic) (part e/part:part))
+(defmethod @release-output-queue-internally ((schematic e/schematic:schematic) (part e/part:part))
   (let ((out-list (e/part:outqueue-as-list part)))
     (mapc #'(lambda (message)
               (let ((out-pin (e/message:pin message))
@@ -70,14 +70,14 @@
                   (e/wire:deliver-message wire message))))
           out-list)))
 
-(defmethod @run-part-with-message ((p part) (m message))
-  (respond p m))
+(defmethod @run-part-with-message ((p e/part:part) (m e/message:message))
+  (e/part:react p m))
 
-(defmethod @release-output-queue ((p part))
+(defmethod @release-output-queue ((p e/part:part))
   "using the wiring map of the parent, send every message
    to its destination part, rewriting OUTPUT pins to INPUT pins,
    if no parent, write message to stdout"
-  (let ((schematic (parent p)))
+  (let ((schematic (e/part:parent p)))
     (if schematic
         (@release-output-queue-internally schematic p)
       (@release-output-queue-externally p))))
@@ -98,7 +98,7 @@
     (@set-running)
     (@:exit-when (@all-parts-have-no-inputs))
     (let ((part (@get-random-ready-part)))
-      (let ((msg (q-pop (inqueue part))))
+      (let ((msg (e/part:pop-input part)))
         (@run-part-with-message part msg)
         (@release-output-queue part)))))
 

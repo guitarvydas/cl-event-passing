@@ -15,4 +15,4 @@
   (make-instance 'queue))
 
 (defmethod as-list ((self queue))
-  (self q))
+  (q self))

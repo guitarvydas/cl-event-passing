@@ -1,6 +1,6 @@
 (in-package :e/leaf)
 
-(defclass leaf (part)
+(defclass leaf (e/part:part)
   ())
 
 (defun make-leaf (&key (first-time nil)
@@ -8,7 +8,7 @@
                        (in-pins  nil)
                        (out-pins nil))
   (let ((ins (or in-pins (e/pin-bag:make-empty-bag)))
-        (outs (or in-pins (e/pin-bag:make-empty-bag))))
+        (outs (or out-pins (e/pin-bag:make-empty-bag))))
     (make-instance 'leaf
                    :first-time first-time
                    :reactor reactor

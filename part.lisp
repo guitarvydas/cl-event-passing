@@ -24,14 +24,14 @@
 (defmethod has-first-time-p ((self part))
   (not (null (first-time-function self))))
 
-(defmethod ensure-is-input-pin ((self part) pin)
-  (e/pin-bag:ensure-member pin (in-pins self)))
+(defmethod ensure-is-input-pin ((self part) (pin-sym symbol))
+  (e/pin-bag:ensure-member (in-pins self) pin-sym))
 
-(defmethod ensure-is-output-pin ((self part) pin)
-  (e/pin-bag:ensure-member pin (out-pins self)))
+(defmethod ensure-is-output-pin ((self part) (pin-sym symbol))
+  (e/pin-bag:ensure-member (out-pins self) pin-sym))
 
 (defmethod ensure-message-contains-valid-input-pin ((self part) (msg e/message:message))
-  (let ((pin (pin msg)))
+  (let ((pin (e/message:pin msg)))
     (ensure-is-input-pin self pin)))
 
 (defmethod ensure-message-contains-valid-output-pin ((self part) (msg e/message:message))
@@ -42,14 +42,21 @@
   (funcall (reactor part) part msg))
 
 (defmethod push-input ((self part) (msg e/message:message))
-  (ensure-message-contains-input-pin self msg)
-  (cl-queue/q-push (inqueue self) msg))
+  (ensure-message-contains-valid-input-pin self msg)
+  (e/queue:q-push (inqueue self) msg))
 
 (defmethod has-input-p ((self part))
   (not (null (inqueue self))))
 
+(defmethod pop-input ((self part))
+  (e/queue:q-pop (inqueue self)))
+
 (defmethod outqueue-as-list ((self part))
   (e/queue:as-list))
 
-(defmethod outputs-as-list ((self part))
-  (out-pins self))
+(defmethod output-pins-as-list ((self part))
+  (e/pin-bag:as-list (out-pins self)))
+
+(defmethod lookup-output-pin ((self part) pin-sym)
+  (ensure-is-output-pin self pin-sym)
+  (e/pin-bag:lookup-pin (out-pins self) pin-sym))

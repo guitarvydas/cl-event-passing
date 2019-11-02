@@ -1,9 +1,9 @@
 (in-package :e/pin-bag)
 
-;; in this implementation, we define a pin-bag as a hash table indexed by strings
+;; in this implementation, we define a pin-bag as a hash table indexed by e/pin:pin's
 
 (defclass pin-bag ()
-  ((pin-bag :initform (make-hash-table :test 'equal))))
+  ((pin-bag :accessor pin-bag :initform (make-hash-table :test 'equal))))
 
 (defmethod from-list ((list-of-syms CONS))
   (let ((bag (make-instance 'pin-bag)))
@@ -23,12 +23,24 @@
     (maphash #'(lambda (sym pin)
                  (declare (ignore sym))
                  (push pin list))
-             pb)
+             (pin-bag pb))
     list))
 
-(defmethod ensure-member ((pin e/pin:pin) (pb pin-bag))
-  (some #'(lambda (other)
-            (e/pin:pin-equal pin other))
-        (as-list pb)))
+(defmethod ensure-member ((pb pin-bag) (pin-sym symbol))
+  (multiple-value-bind (pin success)
+      (gethash pin-sym (pin-bag pb))
+    (assert success)
+    pin))
 
+(defmethod ensure-member ((pb pin-bag) (pin e/pin:pin))
+  (mapc #'(lambda (other)
+            (when (e/pin:pin-equal pin other)
+              (return-from ensure-member pin)))
+        (as-list pb))
+  (assert nil))
 
+(defmethod lookup-pin ((pb pin-bag) (pin e/pin:pin))
+  (ensure-member pb pin)) ;; same code as above
+
+(defmethod lookup-pin ((pb pin-bag) (pin-sym symbol))
+  (ensure-member pb (e/pin:make-pin pin-sym))) ;; same code as above

@@ -1,10 +1,10 @@
 (in-package :e/schematic)
 
-(defclass schematic (part)
+(defclass schematic (e/part:part)
   ((wires :accessor wires :initarg :wires)
    (child-wire-map :accessor child-wire-map :initarg :child-wire-map :initform (make-hash-table)) ;; pointers to wires between children parts (and self outputs)
    (input-wire-map :accessor input-wire-map :initarg :input-wire-map :initform (make-hash-table)) ;; pointers to wires from each of this schematic's inputs
-   (instances :accessor instances :initform nil :initarg :instances)) ;; children parts
+   (instances :accessor instances :initform nil :initarg :instances)) ;; list of children parts
   (:default-initargs
    :reactor #'schematic-reactor))
 
@@ -15,28 +15,28 @@
   (let ((hmap (make-hash-table)))
     (mapc #'(lambda (output-sym)
               (setf (gethash output-sym hmap) nil))
-          (e/part:outputs-as-list child))
+          (e/part:output-pins-as-list child))
     hmap))
 
 (defmethod add-instance ((self schematic) (instance e/part:part))
   (push instance (instances self))
-  (setf (gethash instances (child-wire-map self))
+  (setf (gethash (instances self) (child-wire-map self))
         (make-slot-for-each-output instance)))
 
 (defun ensure-no-wire (hmap pin)
   (multiple-value-bind (val success)
       (gethash pin hmap)
-    (asssert (and success (null val)))))
+    (cl:assert (and success (null val)))))
 
-(defmethod add-child-wire ((self schematic) (child-instance e/part:part) (child-output-pin e/pin:pin) (wire :e/wire:wire))
+(defmethod add-child-wire ((self schematic) (child-instance e/part:part) (child-output-pin e/pin:pin) (wire e/wire:wire))
   (multiple-value-bind (child-map success)
       (gethash child-instance (child-wire-map self))
-    (assert success)
-    (ensure-no-wire (child-map child-output-pin))
-    (setf (gethash child-output-pin child-map)
+    (cl:assert success)
+    (ensure-no-wire (child-wire-map child-output-pin))
+    (setf (gethash child-output-pin child-wire-map)
           wire)))
 
-(defmethod add-input-wire ((self schematic) (input-pin e/pin:pin) (wire :e/wire:wire))
+(defmethod add-input-wire ((self schematic) (input-pin e/pin:pin) (wire e/wire:wire))
   (ensure-no-wire (input-wire-map self) pin)
   (setf (gethash pin (input-wire-map self))
         wire))
@@ -54,7 +54,7 @@
   (let ((in-map (input-wire-map self))
         (schematic-input-pin (e/message:pin message)))
     (let ((wire (find-wire-for-input-pin in-map pin)))
-      (e/dispatch:deliver-message wire message))))
+      (e/wire:deliver-message wire message))))
 
 (defmethod find-wire-for-pin-inside-schematic ((schem e/schematic:schematic) (child e/part:part) (child-out-pin e/pin:pin))
   (multiple-value-bind (child-part-output-map success)

@@ -1,6 +1,5 @@
 (defpackage :cl-event-passing
   (:use :cl)
-  (:nicknames :e)
   (:export
    #:hello))
 
@@ -11,19 +10,23 @@
    #:pin-bag
    #:from-list
    #:as-list
-   #:ensure-member))
+   #:ensure-member
+   #:lookup-pin))
 
 (defpackage :e/part
   (:use :cl)
   (:export
    #:part
+   #:parent
    #:push-input
+   #:pop-input
    #:has-input-p
    #:react
    #:has-first-time-p
    #:first-time-function
+   #:lookup-output-pin
    #:outqueue-as-list
-   #:outputs-as-list
+   #:output-pins-as-list
    #:ensure-message-contains-valid-input-pin
    #:ensure-message-contains-valid-output-pin))
 
@@ -36,7 +39,8 @@
    #:instances
    #:add-instance
    #:add-child-wire
-   #:add-input-wire))
+   #:add-input-wire
+   #:find-wire-for-pin-inside-schematic))
 
 (defpackage :e/leaf
   (:use :cl)
@@ -65,8 +69,7 @@
   (:export
    #:make-wire-list
    #:wire-list
-   #:add-wire
-   #:find-wire))
+   #:add-wire))
 
 (defpackage :e/wire
   (:use :cl)
@@ -83,7 +86,9 @@
   (:use :cl)
   (:export
    #:pair
-   #:make-pair))
+   #:make-pair
+   #:part
+   #:pin))
 
 (defpackage :e/send
   (:use :cl)

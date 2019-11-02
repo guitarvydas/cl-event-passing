@@ -16,6 +16,6 @@
             (let ((destination-part (e/part-pin:part part-pin))
                   (destination-pin  (e/part-pin:pin  part-pin))
                   (data (e/message:data message)))
-              (cl-messsaging/part:push-input destination-part (make-message destination-pin data))))
+              (e/part:push-input destination-part (e/message:make-message destination-pin data))))
         wire))
   

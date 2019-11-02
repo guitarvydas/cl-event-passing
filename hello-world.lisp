@@ -11,17 +11,19 @@
         (receiver (e/leaf:make-leaf
                    :reactor #'receiver-display
                    :in-pins (e/pin-bag:from-list '("in")))))
-    (e/schematic:add-instance sender)
-    (e/schematic:add-instance receiver)
-    (let ((receiver-pair (e/part-pin:make-pair receiver (cl-message/pin:make-pin :in))))
+    (e/schematic:add-instance schem sender)
+    (e/schematic:add-instance schem receiver)
+    (let ((receiver-pair (e/part-pin:make-pair receiver (e/pin:make-pin :in))))
       (let ((wire (e/wire:make-wire :receivers (list receiver-pair))))
-        (e/schematic:add-child-wire wire))))
+	;; wire is the wire between the sender's output (:out) and the receiver's input (:in)
+	;; wire is added to the schematic's map, as output from sender's :out pin
+        (e/schematic:add-child-wire schem sender (e/part:lookup-output-pin sender :out) wire))))
   (e/dispatch:Start-Dispatcher))
 
 
 ;; code / callbacks
 
-(defun receiver-display ((msg e/message))
+(defmethod receiver-display ((msg e/message:message))
   (case (e/pin:as-symbol (e/message:pin message))
 
     (:print
@@ -30,6 +32,6 @@
     (otherwise
      (error (format nil "unsupported message sent to e:display /~S/" msg)))))
 
-(defun start-sender ((self e:part))
+(defmethod start-sender ((self e/part:part))
   (e/send:send (e/message:make-message :outpin "Hello")))
      
