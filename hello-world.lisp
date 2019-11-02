@@ -32,8 +32,7 @@
   (case (e/pin:as-symbol (e/message:pin msg))
 
     (:in
-     (cl:format cl:*standard-output* "~&output pin ~A /~S/~%"
-                (e/pin:as-symbol (e/message:pin msg))
+     (cl:format cl:*standard-output* "~&receiver-display output: ~S~%"
                 (e/message:data msg)))
 
     (otherwise

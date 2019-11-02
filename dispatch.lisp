@@ -39,7 +39,7 @@
   (let ((oq (e/part:outqueue-as-list  p)))
     (mapc #'(lambda (msg)
               (format *standard-output* "~&pin/~S/ message/~S/~%"
-                      (e/message:pin msg)
+                      (e/pin:as-symbol (e/message:pin msg))
                       (e/message:data msg)))
           oq)))
 
