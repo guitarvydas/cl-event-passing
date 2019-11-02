@@ -29,7 +29,7 @@
 (defmethod receiver-display ((self e/part:part) (msg e/message:message))
   (declare (ignore self))
 
-  (case (e/pin:as-symbol (e/message:pin message))
+  (case (e/pin:as-symbol (e/message:pin msg))
 
     (:print
      (cl:print (e/message:data msg)))
