@@ -18,4 +18,4 @@
   (q self))
 
 (defmethod empty-p ((self queue))
-  (null (q sellf)))
+  (null (q self)))
