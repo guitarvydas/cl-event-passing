@@ -79,3 +79,7 @@
 (defmethod lookup-output-pin ((self part) (pin-sym symbol))
   (ensure-is-output-pin self pin-sym)
   (e/pin-collection:lookup-pin (out-pins self) pin-sym))
+
+(defmethod lookup-input-pin ((self part) (pin-sym symbol))
+  (ensure-is-input-pin self pin-sym)
+  (e/pin-collection:lookup-pin (in-pins self) pin-sym))

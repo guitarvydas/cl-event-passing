@@ -26,6 +26,7 @@
    #:react
    #:has-first-time-p
    #:first-time-function
+   #:lookup-input-pin
    #:lookup-output-pin
    #:outqueue-as-list
    #:output-pins-as-list

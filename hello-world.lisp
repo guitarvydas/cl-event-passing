@@ -16,7 +16,7 @@
                    :in-pins (e/pin-collection:from-list '("in")))))
     (e/schematic:add-instance schem sender)
     (e/schematic:add-instance schem receiver)
-    (let ((receiver-pair (e/part-pin:make-pair receiver (e/pin:make-pin :in))))
+    (let ((receiver-pair (e/part-pin:make-pair receiver (e/part:lookup-input-pin receiver :in))))
       (let ((wire (e/wire:make-wire :receivers (list receiver-pair))))
 	;; wire is the wire between the sender's output (:out) and the receiver's input (:in)
 	;; wire is added to the schematic's map, as output from sender's :out pin
