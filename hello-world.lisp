@@ -13,7 +13,7 @@
                  :out-pins (e/pin-collection:from-list '(:out))))
         (receiver (e/leaf:make-leaf
                    :reactor #'receiver-display
-                   :in-pins (e/pin-collection:from-list '("in")))))
+                   :in-pins (e/pin-collection:from-list '(:in)))))
     (e/schematic:add-instance schem sender)
     (e/schematic:add-instance schem receiver)
     (let ((receiver-pair (e/part-pin:make-pair receiver (e/part:lookup-input-pin receiver :in))))
