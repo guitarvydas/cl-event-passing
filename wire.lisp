@@ -17,5 +17,5 @@
                   (destination-pin  (e/part-pin:pin  part-pin))
                   (data (e/message:data message)))
               (e/part:push-input destination-part (e/message:make-message destination-pin data))))
-        wire))
+        (receivers wire)))
   
