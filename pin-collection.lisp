@@ -37,9 +37,9 @@
     pin))
 
 (defmethod ensure-member ((pc pin-collection) (pin e/pin:pin))
-  (mapc #'(lambda (other)
-            (when (e/pin:pin-equal pin other)
-              (return-from ensure-member pin)))
+  (mapc #'(lambda (actual-pin)
+            (when (e/pin:pin-equal pin actual-pin)
+              (return-from ensure-member actual-pin)))  ;; pin might be a fake pin with same symbol name, use pin from as-list
         (as-list pc))
   (assert nil))
 
