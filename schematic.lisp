@@ -1,8 +1,7 @@
 (in-package :e/schematic)
 
 (defclass schematic (e/part:part)
-  ((wires :accessor wires :initarg :wires)
-   (child-wire-map :accessor child-wire-map :initarg :child-wire-map :initform (make-hash-table)) ;; pointers to wires between children parts (and self outputs)
+  ((child-wire-map :accessor child-wire-map :initarg :child-wire-map :initform (make-hash-table)) ;; pointers to wires between children parts (and self outputs)
    (input-wire-map :accessor input-wire-map :initarg :input-wire-map :initform (make-hash-table)) ;; pointers to wires from each of this schematic's inputs
    (instances :accessor instances :initform nil :initarg :instances)) ;; list of children parts
   (:default-initargs
