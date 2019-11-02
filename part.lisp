@@ -21,6 +21,9 @@
 (defmethod initialize-instance :after ((self part) &key)
   (e/dispatch:remember-part self))
 
+(defmethod set-parent ((self part) (parent part))
+  (setf (parent self) parent))
+
 (defmethod has-first-time-p ((self part))
   (not (null (first-time-function self))))
 

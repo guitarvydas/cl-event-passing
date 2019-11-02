@@ -18,6 +18,7 @@
   (:export
    #:part
    #:parent
+   #:set-parent
    #:push-input
    #:pop-input
    #:has-input-p
