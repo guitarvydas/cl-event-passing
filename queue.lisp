@@ -16,3 +16,6 @@
 
 (defmethod as-list ((self queue))
   (q self))
+
+(defmethod empty-p ((self queue))
+  (null (q sellf)))

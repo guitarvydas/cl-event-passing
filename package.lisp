@@ -111,6 +111,7 @@
    #:queue
    #:q-push
    #:q-pop
+   #:empty-p
    #:as-list))
 
 (defpackage :e/pin

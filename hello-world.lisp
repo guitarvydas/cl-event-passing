@@ -31,8 +31,10 @@
 
   (case (e/pin:as-symbol (e/message:pin msg))
 
-    (:print
-     (cl:print (e/message:data msg)))
+    (:in
+     (cl:format cl:*standard-output* "~&output pin ~A /~S/~%"
+                (e/pin:as-symbol (e/message:pin msg))
+                (e/message:data msg)))
 
     (otherwise
      (error (format nil "unsupported message sent to e:display /~S/" msg)))))

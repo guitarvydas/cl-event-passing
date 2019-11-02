@@ -65,7 +65,7 @@
   (e/queue:q-push (outqueue self) msg))
 
 (defmethod has-input-p ((self part))
-  (not (null (inqueue self))))
+  (not (e/queue:empty-p (inqueue self))))
 
 (defmethod pop-input ((self part))
   (e/queue:q-pop (inqueue self)))
