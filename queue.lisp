@@ -6,10 +6,10 @@
   ((q :accessor q :initform nil)))
 
 (defmethod q-push ((self queue) (m e/message:message))
-  (setf (q self) (append q (list m))))
+  (setf (q self) (append (q self) (list m))))
 
-(defmethod q-pop ((q queue))
-  (pop q))
+(defmethod q-pop ((self queue))
+  (pop (q self)))
 
 (defun make-queue ()
   (make-instance 'queue))
