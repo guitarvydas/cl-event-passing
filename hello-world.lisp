@@ -1,3 +1,6 @@
+;; test todo: test that wire from schem input pin to schem output pin works
+;; test todo: test that wire from schem input pin can split
+
 (in-package :cl-event-passing)
 
 (defun hello ()
