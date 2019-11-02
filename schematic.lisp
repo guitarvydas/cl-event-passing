@@ -32,7 +32,7 @@
   (multiple-value-bind (child-map success)
       (gethash child-instance (child-wire-map self))
     (cl:assert success)
-    (ensure-no-wire (child-wire-map self))
+    (ensure-no-wire (child-wire-map self) child-output-pin)
     (setf (gethash child-output-pin (child-wire-map self))
           wire)))
 
