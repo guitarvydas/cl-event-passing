@@ -7,8 +7,8 @@
                        (reactor nil)
                        (in-pins  nil)
                        (out-pins nil))
-  (let ((ins (or in-pins (e/pin-bag:make-empty-bag)))
-        (outs (or out-pins (e/pin-bag:make-empty-bag))))
+  (let ((ins (or in-pins (e/pin-collection:make-empty-collection)))
+        (outs (or out-pins (e/pin-collection:make-empty-collection))))
     (make-instance 'leaf
                    :first-time first-time
                    :reactor reactor

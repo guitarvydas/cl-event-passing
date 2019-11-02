@@ -25,10 +25,10 @@
   (not (null (first-time-function self))))
 
 (defmethod ensure-is-input-pin ((self part) (pin-sym symbol))
-  (e/pin-bag:ensure-member (in-pins self) pin-sym))
+  (e/pin-collection:ensure-member (in-pins self) pin-sym))
 
 (defmethod ensure-is-output-pin ((self part) (pin-sym symbol))
-  (e/pin-bag:ensure-member (out-pins self) pin-sym))
+  (e/pin-collection:ensure-member (out-pins self) pin-sym))
 
 (defmethod ensure-message-contains-valid-input-pin ((self part) (msg e/message:message))
   (let ((pin (e/message:pin msg)))
@@ -55,8 +55,8 @@
   (e/queue:as-list))
 
 (defmethod output-pins-as-list ((self part))
-  (e/pin-bag:as-list (out-pins self)))
+  (e/pin-collection:as-list (out-pins self)))
 
 (defmethod lookup-output-pin ((self part) pin-sym)
   (ensure-is-output-pin self pin-sym)
-  (e/pin-bag:lookup-pin (out-pins self) pin-sym))
+  (e/pin-collection:lookup-pin (out-pins self) pin-sym))

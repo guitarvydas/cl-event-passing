@@ -3,11 +3,11 @@
   (:export
    #:hello))
 
-(defpackage :e/pin-bag
+(defpackage :e/pin-collection
   (:use :cl)
   (:export
-   #:make-empty-bag
-   #:pin-bag
+   #:make-empty-collection
+   #:pin-collection
    #:from-list
    #:as-list
    #:ensure-member
