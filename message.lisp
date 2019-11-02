@@ -7,7 +7,7 @@
 (defmethod clone-with-pin ((self message) (pin e/pin:pin))
   (make-instance 'message :pin pin :data (data self)))
 
-(defmethod make-message ((sym cl:symbol) (data T))
+(defmethod make-message ((pin e/pin:pin) (data T))
   (let ((pin (e/pin:make-pin sym)))
     (make-instance 'message :pin pin :data data)))
   
