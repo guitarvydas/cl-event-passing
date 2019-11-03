@@ -65,14 +65,32 @@
           dest-list)))
 |#
 
+(defun cull (lis)
+  (cl:remove nil (cl:remove-duplicates lis)))
+
+;; in most cases, we are finished after a part's output queue has been released
+;; there is one edge case - if releasing the output queue has placed events onto
+;; the output queue of the enclosing schematic, then we need to recursivly release
+;; the output queue of the parent schematic (and so on)
+(defun @release-recursively (newly-created-outputs)    
+    (let ((new-out-parts (cull newly-created-outputs)))
+      (when new-out-parts
+        (mapc #'(lambda (p)
+                  (@release-output-queue p))
+              new-out-parts))))
+
 (defmethod @release-output-queue-internally ((schematic e/schematic:schematic) (part e/part:part))
-  (let ((out-list (e/part:outqueue-as-list part)))
+  (let ((out-list (e/part:outqueue-as-list part))
+        (newly-created-outputs nil))
     (mapc #'(lambda (message)
               (let ((out-pin (e/message:pin message))
                     (data (e/message:data message)))
                 (let ((destination-wire (e/schematic:find-wire-for-pin-inside-schematic schematic part out-pin)))
-                  (e/wire:deliver-message schematic destination-wire message))))
-          out-list)))
+                  (append
+                   (e/wire:deliver-message schematic destination-wire message)
+                   newly-created-outputs))))
+          out-list)
+    (@release-recursively newly-created-outputs)))
 
 (defmethod @run-part-with-message ((p e/part:part) (m e/message:message))
   (e/part:react p m))

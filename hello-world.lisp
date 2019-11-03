@@ -39,6 +39,11 @@
         (e/schematic:add-child-wire schem sender (e/part:lookup-output-pin sender :out) wire))))
   (e/dispatch:Start-Dispatcher))
 
+(defun test ()
+  (format *standard-output* "~&running hello~%")
+  (hello)
+  (format *standard-output* "~&~%running hello2~%")
+  (hello2))
 
 ;; code / callbacks
 
