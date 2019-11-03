@@ -69,19 +69,15 @@
       (assert success)
       wire)))
 
-(defmethod push-input ((self schematic) (child (eql nil)) (msg e/message:message))
+(defmethod push-input ((self e/schematic:schematic) (child (eql nil)) (msg e/message:message))
   ;; SENDing to an output of the schematic
   ;; return part that has new outputs, else return nil - in this case always (list self)
   ;; push-input always returns a list (or NIL, which is a list)
   (declare (ignore child))
   (e/part:ensure-message-contains-valid-output-pin self msg)
-  (e/part:push-output self msg)
-  (list self))
+  (e/part:push-output self msg))
 
-(defmethod push-input ((self schematic) (child e/part:part) (msg e/message:message))
+(defmethod push-input ((self e/schematic:schematic) (child e/part:part) (msg e/message:message))
   ;; "normal" sending to a child part
-  ;; push-input always returns a list (or NIL, which is a list)
   (declare (ignore self))
-  ;; return part that has new outputs, else return nil - in this case always nil
-  (e/part:push-input child msg)
-  nil)
+  (e/part:push-input child msg))
