@@ -7,6 +7,7 @@
   ;; lots of mundane, very explicit, bookkeeping here
   ;; - this is where a diagram compiler might help cut down on syntactic noise
   ;; - (in fact, if I hadn't started out with diagrams, I might never have arrived at this combination of features)
+  (e/dispatch:reset-dispatcher)
   (let ((schem (e/schematic:make-schematic))
         (sender (e/leaf:make-leaf
                  :first-time #'start-sender
@@ -24,6 +25,7 @@
   (e/dispatch:Start-Dispatcher))
 
 (defun hello2 ()
+  (e/dispatch:reset-dispatcher)
   ;; wire straight from sender to output of schematic
   (let ((schem (e/schematic:make-schematic :out-pins (e/pin-collection:from-list '(:schem-out))))
         (sender (e/leaf:make-leaf

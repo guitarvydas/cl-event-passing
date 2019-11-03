@@ -70,6 +70,12 @@
       wire)))
 
 (defmethod push-input ((self schematic) (child (eql nil)) (msg e/message:message))
-  (e/part:ensure-message-contains-valid-input-pin self msg)
-  (e/part:push-input self child msg))
+  ;; SENDing to an output of the schematic
+  (declare (ignore child))
+  (e/part:ensure-message-contains-valid-output-pin self msg)
+  (e/part:push-output self msg))
 
+(defmethod push-input ((self schematic) (child e/part:part) (msg e/message:message))
+  ;; "normal" sending to a child part
+  (declare (ignore self))
+  (e/part:push-input child msg))

@@ -12,6 +12,10 @@
 
 (defparameter *dispatcher-running* nil)
 
+(defun reset-dispatcher ()
+  (clear-parts)
+  (setf *dispatcher-running* nil))
+  
 ;; my convention - routines that begin with '@' are "high level" architectural routines, to be implemented
 ;; in "lower levels"
 
@@ -67,7 +71,7 @@
               (let ((out-pin (e/message:pin message))
                     (data (e/message:data message)))
                 (let ((destination-wire (e/schematic:find-wire-for-pin-inside-schematic schematic part out-pin)))
-                  (e/wire:deliver-message shematic destination-wire message))))
+                  (e/wire:deliver-message schematic destination-wire message))))
           out-list)))
 
 (defmethod @run-part-with-message ((p e/part:part) (m e/message:message))

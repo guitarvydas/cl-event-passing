@@ -56,7 +56,7 @@
 (defmethod react ((self part) (msg e/message:message))
   (funcall (reactor self) self msg))
 
-(defmethod push-input ((parent-schem part) (self part) (msg e/message:message))
+(defmethod push-input ((self part) (msg e/message:message))
   (declare (ignore (parent-schem)))
   (ensure-message-contains-valid-input-pin self msg)
   (e/queue:q-push (inqueue self) msg))

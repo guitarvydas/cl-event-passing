@@ -11,6 +11,6 @@
             (let ((destination-part (e/part-pin:part part-pin))
                   (destination-pin  (e/part-pin:pin  part-pin))
                   (data (e/message:data message)))
-              (e/part:push-input schem destination-part (e/message:make-message destination-pin data))))
+              (e/schematic:push-input schem destination-part (e/message:make-message destination-pin data))))
         (receivers wire)))
   

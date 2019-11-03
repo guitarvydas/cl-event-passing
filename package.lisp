@@ -66,7 +66,8 @@
   (:export
    #:clear-parts
    #:Start-Dispatcher
-   #:remember-part))
+   #:remember-part
+   #:reset-dispatcher))
 
 (defpackage :e/wire-list
   (:use :cl)
