@@ -22,12 +22,14 @@
    #:push-input
    #:pop-input
    #:has-input-p
+   #:has-output-p
    #:push-output
    #:react
    #:has-first-time-p
    #:first-time-function
    #:lookup-input-pin
    #:lookup-output-pin
+   #:make-output-queue-empty
    #:outqueue-as-list
    #:output-pins-as-list
    #:ensure-message-contains-valid-input-pin
@@ -109,8 +111,9 @@
 (defpackage :e/queue
   (:use :cl)
   (:export
-   #:make-queue
    #:queue
+   #:make-queue
+   #:make-empty-queue
    #:q-push
    #:q-pop
    #:empty-p

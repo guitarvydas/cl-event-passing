@@ -68,6 +68,9 @@
 (defmethod has-input-p ((self part))
   (not (e/queue:empty-p (inqueue self))))
 
+(defmethod has-output-p ((self part))
+  (not (e/queue:empty-p (outqueue self))))
+
 (defmethod pop-input ((self part))
   (e/queue:q-pop (inqueue self)))
 
@@ -84,3 +87,6 @@
 (defmethod lookup-input-pin ((self part) (pin-sym symbol))
   (ensure-is-input-pin self pin-sym)
   (e/pin-collection:lookup-pin (in-pins self) pin-sym))
+
+(defmethod make-output-queue-empty ((self part))
+  (setf (outqueue self) (e/queue:make-empty-queue)))

@@ -14,6 +14,9 @@
 (defun make-queue ()
   (make-instance 'queue))
 
+(defun make-empty-queue ()
+  (make-instance 'queue))
+
 (defmethod as-list ((self queue))
   (q self))
 

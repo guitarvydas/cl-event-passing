@@ -42,28 +42,11 @@
 (defmethod @release-output-queue-externally ((p e/part:part))
   (let ((oq (e/part:outqueue-as-list  p)))
     (mapc #'(lambda (msg)
-              (format *standard-output* "~&pin/~S/ message/~S/~%"
+              (format *standard-output* "~&pin ~S message /~S/~%"
                       (e/pin:as-symbol (e/message:pin msg))
                       (e/message:data msg)))
-          oq)))
-
-#|
-(defmethod rewrite-pin ((pin e/pin:pin) (message e/message:message))
-  (let ((new-msg (e/message:clone-with-pin message pin)))
-    new-msg))
-|#
-
-#|
-(defmethod @release-message-via-wiring-list ((wiring-list e/wiring-list:wiring-list) (msg e/message:message))
-  (let ((pin (e/message:pin msg)))
-    (let ((wire (e/wire-list:find-wire wiring-list pin)))
-      (let ((dest-list (e/wire:outs-as-list wire)))
- (eget-destinations wiring-list (pin msg))))
-    
-    (mapc #'(lambda (dest)
-              (q-push (inqueue dest) (rewrite-pin (pin dest) msg)))
-          dest-list)))
-|#
+          oq))
+  (e/part:make-output-queue-empty p))
 
 (defmethod @release-output-queue-internally ((schematic e/schematic:schematic) (part e/part:part))
   (let ((out-list (e/part:outqueue-as-list part)))
@@ -72,25 +55,33 @@
                     (data (e/message:data message)))
                 (let ((destination-wire (e/schematic:find-wire-for-pin-inside-schematic schematic part out-pin)))
                    (e/wire:deliver-message schematic destination-wire message))))
-          out-list)))
+          out-list))
+  (e/part:make-output-queue-empty part))
 
 (defmethod @run-part-with-message ((p e/part:part) (m e/message:message))
   (e/part:react p m))
 
-(defmethod @release-output-queue ((p e/part:part))
+(defun @release-output-queues ()
   "using the wiring map of the parent, send every message
    to its destination part, rewriting OUTPUT pins to INPUT pins,
    if no parent, write message to stdout"
-  (let ((schematic (e/part:parent p)))
-    (if schematic
-        (@release-output-queue-internally schematic p)
-      (@release-output-queue-externally p))))
+  (let ((part-list *parts-list*))
+    (@:loop
+      (@:exit-when (null part-list))
+      (let ((p (pop part-list)))
+        (when (e/part:has-output-p p)
+          (let ((schematic (e/part:parent p)))
+            (if schematic
+                (@release-output-queue-internally schematic p)
+              (@release-output-queue-externally p))
+            (setf part-list *parts-list*))))))) ;; loop until every part has an empty output queue
+                                            ;; (this can be optimized, since we know which parts have been released)
 
 (defun @Call-First-Times ()
   (mapc #'(lambda (part)
             (when (e/part:has-first-time-p part)
               (funcall (e/part:first-time-function part) part)
-              (@release-output-queue part)))
+              (@release-output-queues)))
         *parts-list*))
 
 (defun Start-Dispatcher ()
@@ -105,6 +96,6 @@
     (let ((part (@get-random-ready-part)))
       (let ((msg (e/part:pop-input part)))
         (@run-part-with-message part msg)
-        (@release-output-queue part)))))
+        (@release-output-queues)))))
 
 
