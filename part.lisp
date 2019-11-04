@@ -80,11 +80,11 @@
 (defmethod output-pins-as-list ((self part))
   (e/pin-collection:as-list (out-pins self)))
 
-(defmethod lookup-output-pin ((self part) (pin-sym symbol))
+(defmethod lookup-output-pin ((self part) (pin-sym cl:symbol))
   (ensure-is-output-pin self pin-sym)
   (e/pin-collection:lookup-pin (out-pins self) pin-sym))
 
-(defmethod lookup-input-pin ((self part) (pin-sym symbol))
+(defmethod lookup-input-pin ((self part) (pin-sym cl:symbol))
   (ensure-is-input-pin self pin-sym)
   (e/pin-collection:lookup-pin (in-pins self) pin-sym))
 

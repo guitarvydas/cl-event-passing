@@ -44,7 +44,7 @@
    #:instances
    #:add-instance
    #:add-child-wire
-   #:add-input-wire
+   #:add-self-input-wire
    #:push-input
    #:find-wire-for-pin-inside-schematic))
 
@@ -100,13 +100,13 @@
 (defpackage :e/send
   (:use :cl)
   (:export
-   #:send))
+   #:send
+   #:inject))
 
 (defpackage :e/receive
   (:use :cl)
   (:export
-   #:respond
-   #:inject))
+   #:respond))
 
 (defpackage :e/queue
   (:use :cl)
