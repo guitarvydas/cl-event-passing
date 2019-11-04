@@ -7,10 +7,10 @@
   (:default-initargs
    :reactor #'schematic-reactor))
 
-(defun make-schematic (&key (out-pins nil))
+(defun make-schematic (&key (out-pins nil) (first-time nil))
   (if (null out-pins)
       (make-instance 'schematic)
-    (make-instance 'schematic :out-pins out-pins)))
+    (make-instance 'schematic :out-pins out-pins :first-time first-time)))
 
 (defmethod make-slot-for-each-output ((child e/part:part))
   (let ((hmap (make-hash-table)))

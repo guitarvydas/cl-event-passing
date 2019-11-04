@@ -39,11 +39,21 @@
         (e/schematic:add-child-wire schem sender (e/part:lookup-output-pin sender :out) wire))))
   (e/dispatch:Start-Dispatcher))
 
+(defun hello3 ()
+  (e/dispatch:reset-dispatcher)
+  ;; wire straight from first-time of schematic to output of schematic
+  (let ((schem (e/schematic:make-schematic
+                :first-time #'start-schematic-sender
+                :out-pins (e/pin-collection:from-list '(:schem-out)))))
+    (e/dispatch:Start-Dispatcher)))
+
 (defun test ()
   (format *standard-output* "~&running hello~%")
   (hello)
   (format *standard-output* "~&~%running hello2~%")
-  (hello2))
+  (hello2)
+  (format *standard-output* "~&~%running hello3~%")
+  (hello3))
 
 ;; code / callbacks
 
@@ -61,4 +71,7 @@
 
 (defmethod start-sender ((self e/part:part))
   (e/send:send self (e/message:make-message (e/part:lookup-output-pin self :out) "Hello")))
+     
+(defmethod start-schematic-sender ((self e/schematic:schematic))
+  (e/send:send self (e/message:make-message (e/part:lookup-output-pin self :schem-out) "Hello")))
      
