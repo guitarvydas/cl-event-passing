@@ -20,4 +20,5 @@
                                                                 "source" "receiver" "wire" "dispatch"))
 				     (:file "test0" :depends-on ("api"))
 				     (:file "test6" :depends-on ("api"))
-				     (:file "test6a" :depends-on ("api"))))))
+				     (:file "test6a" :depends-on ("api"))
+				     (:file "test7" :depends-on ("api"))))))
