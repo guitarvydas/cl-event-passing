@@ -19,4 +19,5 @@
 				     (:file "api"  :depends-on ("package" "util" "part" "schematic" "event"
                                                                 "source" "receiver" "wire" "dispatch"))
 				     (:file "test0" :depends-on ("api"))
-				     (:file "test6" :depends-on ("api"))))))
+				     (:file "test6" :depends-on ("api"))
+				     (:file "test6a" :depends-on ("api"))))))
