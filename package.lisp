@@ -1,134 +1,104 @@
-(defpackage :cl-event-passing
-  (:use :cl)
-  (:export
-   #:hello))
+(defpackage cl-event-passing
+  (:nicknames :a)
+  (:use :cl))
 
-(defpackage :e/pin-collection
+(defpackage cl-event-passing-user
+  ;; top level API
   (:use :cl)
+  (:nicknames :aa)
   (:export
-   #:make-empty-collection
-   #:pin-collection
-   #:from-list
-   #:as-list
-   #:ensure-member
-   #:lookup-pin))
+   #:@new-schematic
+   #:@new-code
+   #:@new-wire
+   #:@new-event
+   #:@initialize
+   #:@top-level-schematic
+   #:@set-first-time-handler
+   #:@set-input-handler
+   #:@add-inbound-receiver-to-wire
+   #:@add-outbound-receiver-to-wire
+   #:@add-source-to-schematic
+   #:@add-part-to-schematic
+   #:@send
+   #:@inject
+   #:@start-dispatcher))
 
-(defpackage :e/part
+(defpackage cl-event-passing-part
+  (:nicknames :e/part)
   (:use :cl)
   (:export
    #:part
-   #:parent
-   #:set-parent
-   #:push-input
-   #:pop-input
-   #:has-input-p
-   #:has-output-p
-   #:push-output
-   #:react
-   #:has-first-time-p
-   #:first-time-function
-   #:lookup-input-pin
-   #:lookup-output-pin
-   #:make-output-queue-empty
-   #:outqueue-as-list
-   #:output-pins-as-list
-   #:ensure-message-contains-valid-input-pin
-   #:ensure-message-contains-valid-output-pin))
+   #:code
+   #:name
+   #:input-queue
+   #:has-input-queue-p
+   #:output-queue
+   #:has-output-queue-p
+   #:busy-flag
+   #:namespace-input-pins
+   #:namespace-output-pins
+   #:input-handler
+   #:first-time-handler
+   #:parent-schem))
 
-(defpackage :e/schematic
+(defpackage cl-event-passing-event
+  (:nicknames :e/event)
   (:use :cl)
   (:export
-   #:make-schematic
+   #:event
+   #:new-event
+   #:pin
+   #:data))
+
+(defpackage cl-event-passing-source
+  (:nicknames :e/source)
+  (:use :cl)
+  (:export
+   #:source
+   #:part
+   #:pin
+   #:wire))
+
+(defpackage cl-event-passing-receiver
+  (:nicknames :e/receiver)
+  (:use :cl)
+  (:export
+   #:part
+   #:pin
+   #:receiver
+   #:inbound-receiver
+   #:outbound-receiver))
+
+(defpackage cl-event-passing-schematic
+  (:nicknames :e/schematic)
+  (:use :cl)
+  (:export
+   #:name
    #:schematic
-   #:wiring
-   #:instances
-   #:add-instance
-   #:add-child-wire
-   #:add-self-input-wire
-   #:push-input
-   #:find-wire-for-pin-inside-schematic))
+   #:internal-parts
+   #:internal-wires
+   #:input-queue
+   #:output-queue
+   #:busy-flag
+   #:namespace-input-pins
+   #:namespace-output-pins
+   #:input-handler
+   #:first-time-handler
+   #:parent-schem))
 
-(defpackage :e/leaf
-  (:use :cl)
-  (:export
-   #:leaf
-   #:make-leaf))
+(defpackage cl-event-passing-dispatch
+  (:nicknames :e/dispatch)
+  (:use :cl))
 
-(defpackage :e/message
+(defpackage cl-event-passing-user-util
+  (:nicknames :e/util)
   (:use :cl)
   (:export
-   #:make-message
-   #:message
-   #:pin
-   #:data
-   #:clone-with-pin))
-   
-(defpackage :e/dispatch
-  (:use :cl)
-  (:export
-   #:clear-parts
-   #:Start-Dispatcher
-   #:remember-part
-   #:reset-dispatcher))
+   #:ensure-not-in-list))
 
-(defpackage :e/wire-list
+(defpackage cl-event-passing-user-wire
+  (:nicknames :e/wire)
   (:use :cl)
   (:export
-   #:make-wire-list
-   #:wire-list
-   #:add-wire))
-
-(defpackage :e/wire
-  (:use :cl)
-  (:export
-   #:make-wire
    #:wire
-   #:ins
-   #:outs
-   #:outs-as-list
-   #:deliver-message
-   #:member-of-inputs-p))
-
-(defpackage :e/part-pin
-  (:use :cl)
-  (:export
-   #:pair
-   #:make-pair
-   #:part
-   #:pin))
-
-(defpackage :e/send
-  (:use :cl)
-  (:export
-   #:send
-   #:inject))
-
-(defpackage :e/receive
-  (:use :cl)
-  (:export
-   #:respond))
-
-(defpackage :e/queue
-  (:use :cl)
-  (:export
-   #:queue
-   #:make-queue
-   #:make-empty-queue
-   #:q-push
-   #:q-pop
-   #:empty-p
-   #:as-list))
-
-(defpackage :e/pin
-  (:use :cl)
-  (:export
-   #:pin
-   #:make-pin
-   #:pin-equal
-   #:as-symbol))
-
-(defpackage :e/pin-wire
-  (:use :cl)
-  (:export
-   #:pin-wire
-   #:make-pin-wire))
+   #:receivers))

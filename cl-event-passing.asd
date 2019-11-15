@@ -8,21 +8,15 @@
   :components ((:module "source"
                         :pathname "./"
                         :components ((:file "package")
-                                     (:file "wire0" :depends-on ("package"))
-                                     (:file "queue" :depends-on ("package" "message"))
-                                     (:file "pin" :depends-on ("package"))
-                                     (:file "pin-collection" :depends-on ("package" "pin"))
-                                     (:file "message" :depends-on ("package" "pin"))
-                                     (:file "part" :depends-on ("package" "message" "pin-collection"))
-                                     (:file "schematic" :depends-on ("package" "part" "wire-list" "message"))
-                                     (:file "leaf" :depends-on ("package" "pin-collection"))
-                                     (:file "send" :depends-on ("package" "message" "part"))
-                                     (:file "receive" :depends-on ("package" "part" "message"))
-                                     (:file "wire-list" :depends-on ("package" "wire0" "pin"))
-                                     (:file "wire" :depends-on ("package" "wire0" "message" "part" "schematic"))
-                                     (:file "pin-wire" :depends-on ("package" "pin" "wire"))
-                                     (:file "part-pin" :depends-on ("package" "part" "pin"))
-                                     (:file "dispatch" :depends-on ("package" "part" "message"))
-                                     (:file "hello-world" :depends-on ("package" "schematic" "leaf"
-                                                                       "pin-collection" "pin" "part-pin" "part"
-                                                                       "wire0" "wire" "wire-list" "dispatch"))))))
+                                     (:file "util" :depends-on ("package"))
+                                     (:file "part" :depends-on ("package"))
+                                     (:file "schematic" :depends-on ("package" "part" "source" "event"))
+                                     (:file "event" :depends-on ("package"))
+                                     (:file "source" :depends-on ("package" "event" "wire"))
+                                     (:file "receiver" :depends-on ("package" "event" "part"))
+                                     (:file "wire" :depends-on ("package" "util" "receiver" ))
+                                     (:file "dispatch" :depends-on ("package" "util" "part" "event"))
+				     (:file "api"  :depends-on ("package" "util" "part" "schematic" "event"
+                                                                "source" "receiver" "wire" "dispatch"))
+				     (:file "test0" :depends-on ("api"))
+				     (:file "test6" :depends-on ("api"))))))

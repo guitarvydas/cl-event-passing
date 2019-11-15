@@ -1,0 +1,22 @@
+
+* Status
+** working on test0 and test6, usage - (ql:quickload :temp3), (aa:test6)
+   see test6.drawio
+   second test fails: CL-USER 22 > (aa::test6)
+   part "main schem" outputs /"test 6"/ on pin :MAIN-SCHEM-IN
+   NIL
+   the output pin should be :main-schem-out, not :main-schem-in
+
+   The second test should send the message ("test 6") down from main-schem
+   into child-schem, then through flow-through-1 and flow-through-2 back up
+   to child-schem and then, finally out of main-schem (on pin :main-schem-out).
+
+** hope to overwrite cl-event-passing with this
+* Design Intention
+** FYI - when an event arrives at a Code part (aka Leaf), it runs some code (usually a CASE on the pin name) to completion then returns.  When an event arrives at a Schematic, the "same" thing happens - the event is passed into the bowels of the schematic and is processed to completion by the graph of parts.
+** schematic input handler
+   set self.busy true
+   lookup the input pin in self.sources, then dispatch the event
+   set self.busy false (the dispatcher will see self as busy recursively, if any of self's children are busy, this recurs until we hit code parts.  [nb. need to revamp busy to tak output and input queues into account in parts of lower-level schematics)
+
+

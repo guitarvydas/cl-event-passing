@@ -1,13 +1,22 @@
 (in-package :e/wire)
 
-(defmethod make-wire (&key (receivers cl:CONS))
-  (make-instance 'wire :receivers receivers))
+;; a Wire is a list of Receivers
 
-(defmethod deliver-message ((schem e/schematic:schematic) (wire e/wire:wire) (message e/message:message))
-  ;; we don't copy messages/data - receiver must copy the message-data if it intends to mutate it
-  (mapc #'(lambda (part-pin)
-              (let ((destination-part (e/part-pin:part part-pin))
-                    (destination-pin  (e/part-pin:pin  part-pin))
-                    (data (e/message:data message)))
-                (e/schematic:push-input schem destination-part (e/message:make-message destination-pin data))))
+(defclass wire ()
+  ((receivers :accessor receivers :initform nil)
+   (debug-name :accessor debug-name :initarg :name)))
+
+(defun new-wire (&key (name ""))
+  (make-instance 'wire :name name))
+
+(defmethod deliver-event ((wire wire) (e e/event:event))
+  (mapc #'(lambda (recv)
+            (e/receiver::deliver-event recv e))
         (receivers wire)))
+
+(defmethod ensure-receiver-not-already-on-wire ((wire wire) (rcv e/receiver:receiver))
+  (e/util:ensure-not-in-list (receivers wire) rcv #'e/receiver::receiver-equal
+                             "receiver ~S already on wire ~S" rcv wire))
+
+(defmethod add-receiver ((wire wire) (rcv e/receiver:receiver))
+  (push rcv (receivers wire)))

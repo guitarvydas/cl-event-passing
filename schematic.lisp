@@ -1,110 +1,55 @@
 (in-package :e/schematic)
 
+(defmacro with-atomic-action (&body body)
+  ;; basically a no-op in this, CALL-RETURN (non-asynch) version of the code
+  ;; this matters only when running in a true interrupting environment (e.g. bare hardware, no O/S)
+  `(progn ,@body))
+
 (defclass schematic (e/part:part)
-  ((child-wire-map :accessor child-wire-map :initarg :child-wire-map :initform (make-hash-table :test 'equal)) ;; pointers to wires between children parts (from self outputs)
-   (self-input-wire-map :accessor self-input-wire-map :initarg :self-input-wire-map :initform (make-hash-table :test 'equal)) ;; pointers to wires from each of this schematic's inputs
-   (instances :accessor instances :initform nil :initarg :instances)) ;; list of children parts
-  (:default-initargs
-   :reactor #'schematic-reactor))
+  ((sources :accessor sources :initform nil) ;; a list of Sources (which contain a list of Wires which contain a list of Receivers)
+   (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
 
-(defmethod make-slot-for-each-output ((child e/part:part))
-  (let ((hmap (make-hash-table)))
-    (mapc #'(lambda (output-sym)
-              (setf (gethash output-sym hmap) nil))
-          (e/part:output-pins-as-list child))
-    hmap))
+(defun new-schematic (&key (name ""))
+  (make-instance 'schematic :name name))
 
-(defmethod make-wire-map-slot-for-each-input ((self schematic) (in-pins e/pin-collection:pin-collection))
-  (let ((hmap (make-hash-table)))
-    (mapc #'(lambda (input-sym)
-              (setf (gethash input-sym hmap) nil))
-          (e/pin-collection:as-list in-pins))
-    (setf (gethash nil (self-input-wire-map self)) hmap)))
+(defmethod ensure-source-not-already-present ((self schematic) (s e/source:source))
+  (e/util:ensure-not-in-list (sources self) s #'equal
+                             "source ~S already present in schematic ~S" s (e/part::name self)))
 
-(defmethod make-wire-map-slot-for-each-input ((self schematic) (in-pins (eql nil))))
+(defmethod add-source ((self schematic) (s e/source:source))
+  (push s (sources self)))
 
-(defun make-schematic (&key (in-pins nil) (out-pins nil) (first-time nil))
-  (let ((schem (make-instance 'schematic :in-pins in-pins :out-pins out-pins :first-time first-time)))
-    (make-wire-map-slot-for-each-input schem in-pins)
-    schem))  
+(defmethod ensure-part-not-already-present ((self schematic) (p e/part:part))
+  (e/util:ensure-not-in-list (internal-parts self) p #'equal
+                             "part ~S already present in schematic ~S" p (e/part::name self)))
 
-(defmethod add-instance ((self schematic) (instance e/part:part))
-  (push instance (instances self))
-  (e/part:set-parent instance self)
-  (setf (gethash instance (child-wire-map self))
-        (make-slot-for-each-output instance)))
+(defmethod add-part ((self schematic) (p e/part:part))
+  (setf (e/part:parent-schem p) self)
+  (push p (internal-parts self)))
 
-(defun ensure-no-wire (hmap pin part str)
-  (multiple-value-bind (val success)
-      (gethash pin hmap)
-    (unless success
-      (let ((fmtmsg (format nil "~&part ~S has no ~A pin called ~S~%" part str (e/pin:as-symbol pin))))
-        (error fmtmsg)))
-    (unless (null val)
-      (let ((fmtmsg (format nil "~&part ~S already has a wire on ~A pin ~S~%" part  str (e/pin:as-symbol pin))))
-        (error fmtmsg)))
-    t)) ;; all OK if we get here
+(defmethod lookup-source-in-parent ((parent schematic) (self e/part:part) (e e/event:event))
+  ;; find part-pin in parent's source list
+  (let ((pin-sym (e/event:pin e)))
+    (dolist (s (sources parent))
+      (when (e/source::equal-part-pin-p s self pin-sym)
+        (return-from lookup-source-in-parent s)))
+    (assert nil))) ;; shouldn't happen
 
-(defun ensure-no-child-wire (hmap pin part str)
-  (ensure-no-wire hmap pin part str))
+(defmethod lookup-source-in-self ((self schematic) (e e/event:event))
+  ;; find part-pin in self's source list
+  (let ((pin-sym (e/event:pin e)))
+    (dolist (s (sources self))
+      (when (e/source::equal-part-pin-p s self pin-sym)
+        (return-from lookup-source-in-self s)))
+    (assert nil))) ;; shouldn't happen
 
-(defun ensure-no-input-wire (hmap pin self str)
-  (ensure-no-wire hmap pin self str))
+(defmethod schematic-input-handler ((self schematic) (e e/event:event))
+  (let ((s (lookup-source-in-self self e)))
+    (e/source::deliver-event s e)))
 
-(defmethod add-child-wire ((self schematic) (child-instance e/part:part) (child-output-pin e/pin:pin) (wire e/wire:wire))
-  (multiple-value-bind (child-map success)
-      (gethash child-instance (child-wire-map self))
-    (cl:assert success)
-    (ensure-no-child-wire child-map child-output-pin child-instance "output")
-    (setf (gethash child-output-pin child-map)
-          wire)))
-
-(defmethod add-self-input-wire ((self schematic) (input-pin e/pin:pin) (wire e/wire:wire))
-  ;; add a wire FROM an schematic's own input pin to internal parts (or its own output pin(s))
-  (multiple-value-bind (self-input-wire-map success)
-      (gethash nil (self-input-wire-map self))
-    (cl:assert success) ;; broken if self doesn't have a valid map for its own self inputs
-    (ensure-no-input-wire self-input-wire-map input-pin self "input")
-    (setf (gethash input-pin (self-input-wire-map self))
-          wire)))
-
-(defmethod find-wire-for-input-pin ((self e/schematic:schematic) in-map (pin e/pin:pin))
-  (multiple-value-bind (wire success)
-      (gethash pin in-map)
-    (unless success
-      (let ((fmtstr (format nil "~&can't find wire in ~S for input pin ~S~%" self (e/pin:as-symbol pin))))
-        (error fmtstr)))
-    #+nil(assert success)
-    wire))
-
-(defmethod schematic-reactor ((self schematic) (msg e/message:message))
-  "react to a single input message to a schematic - push the message inside the schematic
-   to all parts attached to given input pin"
-  #+nil(format *error-output* "~&schematic ~S reactor gets message ~S on pin ~S~%" self (e/message:data msg) (e/pin:as-symbol (e/message:pin msg)))
-  (e/part:ensure-message-contains-valid-input-pin self msg)
-  (let ((in-map (self-input-wire-map self))
-        (schematic-input-pin (e/message:pin msg)))
-    (let ((wire (find-wire-for-input-pin self in-map (e/message:pin msg))))
-      (e/wire:deliver-message self wire msg))))
-
-(defmethod find-wire-for-pin-inside-schematic ((schem e/schematic:schematic) (child e/part:part) (child-out-pin e/pin:pin))
-  (multiple-value-bind (child-part-output-map success)
-      (gethash child (child-wire-map schem))
-    (assert success)
-    (multiple-value-bind (wire success)
-        (gethash child-out-pin child-part-output-map)
-      (assert success)
-      wire)))
-
-(defmethod push-input ((self e/schematic:schematic) (child (eql nil)) (msg e/message:message))
-  ;; SENDing to an output of the schematic
-  ;; return part that has new outputs, else return nil - in this case always (list self)
-  ;; push-input always returns a list (or NIL, which is a list)
-  (declare (ignore child))
-  (e/part:ensure-message-contains-valid-output-pin self msg)
-  (e/part:push-output self msg))
-
-(defmethod push-input ((self e/schematic:schematic) (child e/part:part) (msg e/message:message))
-  ;; "normal" sending to a child part
-  (declare (ignore self))
-  (e/part:push-input child msg))
+(defmethod busy-p ((self schematic))
+  (with-atomic-action
+   (or (e/part:busy-flag self) ;; never practically true in this implementation (based on CALL-RETURN instead of true interrupts)
+       (some #'has-input-queue-p (internal-parts self))
+       (some #'has-output-queue-p (internal-parts self))
+       (some #'busy-p (internal-parts self)))))
