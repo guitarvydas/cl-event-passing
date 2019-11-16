@@ -22,8 +22,7 @@
     (@start-dispatcher)))
 
 (defmethod produce ((self e/part:part))
-  (let ((message (@new-event :pin :out :data "hello")))
-    (@send self message)))
+  (@send self :out "hello"))
 
 (defmethod consume-and-print ((self e/part:part) (e e/event:event))
   (format *standard-output* "~&consumed message ~S on incoming pin ~S of ~S~%"

@@ -63,8 +63,9 @@
   (e/schematic::add-part schem part)
   (e/dispatch::memo-part part))
 
-(defmethod @send ((self e/part:part) (e e/event:event))
-  (push e (e/part:output-queue self)))
+(defmethod @send ((self e/part:part) out-pin out-data)
+  (let ((e (@new-event :pin out-pin :data out-data)))
+    (push e (e/part:output-queue self))))
 
 (defmethod @inject ((part e/part:part) pin-sym data)
   (let ((e (e/event::new-event :pin pin-sym :data data)))
