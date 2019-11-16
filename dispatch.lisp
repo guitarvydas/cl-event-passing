@@ -34,7 +34,8 @@
         (setf (e/part::output-queue part) nil)
         (dolist (out-event out-list)
           (if (cl-event-passing-user::is-top-level-p part)
-              (format *standard-output* "~&part ~S outputs ~S on pin ~S~%"
+              (print (e/event:data out-event) *standard-output*)
+              #+nil(format *standard-output* "~&part ~S outputs ~S on pin ~S~%"
                       (e/part::name part) (e/event:data out-event) (e/event:pin out-event))
             (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
               (e/source::deliver-event source out-event))))))))
