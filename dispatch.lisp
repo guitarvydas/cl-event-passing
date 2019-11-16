@@ -38,7 +38,8 @@
               #+nil(format *standard-output* "~&part ~S outputs ~S on pin ~S~%"
                       (e/part::name part) (e/event:data out-event) (e/event:pin out-event))
             (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
-              (e/source::deliver-event source out-event))))))))
+              (when source ;; nil if NC
+                (e/source::deliver-event source out-event)))))))))
 
 (defun run-first-times ()
   (dolist (part *all-parts*)

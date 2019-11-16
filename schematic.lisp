@@ -36,7 +36,7 @@
     (dolist (s (sources parent))
       (when (e/source::equal-part-pin-p s self pin-sym)
         (return-from lookup-source-in-parent s)))
-    (assert nil))) ;; shouldn't happen
+    nil))    ;; NC (no connection)
 
 (defmethod lookup-source-in-self ((self schematic) (e e/event:event))
   ;; find part-pin in self's source list

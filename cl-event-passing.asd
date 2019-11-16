@@ -21,4 +21,24 @@
 				     (:file "test0" :depends-on ("api"))
 				     (:file "test6" :depends-on ("api"))
 				     (:file "test6a" :depends-on ("api"))
-				     (:file "test7" :depends-on ("api"))))))
+				     (:file "test7" :depends-on ("api"))
+				     (:file "test8" :depends-on ("api"))
+				     (:file "test9" :depends-on ("api"))))))
+
+(defsystem "cl-event-passing/example"
+  :depends-on (cl-event-passing)
+  :around-compile (lambda (next)
+                    (proclaim '(optimize (debug 3)
+                                         (safety 3)
+                                         (speed 0)))
+                    (funcall next))
+  :components ((:module "parts"
+                        :pathname "~/cl-parts/"
+                        :components ((:file "open-input-file-by-name")
+                                     (:file "read-char")
+                                     (:file "cat")
+                                     (:file "close-file")))
+  
+               (:module "example"
+                        :pathname "./"
+                        :components ((:file "example1")))))
