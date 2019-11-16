@@ -9,8 +9,11 @@
   ((sources :accessor sources :initform nil) ;; a list of Sources (which contain a list of Wires which contain a list of Receivers)
    (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
 
-(defun new-schematic (&key (name ""))
-  (make-instance 'schematic :name name))
+(defun new-schematic (&key (name "") (input-pins nil) (output-pins nil))
+  (let ((self (make-instance 'schematic :name name)))
+    (setf (e/part:namespace-input-pins self) input-pins)
+    (setf (e/part:namespace-output-pins self) output-pins)
+    self))
 
 (defmethod ensure-source-not-already-present ((self schematic) (s e/source:source))
   (e/util:ensure-not-in-list (sources self) s #'equal

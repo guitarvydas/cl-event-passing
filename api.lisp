@@ -17,10 +17,11 @@
     (setf (e/part:input-handler schem) #'e/schematic::schematic-input-handler)
     schem))
 
-(defun @new-code (&key (name "") (input-pins nil) (output-pins nil))
+(defun @new-code (&key (name "") (input-pins nil) (output-pins nil) (input-handler nil))
   (let ((part (e/part::new-code :name name)))
     (setf (e/part:namespace-input-pins part) input-pins)
     (setf (e/part:namespace-output-pins part) output-pins)
+    (setf (e/part:input-handler part) input-handler)
     part))
 
 (defun @new-wire (&key (name ""))

@@ -13,8 +13,11 @@
 
 (defclass code (part) ())
 
-(defun new-code (&key (name ""))
-  (make-instance 'code :name name))
+(defun new-code (&key (name "") (input-pins nil) (output-pins nil))
+  (let ((self (make-instance 'code :name name)))
+    (setf (e/part:namespace-input-pins self) input-pins)
+    (setf (e/part:namespace-output-pins self) output-pins)
+    self))
 
 (defmethod name ((p part))
   (if (string= "" (debug-name p))
