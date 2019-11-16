@@ -39,10 +39,10 @@
     ;; wire that go OUT OF parts
     (@add-outbound-receiver-to-wire  wire-flow-through-2-to-child
                                      child-schem :child-schem-out)
-    (@add-outbound-receiver-to-wire  wire-child-to-main
+    #+nil(@add-outbound-receiver-to-wire  wire-child-to-main
                                      main-schem :main-schem-out)
 
-    ;; need 5 sources !!
+
     (@add-source-to-schematic main-schem main-schem :main-schem-in wire-main-to-child)
     (@add-source-to-schematic child-schem child-schem :child-schem-in wire-child-to-flow-through-1)
     (@add-source-to-schematic child-schem flow-through-1 :ft-out wire-flow-through-1-to-flow-through-2)
