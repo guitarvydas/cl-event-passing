@@ -1,17 +1,7 @@
 
 * Status
-** working on test0 and test6, usage - (ql:quickload :temp3), (aa:test6)
-   see test6.drawio
-   second test fails: CL-USER 22 > (aa::test6)
-   part "main schem" outputs /"test 6"/ on pin :MAIN-SCHEM-IN
-   NIL
-   the output pin should be :main-schem-out, not :main-schem-in
+** test0, test6, test6a, test7, test8, test9 working
 
-   The second test should send the message ("test 6") down from main-schem
-   into child-schem, then through flow-through-1 and flow-through-2 back up
-   to child-schem and then, finally out of main-schem (on pin :main-schem-out).
-
-** hope to overwrite cl-event-passing with this
 * Design Intention
 ** FYI - when an event arrives at a Code part (aka Leaf), it runs some code (usually a CASE on the pin name) to completion then returns.  When an event arrives at a Schematic, the "same" thing happens - the event is passed into the bowels of the schematic and is processed to completion by the graph of parts.
 ** schematic input handler
@@ -33,14 +23,9 @@
 
 * branches
 ** master
-** pt-pt-20191116b-pipeline
-*** for examples
-*** not accurate, since it contains a network example, which is not a simple pipeline
-** pt-20191117a-pin
-*** make pin class
-*** qualify all pins with pin class
-*** pins contain direction :input or :output (which will help making smart receivers)
-** pt-20191117b-receivers
+** done <-- pt-20191117b-source
+   to remove source-part and replace with pin-parent
+** pt-20191117?-receivers
 *** for making smart receivers - can examine whether a pin is input or output and makes appropriate type
 *** needs qualifier if symbol is both input and output
 

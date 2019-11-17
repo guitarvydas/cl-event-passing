@@ -33,14 +33,14 @@
 (defmethod lookup-source-in-parent ((parent schematic) (self e/part:part) (e e/event:event))
   ;; find part-pin in parent's source list
   (dolist (s (sources parent))
-    (when (e/source::equal-part-pin-p s self (e/event:event-pin e))
+    (when (e/source::source-pin-equal s (e/event:event-pin e))
       (return-from lookup-source-in-parent s)))
   nil) ;; NC (no connection)
 
 (defmethod lookup-source-in-self ((self schematic) (e e/event:event))
   ;; find part-pin in self's source list
     (dolist (s (sources self))
-      (when (e/source::equal-part-pin-p s self (e/event:event-pin e))
+      (when (e/source::source-pin-equal s (e/event:event-pin e))
         (return-from lookup-source-in-self s)))
     (assert nil)) ;; shouldn't happen
 

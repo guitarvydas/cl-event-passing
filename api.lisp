@@ -57,7 +57,7 @@
     (e/wire::add-receiver wire rcv)))
 
 (defmethod @add-source-to-schematic ((schem e/schematic:schematic) (pin e/pin:pin) (wire e/wire:wire))
-  (let ((s (e/source::new-source :part (e/pin:pin-parent pin) :pin pin :wire wire)))
+  (let ((s (e/source::new-source :pin pin :wire wire)))
     (e/schematic::ensure-source-not-already-present schem s)
     (e/schematic::add-source schem s)))
 

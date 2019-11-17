@@ -54,7 +54,6 @@
   (:use :cl)
   (:export
    #:source
-   #:source-part
    #:source-pin
    #:wire))
 
