@@ -23,12 +23,6 @@
 
 * branches
 ** master
-** done <-- pt-20191117b-source
-   to remove source-part and replace with pin-parent
-** pt-20191117?-receivers
-*** for making smart receivers - can examine whether a pin is input or output and makes appropriate type
-*** needs qualifier if symbol is both input and output
-
 
 * todo
-** source-part is redundant, since it can use pin-parent
+
