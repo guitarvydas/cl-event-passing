@@ -10,29 +10,29 @@
 ;; 2.  A Receiver (outbound) delivers the event to the output queue of its enclosing Schematic Part.
 
 (defclass receiver ()
-  ((part :accessor part :initarg :part)
-   (pin  :accessor pin  :initarg :pin)))
+  ((receiver-part :accessor receiver-part :initarg :receiver-part)
+   (receiver-pin  :accessor receiver-pin  :initarg :receiver-pin)))
 
 (defclass inbound-receiver (receiver) ())
 
 (defclass outbound-receiver (receiver) ())
 
 (defun new-inbound-receiver (&key (part nil) (pin nil))
-  (make-instance 'inbound-receiver :part part :pin pin))
+  (make-instance 'inbound-receiver :receiver-part part :receiver-pin pin))
 
 (defun new-outbound-receiver (&key (part nil) (pin nil))
-  (make-instance 'outbound-receiver :part part :pin pin))
+  (make-instance 'outbound-receiver :receiver-part part :receiver-pin pin))
 
 
 ;; two receivers are equal if they have the same type, same part and same pin symbol
 
 (defmethod receiver-equal ((r1 inbound-receiver) (r2 inbound-receiver))
-  (and (equal (part r1) (part r2))
-       (equal (pin r1) (pin r2))))
+  (and (equal (receiver-part r1) (receiver-part r2))
+       (equal (receiver-pin r1) (receiver-pin r2))))
 
 (defmethod receiver-equal ((r1 outbound-receiver) (r2 outbound-receiver))
-  (and (equal (part r1) (part r2))
-       (equal (pin r1) (pin r2))))
+  (and (equal (receiver-part r1) (receiver-part r2))
+       (equal (receiver-pin r1) (receiver-pin r2))))
 
 (defmethod receiver-equal ((r1 receiver) (r2 receiver))
   nil)
@@ -44,8 +44,8 @@
 ;; onto the input queue of the receiving part.
 
 (defmethod deliver-event ((r inbound-receiver) (e e/event:event))
-  (let ((new-e (e/event::new-event :pin (pin r) :data (e/event:data e))))
-    (push new-e (e/part:input-queue (part r)))))
+  (let ((new-e (e/event::new-event :event-pin (receiver-pin r) :data (e/event:data e))))
+    (push new-e (e/part:input-queue (receiver-part r)))))
 
 
 ;; At this point, the Event contains the originating output pin.  The pin must
@@ -53,5 +53,5 @@
 ;; onto the output queue of the enclosing schematic.
 
 (defmethod deliver-event ((r outbound-receiver) (e e/event:event))
-  (let ((new-e (e/event::new-event :pin (pin r) :data (e/event::data e))))
-    (push new-e (e/part:output-queue (part r)))))
+  (let ((new-e (e/event::new-event :event-pin (receiver-pin r) :data (e/event::data e))))
+    (push new-e (e/part:output-queue (receiver-part r)))))

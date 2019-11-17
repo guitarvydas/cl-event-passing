@@ -1,10 +1,10 @@
 (in-package :e/event)
 
 (defclass event ()
-  ((pin :accessor pin :initarg :pin)
+  ((event-pin :accessor event-pin :initarg :event-pin)
    (data :accessor data :initarg :data)))
 
-(defun new-event (&key (pin nil) (data nil))
-  (make-instance 'event :pin pin :data data))
+(defun new-event (&key (event-pin nil) (data nil))
+  (make-instance 'event :event-pin event-pin :data data))
 
           

@@ -10,9 +10,9 @@
    (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
 
 (defun new-schematic (&key (name "") (input-pins nil) (output-pins nil))
-  (let ((self (make-instance 'schematic :name name)))
-    (setf (e/part:namespace-input-pins self) input-pins)
-    (setf (e/part:namespace-output-pins self) output-pins)
+  (let ((self (make-instance 'schematic :name name :input-handler #'schematic-input-handler)))
+    (setf (e/part:namespace-input-pins self) (e/part::make-in-pins self input-pins))
+    (setf (e/part:namespace-output-pins self) (e/part::make-out-pins self output-pins))
     self))
 
 (defmethod ensure-source-not-already-present ((self schematic) (s e/source:source))
@@ -32,19 +32,17 @@
 
 (defmethod lookup-source-in-parent ((parent schematic) (self e/part:part) (e e/event:event))
   ;; find part-pin in parent's source list
-  (let ((pin-sym (e/event:pin e)))
-    (dolist (s (sources parent))
-      (when (e/source::equal-part-pin-p s self pin-sym)
-        (return-from lookup-source-in-parent s)))
-    nil))    ;; NC (no connection)
+  (dolist (s (sources parent))
+    (when (e/source::equal-part-pin-p s self (e/event:event-pin e))
+      (return-from lookup-source-in-parent s)))
+  nil) ;; NC (no connection)
 
 (defmethod lookup-source-in-self ((self schematic) (e e/event:event))
   ;; find part-pin in self's source list
-  (let ((pin-sym (e/event:pin e)))
     (dolist (s (sources self))
-      (when (e/source::equal-part-pin-p s self pin-sym)
+      (when (e/source::equal-part-pin-p s self (e/event:event-pin e))
         (return-from lookup-source-in-self s)))
-    (assert nil))) ;; shouldn't happen
+    (assert nil)) ;; shouldn't happen
 
 (defmethod schematic-input-handler ((self schematic) (e e/event:event))
   (let ((s (lookup-source-in-self self e)))

@@ -16,16 +16,16 @@
     (@set-first-time-handler producer #'produce)
     (@set-input-handler consumer #'consume-and-print)
 
-    (@add-inbound-receiver-to-wire wire consumer :in)
-    (@add-source-to-schematic schem producer :out wire)
+    (@add-receiver-to-wire wire (e/part::get-input-pin consumer :in))
+    (@add-source-to-schematic schem (e/part::get-output-pin producer :out) wire)
 
     (@start-dispatcher)))
 
 (defmethod produce ((self e/part:part))
-  (@send self :out "hello"))
+  (@send self (e/part::get-output-pin self :out) "hello"))
 
 (defmethod consume-and-print ((self e/part:part) (e e/event:event))
   (format *standard-output* "~&consumed message ~S on incoming pin ~S of ~S~%"
-          (e/event::data e) (e/event::pin e) (e/part:name self)))
+          (e/event::data e) (e/event::event-pin e) (e/part:name self)))
 
   

@@ -15,8 +15,7 @@
    #:@top-level-schematic
    #:@set-first-time-handler
    #:@set-input-handler
-   #:@add-inbound-receiver-to-wire
-   #:@add-outbound-receiver-to-wire
+   #:@add-receiver-to-wire
    #:@add-source-to-schematic
    #:@add-part-to-schematic
    #:@send
@@ -47,7 +46,7 @@
   (:export
    #:event
    #:new-event
-   #:pin
+   #:event-pin
    #:data))
 
 (defpackage cl-event-passing-source
@@ -55,16 +54,16 @@
   (:use :cl)
   (:export
    #:source
-   #:part
-   #:pin
+   #:source-part
+   #:source-pin
    #:wire))
 
 (defpackage cl-event-passing-receiver
   (:nicknames :e/receiver)
   (:use :cl)
   (:export
-   #:part
-   #:pin
+   #:receiver-part
+   #:receiver-pin
    #:receiver
    #:inbound-receiver
    #:outbound-receiver))
@@ -102,3 +101,12 @@
   (:export
    #:wire
    #:receivers))
+
+(defpackage cl-event-passing-pin
+  (:nicknames :e/pin)
+  (:use :cl)
+  (:export
+   #:pin
+   #:pin-name
+   #:direction
+   #:pin-parent))

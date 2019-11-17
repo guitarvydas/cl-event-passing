@@ -11,24 +11,21 @@
 ;; API...
 
 (defun @new-schematic (&key (name "") (input-pins nil) (output-pins nil))
-  (let ((schem (e/schematic::new-schematic :name name)))
-    (setf (e/part:namespace-input-pins schem) input-pins)
-    (setf (e/part:namespace-output-pins schem) output-pins)
-    (setf (e/part:input-handler schem) #'e/schematic::schematic-input-handler)
+  (let ((schem (e/schematic::new-schematic :name name :input-pins input-pins :output-pins output-pins)))
     schem))
 
 (defun @new-code (&key (name "") (input-pins nil) (output-pins nil) (input-handler nil))
   (let ((part (e/part::new-code :name name)))
-    (setf (e/part:namespace-input-pins part) input-pins)
-    (setf (e/part:namespace-output-pins part) output-pins)
+    (setf (e/part:namespace-input-pins part) (e/part::make-in-pins part input-pins))
+    (setf (e/part:namespace-output-pins part) (e/part::make-out-pins part output-pins))
     (setf (e/part:input-handler part) input-handler)
     part))
 
 (defun @new-wire (&key (name ""))
   (e/wire::new-wire :name name))
 
-(defun @new-event (&key (pin nil) (data nil))
-  (e/event::new-event :pin pin :data data))
+(defun @new-event (&key (event-pin nil) (data nil))
+  (e/event::new-event :event-pin event-pin :data data))
 
 (defun @initialize ()
   (e/dispatch::reset))
@@ -43,18 +40,24 @@
 (defmethod @set-input-handler ((part e/part:part) fn)
   (setf (e/part::input-handler part) fn))
 
-(defmethod @add-inbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin-sym)
-  (let ((rcv (e/receiver::new-inbound-receiver :part part :pin pin-sym)))
+(defmethod @add-receiver-to-wire ((wire e/wire:wire) (pin e/pin:pin))
+  (if (e/pin::input-p pin)
+      (-@add-inbound-receiver-to-wire wire (e/pin::pin-parent pin) pin)
+      (-@add-outbound-receiver-to-wire wire (e/pin::pin-parent pin) pin)))
+
+;; -@ means deprecated - we've created a smarter (non-atomic) api call (using more atomic -@ calls)
+(defmethod -@add-inbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin)
+  (let ((rcv (e/receiver::new-inbound-receiver :part part :pin pin)))
     (e/wire::ensure-receiver-not-already-on-wire wire rcv)
     (e/wire::add-receiver wire rcv)))
 
-(defmethod @add-outbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin-sym)
-  (let ((rcv (e/receiver::new-outbound-receiver :part part :pin pin-sym)))
+(defmethod -@add-outbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin)
+  (let ((rcv (e/receiver::new-outbound-receiver :part part :pin pin)))
     (e/wire::ensure-receiver-not-already-on-wire wire rcv)
     (e/wire::add-receiver wire rcv)))
 
-(defmethod @add-source-to-schematic ((schem e/schematic:schematic) (part e/part:part) pin-sym (wire e/wire:wire))
-  (let ((s (e/source::new-source :part part :pin pin-sym :wire wire)))
+(defmethod @add-source-to-schematic ((schem e/schematic:schematic) (pin e/pin:pin) (wire e/wire:wire))
+  (let ((s (e/source::new-source :part (e/pin:pin-parent pin) :pin pin :wire wire)))
     (e/schematic::ensure-source-not-already-present schem s)
     (e/schematic::add-source schem s)))
 
@@ -64,11 +67,14 @@
   (e/dispatch::memo-part part))
 
 (defmethod @send ((self e/part:part) out-pin out-data)
-  (let ((e (@new-event :pin out-pin :data out-data)))
+  (let ((e (@new-event :event-pin out-pin :data out-data)))
     (push e (e/part:output-queue self))))
 
 (defmethod @inject ((part e/part:part) pin-sym data)
-  (let ((e (e/event::new-event :pin pin-sym :data data)))
+  (unless (eq part *top-level-part*)
+    (error (format nil "Should not call @inject on anything but the top level part ~S, but @inject(~S) is being called."
+                   *top-level-part* part)))
+  (let ((e (e/event::new-event :event-pin pin-sym :data data)))
     (run-first-times)
     (push e (e/part:input-queue part))
     (e/dispatch::dispatch-single-input)

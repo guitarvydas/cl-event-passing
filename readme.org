@@ -20,3 +20,30 @@
    set self.busy false (the dispatcher will see self as busy recursively, if any of self's children are busy, this recurs until we hit code parts.  [nb. need to revamp busy to tak output and input queues into account in parts of lower-level schematics)
 
 
+* Incoming vs Outgoing
+** An Outgoing Receiver is one who's target is an output pin
+** Everything else is Incoming (there is only one other direction :in)
+
+* Todo examples
+** character pipeline
+** whole-file pipeline
+** full-blown network (with feedback)
+** do we need a line-based pipeline (i.e. unix-like)?
+
+
+* branches
+** master
+** pt-pt-20191116b-pipeline
+*** for examples
+*** not accurate, since it contains a network example, which is not a simple pipeline
+** pt-20191117a-pin
+*** make pin class
+*** qualify all pins with pin class
+*** pins contain direction :input or :output (which will help making smart receivers)
+** pt-20191117b-receivers
+*** for making smart receivers - can examine whether a pin is input or output and makes appropriate type
+*** needs qualifier if symbol is both input and output
+
+
+* todo
+** source-part is redundant, since it can use pin-parent
