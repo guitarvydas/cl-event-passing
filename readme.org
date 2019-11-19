@@ -23,7 +23,8 @@
 
 * branches
 ** master
-** pt-20191117c-macro - attempt to make a set of macros that obviates most of the api
+<<<<<<< HEAD
+** pt-20191117c-macro - wip for macro
 
 * todo
 
