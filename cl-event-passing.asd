@@ -24,7 +24,9 @@
 				     (:file "test6a" :depends-on ("api"))
 				     (:file "test7" :depends-on ("api"))
 				     (:file "test8" :depends-on ("api"))
-				     (:file "test9" :depends-on ("api"))))))
+				     (:file "test9" :depends-on ("api"))
+
+                                     (:file "test-all" :depends-on ("api" "test0" "test6" "test6a" "test7" "test8" "test9"))))))
 
 (defsystem "cl-event-passing/example"
   :depends-on (cl-event-passing)

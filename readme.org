@@ -1,3 +1,20 @@
+* Usage
+** (ql:quickload :cl-event-passing) (cl-user::test-all)
+   expected result:
+   test0
+   consumed message "hello" on incoming pin :IN of "consumer"
+   test6
+   
+   "test 6" 
+   test6a
+   
+   "test 6" 
+   test7
+   
+   "test 7" 
+   test8
+   test9
+   NIL
 
 * Status
 ** test0, test6, test6a, test7, test8, test9 working
