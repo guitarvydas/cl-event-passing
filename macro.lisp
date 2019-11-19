@@ -16,7 +16,8 @@
             (destructuring-bind (code-name inputs outputs input-handler)
                 (rest def)
               `(let ((,code-name (cl-event-passing-user:@new-code :name ,code-name :input-handler ,input-handler
-                                                                  :input-pins ',inputs :output-pins ',outputs))))))           
+                                                                  :input-pins ',inputs :output-pins ',outputs))))))
+
            (schem
             (destructuring-bind (schem-name inputs outputs parts-list nets)
                 (rest def)
