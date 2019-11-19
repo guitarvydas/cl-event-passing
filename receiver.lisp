@@ -10,34 +10,32 @@
 ;; 2.  A Receiver (outbound) delivers the event to the output queue of its enclosing Schematic Part.
 
 (defclass receiver ()
-  ((receiver-part :accessor receiver-part :initarg :receiver-part)
-   (receiver-pin  :accessor receiver-pin  :initarg :receiver-pin)))
+  ((receiver-pin  :accessor receiver-pin  :initarg :receiver-pin)))
 
 (defclass inbound-receiver (receiver) ())
 
 (defclass outbound-receiver (receiver) ())
 
-(defun new-inbound-receiver (&key (part nil) (pin nil))
-  (make-instance 'inbound-receiver :receiver-part part :receiver-pin pin))
+(defun new-inbound-receiver (&key (pin nil))
+  (make-instance 'inbound-receiver :receiver-pin pin))
 
-(defun new-outbound-receiver (&key (part nil) (pin nil))
-  (make-instance 'outbound-receiver :receiver-part part :receiver-pin pin))
+(defun new-outbound-receiver (&key (pin nil))
+  (make-instance 'outbound-receiver :receiver-pin pin))
 
 
 ;; two receivers are equal if they have the same type, same part and same pin symbol
 
 (defmethod receiver-equal ((r1 inbound-receiver) (r2 inbound-receiver))
-  (and (equal (receiver-part r1) (receiver-part r2))
-       (equal (receiver-pin r1) (receiver-pin r2))))
+  (e/pin::pin-equal (receiver-pin r1) (receiver-pin r2)))
 
 (defmethod receiver-equal ((r1 outbound-receiver) (r2 outbound-receiver))
-  (and (equal (receiver-part r1) (receiver-part r2))
-       (equal (receiver-pin r1) (receiver-pin r2))))
+  (e/pin::pin-equal (receiver-pin r1) (receiver-pin r2)))
 
 (defmethod receiver-equal ((r1 receiver) (r2 receiver))
   nil)
 
-
+(defmethod receiver-part ((r receiver))
+  (e/pin::pin-parent (receiver-pin r)))
 
 ;; At this point, the Event contains the originating output pin.  The pin must
 ;; be rewritten to match that of the receiving pin, and the newly-created event is pushed

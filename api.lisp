@@ -47,12 +47,12 @@
 
 ;; -@ means deprecated - we've created a smarter (non-atomic) api call (using more atomic -@ calls)
 (defmethod -@add-inbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin)
-  (let ((rcv (e/receiver::new-inbound-receiver :part part :pin pin)))
+  (let ((rcv (e/receiver::new-inbound-receiver ::pin pin)))
     (e/wire::ensure-receiver-not-already-on-wire wire rcv)
     (e/wire::add-receiver wire rcv)))
 
 (defmethod -@add-outbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin)
-  (let ((rcv (e/receiver::new-outbound-receiver :part part :pin pin)))
+  (let ((rcv (e/receiver::new-outbound-receiver :pin pin)))
     (e/wire::ensure-receiver-not-already-on-wire wire rcv)
     (e/wire::add-receiver wire rcv)))
 
