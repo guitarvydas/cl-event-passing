@@ -26,6 +26,6 @@
 
 (defmethod consume-and-print ((self e/part:part) (e e/event:event))
   (format *standard-output* "~&consumed message ~S on incoming pin ~S of ~S~%"
-          (e/event::data e) (e/event::event-pin e) (e/part:name self)))
+          (e/event::data e) (e/pin:pin-name (e/event::event-pin e)) (e/part:name self)))
 
   
