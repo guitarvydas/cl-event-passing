@@ -15,17 +15,13 @@
            (code
             (destructuring-bind (code-name inputs outputs input-handler)
                 (rest def)
-              `(let ((,code-name (@new-code :name ,code-name)))
-                 (setf (input-handler ,code-name) ,input-handler)
-                 ,@(compile-inputs code-name inputs)
-                 ,@(compile-outputs code-name outputs))))
-           
+              `(let ((,code-name (cl-event-passing-user:@new-code :name ,code-name :input-handler ,input-handler
+                                                                  :input-pins ',inputs :output-pins ',outputs))))))           
            (schem
             (destructuring-bind (schem-name inputs outputs parts-list nets)
                 (rest def)
-              `(let ((,schem-name (@new-schem :name ,schem-name)))
-                 ,@(compile-inputs schem-name inputs)
-                 ,@(compile-outputs schem-name outputs)
+              `(let ((,schem-name (cl-event-passing-user:@new-schematic :name ,schem-name
+                                              :input-pins ',inputs :output-pins ',outputs)))
                  ,@(compile-parts schem-name parts-list)
                  ,@(compile-nets schem-name nets))))))
         (compiled-tail (compile-network tail)))
@@ -45,7 +41,7 @@
 
 (defun compile-parts (schem-name part-list)
   (mapcar #'(lambda (id)
-              `(add-part-to-schem ,schem-name ,id))
+              `(cl-event-passing-user:add-part-to-schematic ,schem-name ,id))
           part-list))
 
 (defun flatten (lis)
