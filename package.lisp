@@ -20,7 +20,8 @@
    #:@add-part-to-schematic
    #:@send
    #:@inject
-   #:@start-dispatcher))
+   #:@start-dispatcher
+   #:@defnetwork))
 
 (defpackage cl-event-passing-part
   (:nicknames :e/part)

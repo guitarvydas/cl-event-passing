@@ -70,11 +70,11 @@
   (let ((e (@new-event :event-pin out-pin :data out-data)))
     (push e (e/part:output-queue self))))
 
-(defmethod @inject ((part e/part:part) pin-sym data)
+(defmethod @inject ((part e/part:part) pin data)
   (unless (eq part *top-level-part*)
     (error (format nil "Should not call @inject on anything but the top level part ~S, but @inject(~S) is being called."
                    *top-level-part* part)))
-  (let ((e (e/event::new-event :event-pin pin-sym :data data)))
+  (let ((e (e/event::new-event :event-pin pin :data data)))
     (run-first-times)
     (push e (e/part:input-queue part))
     (e/dispatch::dispatch-single-input)

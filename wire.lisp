@@ -20,3 +20,6 @@
 
 (defmethod add-receiver ((wire wire) (rcv e/receiver:receiver))
   (push rcv (receivers wire)))
+
+(defmethod set-receiver-list ((wire wire) lis)
+  (setf (receivers wire) lis))

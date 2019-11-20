@@ -40,6 +40,7 @@
 
 * branches
 ** master
+<<<<<<< HEAD
 ** pt-20191117c-macro - wip for macro
 
 * todo
