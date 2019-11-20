@@ -41,7 +41,7 @@
 * branches
 ** master
 <<<<<<< HEAD
-** pt-20191117c-macro - wip for macro
+** pt-20191120-keywords - change "code" and "schem" to keywords
 
 * todo
 

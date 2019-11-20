@@ -13,17 +13,16 @@
     (compile-one-network name (first defs) (rest defs))))
 
 (defun compile-one-network (name def tail)
-  (let ((op (symbol-name (car def))))
     (let ((one
-           (cond
+           (ecase (car def)
            
-             ((string= "CODE" op)
+             (:code
               (destructuring-bind (code-name inputs outputs input-handler)
                   (rest def)
                 `(let ((,code-name (cl-event-passing-user:@new-code :name ',code-name :input-handler ,input-handler
                                                                     :input-pins ',inputs :output-pins ',outputs))))))
-
-             ((string= "SCHEM" op)
+             
+             (:schem
               (destructuring-bind (schem-name inputs outputs parts-list nets)
                   (rest def)
                 `(let ((,schem-name (cl-event-passing-user:@new-schematic :name ',schem-name
@@ -31,11 +30,11 @@
                    ,@(compile-parts schem-name parts-list)
                    ,@(compile-nets schem-name nets))))))
           
-          (compiled-tail (compile-network name tail)))
-      
+           (compiled-tail (compile-network name tail)))
+          
       (if compiled-tail
           (append one (list compiled-tail))
-        one))))
+        one)))
 
 (defun compile-inputs (part-name input-list)
   (mapcar #'(lambda (id)
