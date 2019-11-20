@@ -22,6 +22,13 @@
 (defmethod add-source ((self schematic) (s e/source:source))
   (push s (sources self)))
 
+(defmethod add-source-with-ensure ((self schematic) (s e/source:source))
+    (ensure-source-not-already-present self s)
+    (add-source self s))
+
+(defmethod set-source-list ((self schematic) lis)
+  (setf (sources self) lis))
+
 (defmethod ensure-part-not-already-present ((self schematic) (p e/part:part))
   (e/util:ensure-not-in-list (internal-parts self) p #'equal
                              "part ~S already present in schematic ~S" p (e/part::name self)))

@@ -12,3 +12,6 @@
 
 (defmethod deliver-event ((self source) (e e/event:event))
   (e/wire::deliver-event (wire self) e))
+
+(defmethod set-wire-of-source ((self source) (wire e/wire:wire))
+  (setf (wire self) wire))

@@ -39,7 +39,8 @@
                       (e/part::name part) (e/event:data out-event) (e/event:pin out-event))
             (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
               (when source ;; nil if NC
-                (e/source::deliver-event source out-event)))))))))
+                (e/source::deliver-event source out-event)
+                (dispatch-output-queues))))))))) ;; if any part had an output, start from the beginning (tail-recursive call here?)
 
 (defun run-first-times ()
   (dolist (part *all-parts*)
