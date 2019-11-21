@@ -24,17 +24,8 @@
 				     (:file "api"  :depends-on ("package" "util" "pin" "part"
                                                                 "schematic" "event" "source" "receiver" "wire" "dispatch"))
 				     (:file "logging"  :depends-on ("api" "macro" "macro-support" "package" "util" "pin" "part"
-                                                                "schematic" "event" "source" "receiver" "wire" "dispatch"))
-				     (:file "test0" :depends-on ("api"))
-				     (:file "test6" :depends-on ("api"))
-				     (:file "test6a" :depends-on ("api"))
-				     (:file "test7" :depends-on ("api"))
-				     (:file "test8" :depends-on ("api"))
-				     (:file "test9" :depends-on ("api"))
+                                                                "schematic" "event" "source" "receiver" "wire" "dispatch"))))))
 
-				     (:file "test16" :depends-on ("api" "macro"))
-
-                                     (:file "test-all" :depends-on ("api" "test0" "test6" "test6a" "test7" "test8" "test9" "test16"))))))
 
 (defsystem "cl-event-passing/parts"
   :depends-on (cl-event-passing)
@@ -57,6 +48,15 @@
                                          (safety 3)
                                          (speed 0)))
                     (funcall next))
-  :components ((:module "example"
+  :components ((:module "examples"
                         :pathname "./"
-                        :components ((:file "test-feedback")))))
+                        :components ((:file "test0")
+				     (:file "test6")
+				     (:file "test6a")
+				     (:file "test7")
+				     (:file "test8")
+				     (:file "test9")
+				     (:file "test16")
+				     (:file "test-feedback")
+                                     (:file "test-all" :depends-on ("test0" "test6" "test6a" "test7" "test8" "test9"
+                                                                    "test16" "test-feedback"))))))
