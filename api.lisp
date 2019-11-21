@@ -10,15 +10,17 @@
 
 ;; API...
 
-(defun @new-schematic (&key (name "") (input-pins nil) (output-pins nil))
-  (let ((schem (e/schematic::new-schematic :name name :input-pins input-pins :output-pins output-pins)))
+(defun @new-schematic (&key (name "") (input-pins nil) (output-pins nil) (first-time-handler nil))
+  (let ((schem (e/schematic::new-schematic :name name :input-pins input-pins :output-pins output-pins
+                                           :first-time-handler first-time-handler)))
     schem))
 
-(defun @new-code (&key (name "") (input-pins nil) (output-pins nil) (input-handler nil))
+(defun @new-code (&key (name "") (input-pins nil) (output-pins nil) (input-handler nil) (first-time-handler nil))
   (let ((part (e/part::new-code :name name)))
     (setf (e/part:namespace-input-pins part) (e/part::make-in-pins part input-pins))
     (setf (e/part:namespace-output-pins part) (e/part::make-out-pins part output-pins))
     (setf (e/part:input-handler part) input-handler)
+    (setf (e/part:first-time-handler part) first-time-handler)
     part))
 
 (defun @new-wire (&key (name ""))
@@ -28,6 +30,7 @@
   (e/event::new-event :event-pin event-pin :data data))
 
 (defun @initialize ()
+  (e/util::reset)
   (e/dispatch::reset))
 
 (defmethod @top-level-schematic ((schem e/schematic:schematic))
@@ -66,8 +69,13 @@
   (e/schematic::add-part schem part)
   (e/dispatch::memo-part part))
 
-(defmethod @send ((self e/part:part) out-pin out-data)
+(defmethod @send ((self e/part:part) (out SYMBOL) out-data)
+  (let ((out-pin (e/part::get-output-pin self out)))
+    (@send self out-pin out-data)))
+
+(defmethod @send ((self e/part:part) (out-pin e/pin:pin) out-data)
   (let ((e (@new-event :event-pin out-pin :data out-data)))
+    (e/util:logging e)
     (push e (e/part:output-queue self))))
 
 (defmethod @inject ((part e/part:part) pin data)
@@ -76,6 +84,7 @@
                    *top-level-part* part)))
   (let ((e (e/event::new-event :event-pin pin :data data)))
     (run-first-times)
+    (e/util:logging e)
     (push e (e/part:input-queue part))
     (e/dispatch::dispatch-single-input)
     (run-dispatcher)))
@@ -92,4 +101,7 @@
    (e/dispatch::dispatch-output-queues)
    (@:exit-when (e/dispatch::all-parts-have-empty-input-queues-p))
    (e/dispatch::dispatch-single-input)))
+
+(defun @history ()
+  (e/util::get-logging))
 

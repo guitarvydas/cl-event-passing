@@ -9,7 +9,10 @@
 
 (defmethod cat ((self e/part:part) (e e/event:event))
   (let ((lisp-obj (e/event:data e))
-        (action (e/event:pin e)))
+        (action (e/event::sym e)))
+
+    (e/util::logging (format nil "cat action=~S data=~S" action lisp-obj))
+
     (case action
-      (:in (cl-event-passing-user:@send self :out lisp-obj))
-      (otherwise (cl-event-passing-user:@send self :fatal t)))))
+      (:in (@send self :out (format nil "~S" lisp-obj)))
+      (otherwise (@send self :fatal t)))))

@@ -10,36 +10,42 @@
 ;; (:fatal object)       some fatal error, "object" specifies error details (NIY (not implemented yet))
 
 
-(in-package :cl-event-passing)
+(in-package :cl-event-passing-user)
 
 (defparameter *stream* nil)
+(defparameter *state* 'idle)
+
+(defmethod file-stream-reset ((self e/part:part))
+  (declare (ignore part))
+  (setf *state* 'idle))
 
 (defmethod file-stream ((self e/part:part) (e e/event:event))
   (let ((data (e/event:data e))
-        (action (e/event:pin e))
-        (state 'idle))
+        (action (e/event::sym e)))
 
-    (case state
+    (e/util::logging (format nil "file-stream action=~S data=~S" action data))
+
+    (case *state*
 
       (idle
            (case action
              (:file-name (let ((in (open data :direction :input)))
                            (setf *stream* in)
-                           (cl-event-passing-user:@send self :stream in)
-                           (setf state 'open))
-             (otherwise  (cl-event-passing-user:@send self :fatal t)))))
+                           (@send self :stream in)
+                           (setf *state* 'open)))
+             (otherwise  (@send self :fatal t))))
 
       (open
            (case action
              (:read (let ((object (read *stream* nil 'EOF)))
                       (if (eq object 'EOF)
-                          (cl-event-passing-user:@send self :done t) ;; nb - don't close, send message to self
-                        (cl-event-passing-user:@send self :object object))))
+                          (@send self :done t) ;; nb - don't close, send message to self
+                        (@send self :object object))))
 
              (:close (setf *stream* nil)
-              (setf state 'idle))
+              (setf *state* 'idle))
 
-             (otherwise (cl-event-passing-user:@send self :fatal t))))
+             (otherwise (@send self :fatal t))))
       
-       (otherwise (cl-event-passing-user:@send self :fatal t)))))
+       (otherwise (@send self :fatal t)))))
 

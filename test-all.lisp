@@ -14,4 +14,6 @@
   (format *standard-output* "~&test9~%")
   (cl-event-passing-user::test9)
   (format *standard-output* "~&test 16~%")
-  (cl-event-passing-user::test16))
+  (cl-event-passing-user::test16)
+  (format *standard-output* "~&feedback test~%")
+  (cl-event-passing-user::test-feedback))

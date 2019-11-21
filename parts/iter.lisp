@@ -9,29 +9,39 @@
 ;; (:fatal details)      fatal error (NIY)
 ;;
 
-(in-package :cl-event-passing)
+(in-package :cl-event-passing-user)
 
 (defparameter *stream* nil)
+(defparameter *iter-state* 'idle)
 
-(defmethod file-stream ((self e/part:part) (e e/event:event))
+(defmethod iter-reset ((self e/part:part))
+  (declare (ignore part))
+  (setf *iter-state* 'idle))
+
+(defmethod iter ((self e/part:part) (e e/event:event))
   (let ((data (e/event:data e))
-        (action (e/event:pin e))
-        (setf state 'idle))
+        (action (e/event::sym e)))
 
-    (case state
+    (e/util::logging (format nil "iter action=~S data=~S" action data))
+
+    (case *iter-state*
 
       (idle
            (case action
-             (:begin (setf state 'running)
-             (otherwise  (cl-event-passing-user:@send self :fatal t)))))
+
+             (:begin
+              (@send self :next t)
+              (setf *iter-state* 'running))
+
+             (otherwise  (@send self :fatal t))))
 
       (running
            (case action
-             (:next (cl-event-passing-user:@send self :next t))
+             (:next (@send self :next t))
 
-             (:end (setf state 'idle))
+             (:finish (setf state 'idle))
              
-             (otherwise (cl-event-passing-user:@send self :fatal t))))
+             (otherwise (@send self :fatal t))))
       
-       (otherwise (cl-event-passing-user:@send self :fatal t)))))
+       (otherwise (@send self :fatal t)))))
 

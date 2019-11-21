@@ -10,6 +10,7 @@
   (make-instance 'wire :name name))
 
 (defmethod deliver-event ((wire wire) (e e/event:event))
+  (e/util:logging wire)
   (mapc #'(lambda (recv)
             (e/receiver::deliver-event recv e))
         (receivers wire)))
@@ -23,3 +24,12 @@
 
 (defmethod set-receiver-list ((wire wire) lis)
   (setf (receivers wire) lis))
+
+(defmethod name ((w wire))
+  (if (stringp (debug-name w))
+      (if (not (string= "" (debug-name w)))
+          (debug-name w)
+        w)
+    (if (numberp (debug-name w))
+        (debug-name w)
+      w)))

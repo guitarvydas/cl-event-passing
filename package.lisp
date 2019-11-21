@@ -21,6 +21,7 @@
    #:@send
    #:@inject
    #:@start-dispatcher
+   #:@history
    #:@defnetwork))
 
 (defpackage cl-event-passing-part
@@ -93,6 +94,7 @@
   (:nicknames :e/util)
   (:use :cl)
   (:export
+   #:logging
    #:ensure-not-in-list))
 
 (defpackage cl-event-passing-user-wire

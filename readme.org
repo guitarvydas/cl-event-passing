@@ -1,10 +1,10 @@
 * Usage
-** (ql:quickload :cl-event-passing) (cl-user::test-all)
+** (ql:quickload :cl-event-passing/examples) (cl-user::test-all)
    expected result:
    test0
    consumed message "hello" on incoming pin :IN of "consumer"
    test6
-   
+
    "test 6" 
    test6a
    
@@ -14,11 +14,19 @@
    "test 7" 
    test8
    test9
+   test 16
+   
+   "test 16" 
+   feedback test
+   
+   "(IN-PACKAGE :CL-EVENT-PASSING-USER)" 
+   "(DEFUN TEST-FEEDBACK NIL (LET ((NET (CL-EVENT-PASSING-USER:@DEFNETWORK CL-EVENT-PASSING-USER::MAIN (:CODE FILE-STREAM (:FILE-NAME :READ :CLOSE) (:STREAM :OBJECT :DONE :FATAL) (FUNCTION FILE-STREAM) (FUNCTION FILE-STREAM-RESET)) (:CODE ITER (:BEGIN :NEXT :FINISH) (:NEXT :FATAL) (FUNCTION ITER) (FUNCTION ITER-RESET)) (:CODE CAT (:IN) (:OUT :FATAL) (FUNCTION CAT)) (:CODE FATAL (:IN) NIL (FUNCTION FATAL)) (:SCHEM CL-EVENT-PASSING-USER::MAIN (:IN) (:OUT) (FILE-STREAM ITER CAT FATAL) ((((:SELF :IN)) ((FILE-STREAM :FILE-NAME))) (((ITER :NEXT)) ((FILE-STREAM :READ))) (((FILE-STREAM :STREAM)) ((ITER :BEGIN))) (((FILE-STREAM :OBJECT)) ((ITER :NEXT) (CAT :IN))) (((FILE-STREAM :DONE)) ((ITER :FINISH) (FILE-STREAM :CLOSE))) (((CAT :OUT)) ((:SELF :OUT))) (((FILE-STREAM :FATAL) (ITER :FATAL) (CAT :FATAL)) ((FATAL :IN)))))))) (LET ((AP CL-EVENT-PASSING-DISPATCH::*ALL-PARTS*)) (ASSERT (= 5 (LENGTH AP))) (@INJECT NET (CL-EVENT-PASSING-PART::GET-INPUT-PIN NET :IN) (ASDF/SYSTEM:SYSTEM-RELATIVE-PATHNAME :CL-EVENT-PASSING \"test-feedback.lisp\")) (@HISTORY))))" 
    NIL
 
 * Status
 ** test0, test6, test6a, test7, test8, test9 working
 
+** complicated example test-feedback working - contrived example shows how to create a feedback loop
 * Design Intention
 ** FYI - when an event arrives at a Code part (aka Leaf), it runs some code (usually a CASE on the pin name) to completion then returns.  When an event arrives at a Schematic, the "same" thing happens - the event is passed into the bowels of the schematic and is processed to completion by the graph of parts.
 ** schematic input handler
@@ -40,8 +48,8 @@
 
 * branches
 ** master
-<<<<<<< HEAD
-** pt-20191120-keywords - change "code" and "schem" to keywords
+** pt-20191120b-feedback
 
 * todo
+** rewrite api.lisp/@new-code to use keyword args
 

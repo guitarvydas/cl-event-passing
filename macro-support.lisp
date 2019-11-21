@@ -13,7 +13,7 @@
       obrcv)))
 
 (defmethod make-wire (receiver-list)
-  (let ((w (cl-event-passing-user:@new-wire)))
+  (let ((w (cl-event-passing-user:@new-wire :name (e/util::get-wire-number))))
     (e/wire::set-receiver-list w receiver-list)
     w))
     

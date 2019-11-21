@@ -17,16 +17,18 @@
            (ecase (car def)
            
              (:code
-              (destructuring-bind (code-name inputs outputs input-handler)
+              (destructuring-bind (code-name inputs outputs input-handler &optional (first-time-handler nil))
                   (rest def)
                 `(let ((,code-name (cl-event-passing-user:@new-code :name ',code-name :input-handler ,input-handler
-                                                                    :input-pins ',inputs :output-pins ',outputs))))))
+                                                                    :input-pins ',inputs :output-pins ',outputs
+                                                                    :first-time-handler ,first-time-handler))))))
              
              (:schem
-              (destructuring-bind (schem-name inputs outputs parts-list nets)
+              (destructuring-bind (schem-name inputs outputs parts-list nets &optional (first-time-handler nil))
                   (rest def)
                 `(let ((,schem-name (cl-event-passing-user:@new-schematic :name ',schem-name
-                                                                          :input-pins ',inputs :output-pins ',outputs)))
+                                                                          :input-pins ',inputs :output-pins ',outputs
+                                                                          :first-time-handler ,first-time-handler)))
                    ,@(compile-parts schem-name parts-list)
                    ,@(compile-nets schem-name nets))))))
           

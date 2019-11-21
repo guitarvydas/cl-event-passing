@@ -6,3 +6,16 @@
               (when exists
                 (error (apply #'cl:format fmt-msg fmt-args)))))
         list))
+
+(defparameter *sent-events* nil)
+(defparameter *wire-number* 0)
+
+(defun reset ()
+  (setf *sent-events* nil)
+  (setf *wire-number* 0))
+
+(defun get-wire-number ()
+  (prog1
+      *wire-number*
+    (incf *wire-number*)))
+
