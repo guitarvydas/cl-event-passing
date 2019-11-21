@@ -37,7 +37,7 @@
   :components ((:module "parts"
                         :pathname "./parts/"
                         :components ((:file "fatal")
-                                     (:file "file-stream")
+                                     (:file "filestream")
                                      (:file "iter")
                                      (:file "cat")))))
 

@@ -24,7 +24,7 @@
    NIL
 
 * Status
-** test0, test6, test6a, test7, test8, test9 working
+** test0, test6, test6a, test7, test8, test9, test-feedback working
 
 ** complicated example test-feedback working - contrived example shows how to create a feedback loop
 * Design Intention
@@ -48,7 +48,6 @@
 
 * branches
 ** master
-** pt-20191120b-feedback
 
 * todo
 ** rewrite api.lisp/@new-code to use keyword args
