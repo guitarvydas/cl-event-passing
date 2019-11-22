@@ -24,6 +24,8 @@
 				     (:file "api"  :depends-on ("package" "util" "pin" "part"
                                                                 "schematic" "event" "source" "receiver" "wire" "dispatch"))
 				     (:file "logging"  :depends-on ("api" "macro" "macro-support" "package" "util" "pin" "part"
+                                                                "schematic" "event" "source" "receiver" "wire" "dispatch"))
+				     (:file "checking"  :depends-on ("api" "macro" "macro-support" "package" "util" "pin" "part"
                                                                 "schematic" "event" "source" "receiver" "wire" "dispatch"))))))
 
 

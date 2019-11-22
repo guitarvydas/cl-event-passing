@@ -9,6 +9,7 @@
   (if (null defs)
       `(let ()
          (cl-event-passing-user::@top-level-schematic ,name)
+         (e/util::check-top-level-schematic-sanity ,name)
          ,name)
     (compile-one-network name (first defs) (rest defs))))
 

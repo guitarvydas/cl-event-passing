@@ -33,3 +33,8 @@
     (if (numberp (debug-name w))
         (debug-name w)
       w)))
+
+(defmethod ensure-wire-sanity (schem (self wire))
+  (mapc #'(lambda (r)
+            (e/receiver::ensure-receiver-sanity schem r))
+        (receivers self)))

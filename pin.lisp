@@ -22,3 +22,9 @@
            (and (stringp (pin-name self)) (string= (pin-name self) (pin-name other))))
        (eq (direction self) (direction other))
        (eq (pin-parent self) (pin-parent other)))))
+
+(defmethod ensure-sanity (schem (self pin))
+  (e/schematic::ensure-sanity schem (pin-parent self)))
+
+(defmethod get-part ((self pin))
+  (pin-parent self))

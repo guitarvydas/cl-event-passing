@@ -35,7 +35,7 @@
   nil)
 
 (defmethod receiver-part ((r receiver))
-  (e/pin::pin-parent (receiver-pin r)))
+  (e/pin::get-part (receiver-pin r)))
 
 ;; At this point, the Event contains the originating output pin.  The pin must
 ;; be rewritten to match that of the receiving pin, and the newly-created event is pushed
@@ -53,3 +53,6 @@
 (defmethod deliver-event ((r outbound-receiver) (e e/event:event))
   (let ((new-e (e/event::new-event :event-pin (receiver-pin r) :data (e/event::data e))))
     (push new-e (e/part:output-queue (receiver-part r)))))
+
+(defmethod ensure-receiver-sanity (schem (self receiver))
+  (e/pin::ensure-sanity schem (receiver-pin self)))

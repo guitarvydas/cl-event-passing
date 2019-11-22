@@ -62,3 +62,14 @@
        (some #'has-input-queue-p (internal-parts self))
        (some #'has-output-queue-p (internal-parts self))
        (some #'busy-p (internal-parts self)))))
+
+(defmethod ensure-sanity ((self schematic) (part e/part:part))
+  (unless (eq self part)
+    (e/util:ensure-in-list (internal-parts self) part #'equal
+                           "part ~S does not appear in its parent schematic ~S" part self)))
+
+(defmethod ensure-source-sanity ((self schematic))
+  (mapc
+   #'(lambda (source)
+       (e/source::ensure-source-sanity self source))
+   (sources self)))

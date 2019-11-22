@@ -95,6 +95,7 @@
   (:use :cl)
   (:export
    #:logging
+   #:ensure-in-list
    #:ensure-not-in-list))
 
 (defpackage cl-event-passing-user-wire

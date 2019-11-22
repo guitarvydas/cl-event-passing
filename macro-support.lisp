@@ -16,7 +16,6 @@
   (let ((w (cl-event-passing-user:@new-wire :name (e/util::get-wire-number))))
     (e/wire::set-receiver-list w receiver-list)
     w))
-    
 
 (defmethod make-source-coming-from-outside ((schem e/schematic:schematic) sym)
   (let ((pin (e/part::get-input-pin schem sym)))
@@ -33,3 +32,4 @@
             (e/source::set-wire-of-source s wire)
             (e/schematic::add-source-with-ensure self s))
         list-of-sources))
+

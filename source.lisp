@@ -15,3 +15,13 @@
 
 (defmethod set-wire-of-source ((self source) (wire e/wire:wire))
   (setf (wire self) wire))
+
+(defmethod ensure-source-part-exists-in-schematic (schem (self source))
+  (unless (eq schem (source-pin self)) ;; could be a pin of self
+    (e/pin::ensure-sanity schem (source-pin self))))
+
+(defmethod ensure-source-sanity (schem (self source))
+  (unless (eq schem (source-pin self)) ;; could be a pin of self
+    (ensure-source-part-exists-in-schematic schem self)
+    (e/wire::ensure-wire-sanity schem (wire self))))
+  
