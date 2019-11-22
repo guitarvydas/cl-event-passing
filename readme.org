@@ -48,7 +48,6 @@
 
 * branches
 ** master
-** pt-20191122a-error - check that each part exists during wiring (to fix previous problem where fatal-error was on the diagram but not on the parts list)
+
 * todo
-** rewrite api.lisp/@new-code to use keyword args
 
