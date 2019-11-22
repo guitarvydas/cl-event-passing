@@ -3,9 +3,10 @@
 (defun ensure-in-list (list object equality-test fmt-msg &rest fmt-args)
   (mapc #'(lambda (item)
             (let ((exists (funcall equality-test item object)))
-              (unless exists
-                (error (apply #'cl:format nil fmt-msg fmt-args)))))
-        list))
+              (when exists
+                (return-from ensure-in-list item))))
+        list)
+  (error (apply #'cl:format nil fmt-msg fmt-args)))
 
 (defun ensure-not-in-list (list object equality-test fmt-msg &rest fmt-args)
   (mapc #'(lambda (item)
