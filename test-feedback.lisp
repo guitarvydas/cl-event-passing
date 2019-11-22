@@ -9,7 +9,7 @@
           (:code cat (:in) (:out :fatal) #'cat)
           (:code fatal (:in) () #'fatal)
           (:schem cl-event-passing-user::main (:in) (:out)
-                 (filestream iter cat fatal)
+                 (filestream cat fatal) ;; part 'iter' does not appear in parts list - gives unexpected results 
                  (
                   (((:self :in))  ((filestream :file-name)))
                   (((iter :next)) ((filestream :read)))
@@ -20,7 +20,8 @@
                   (((filestream :fatal) (iter :fatal) (cat :fatal)) ((fatal :in)))
                   )))))
     (let ((ap e/dispatch::*all-parts*)) ;; testing only
-      (assert (= 5 (length ap)))        ;; testing only
+      #+nil(assert (= 5 (length ap)))        ;; testing only
+      (assert (= 4 (length ap)))        ;; testing only - this is wrong!!!
       (@inject net
                (e/part::get-input-pin net :in) (asdf:system-relative-pathname :cl-event-passing "test-feedback.lisp"))
       (@history))))
