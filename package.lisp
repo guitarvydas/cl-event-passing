@@ -19,7 +19,6 @@
    #:@add-source-to-schematic
    #:@add-part-to-schematic
    #:@send
-   #:@inject
    #:@start-dispatcher
    #:@history
    #:@defnetwork))

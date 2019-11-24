@@ -22,4 +22,4 @@
     ;; need 1 source
     (@add-source-to-schematic main-schem (e/part::get-input-pin main-schem "in") wire)
 
-    (@inject main-schem (e/part::get-input-pin main-schem "in") "test 7")))
+    (@send main-schem (e/part::get-input-pin main-schem "in") "test 7")))

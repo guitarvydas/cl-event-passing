@@ -51,9 +51,16 @@
         (funcall fn part)))))
 
 (defun run ()
-  (setf *dispatcher-running* t)
   (@:loop
    (e/dispatch::dispatch-output-queues)
    (@:exit-when (e/dispatch::all-parts-have-empty-input-queues-p))
-   (e/dispatch::dispatch-single-input))
-  (setf *dispatcher-running* nil))
+   (e/dispatch::dispatch-single-input)))
+
+;; api
+(defun start-dispatcher ()
+  (unless *dispatcher-running*
+    (setf *dispatcher-running* t)
+    (run-first-times)
+    (run)
+    (setf *dispatcher-running* nil)))
+
