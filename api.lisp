@@ -97,10 +97,7 @@
   (e/dispatch::run-first-times))
 
 (defun run-dispatcher ()
-  (@:loop
-   (e/dispatch::dispatch-output-queues)
-   (@:exit-when (e/dispatch::all-parts-have-empty-input-queues-p))
-   (e/dispatch::dispatch-single-input)))
+  (e/dispatch::run))
 
 (defun @history ()
   (e/util::get-logging))

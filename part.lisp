@@ -48,11 +48,6 @@
     self)))
 
   
-(defmethod name ((p part))
-  (if (string= "" (debug-name p))
-      p
-    (debug-name p)))
-
 (defgeneric busy-p (self))
 
 (defmethod busy-p ((self code))
@@ -110,4 +105,15 @@
   (let ((list (output-queue self)))
     (setf (output-queue self) nil)
     list))
+
+(defmethod name ((p part))
+  (if (string= "" (debug-name p))
+      p
+    (debug-name p)))
+
+(defmethod input-pins ((self part))
+  (namespace-input-pins self))
+
+(defmethod output-pins ((self part))
+  (namespace-output-pins self))
 

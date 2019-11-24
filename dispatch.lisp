@@ -2,8 +2,11 @@
 
 (defparameter *all-parts* nil)
 
+(defparameter *dispatcher-running* nil)
+
 (defun reset ()
-  (setf *all-parts* nil))
+  (setf *all-parts* nil)
+  (setf *dispatcher-running* nil))
 
 (defun all-parts-have-empty-input-queues-p ()
   (dolist (part *all-parts*)
@@ -46,3 +49,11 @@
     (let ((fn (e/part:first-time-handler part)))
       (when fn
         (funcall fn part)))))
+
+(defun run ()
+  (setf *dispatcher-running* t)
+  (@:loop
+   (e/dispatch::dispatch-output-queues)
+   (@:exit-when (e/dispatch::all-parts-have-empty-input-queues-p))
+   (e/dispatch::dispatch-single-input))
+  (setf *dispatcher-running* nil))
