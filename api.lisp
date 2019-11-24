@@ -34,8 +34,8 @@
   (e/dispatch::reset))
 
 (defmethod @top-level-schematic ((schem e/part:schematic))
-  (setf *top-level-part* schem)
-  (e/dispatch::memo-part schem))
+  (setf *top-level-part* schem)  ;; for debugging only
+  (e/dispatch::memo-part schem)) ;; always needed
 
 (defmethod @set-first-time-handler ((part e/part:part) fn)
   (setf (e/part::first-time-handler part) fn))
