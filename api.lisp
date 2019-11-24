@@ -74,26 +74,25 @@
     (@send self out-pin out-data)))
 
 (defmethod @send ((self e/part:part) (pin e/pin:pin) data)
-  (if (eq self *top-level-part*)
-      (progn
-        (send-input self pin data)
-        (e/dispatch::start-dispatcher)))
-    (send-output self pin data))
-
+  (if (e/dispatch::dispatcher-active-p);(eq self *top-level-part*)
+      (send-output self pin data)
+    (progn
+      (send-input self pin data)
+      (e/dispatch::start-dispatcher))))
+  
 (defmethod send-output ((self e/part:part) (out-pin e/pin:pin) out-data)
   (let ((e (@new-event :event-pin out-pin :data out-data)))
     (e/util:logging e)
     (push e (e/part:output-queue self))))
 
 (defmethod send-input ((part e/part:part) pin data)
-  (unless (eq part *top-level-part*)
+  #+nil(unless (eq part *top-level-part*)
     (error (format nil "Should not call @inject on anything but the top level part ~S, but @inject(~S) is being called."
                    *top-level-part* part)))
   (let ((e (e/event::new-event :event-pin pin :data data)))
     (e/dispatch::run-first-times)
     (e/util:logging e)
     (push e (e/part:input-queue part))
-    (e/dispatch::dispatch-single-input)
     (e/dispatch::start-dispatcher)))
 
 (defun @start-dispatcher ()

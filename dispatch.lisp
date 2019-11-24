@@ -64,3 +64,5 @@
     (run)
     (setf *dispatcher-running* nil)))
 
+(defun dispatcher-active-p ()
+  *dispatcher-running*)
