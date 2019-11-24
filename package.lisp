@@ -22,6 +22,7 @@
    #:@inject
    #:@start-dispatcher
    #:@history
+   #:@enable-loggin
    #:@defnetwork))
 
 (defpackage cl-event-passing-part

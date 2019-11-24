@@ -2,6 +2,9 @@
 
 (defparameter *logging* nil)
 
+(defun enable-logging ()
+  (setf *logging* t))
+
 (defmethod logging ((e e/event:event))
   (when *logging*
     (push

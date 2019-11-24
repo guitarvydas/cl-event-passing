@@ -105,3 +105,5 @@
 (defun @history ()
   (e/util::get-logging))
 
+(defun @enable-logging ()
+  (e/util::enable-logging))
