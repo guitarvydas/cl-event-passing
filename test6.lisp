@@ -47,7 +47,7 @@
     (@add-source-to-schematic child-schem (e/part::get-output-pin flow-through-2 :ft-out) wire-flow-through-2-to-child)
     (@add-source-to-schematic main-schem (e/part::get-output-pin child-schem :child-schem-out) wire-child-to-main)
 
-    (@inject main-schem (e/part::get-input-pin main-schem :main-schem-in) "test 6")))
+    (@send main-schem (e/part::get-input-pin main-schem :main-schem-in) "test 6")))
   
 (defmethod flow-through ((self e/part:part) (e e/event:event))
   (@send self (e/part::get-output-pin self :ft-out) (e/event:data e)))

@@ -33,9 +33,9 @@
   (e/util::reset)
   (e/dispatch::reset))
 
-(defmethod @top-level-schematic ((schem e/schematic:schematic))
-  (setf *top-level-part* schem)
-  (e/dispatch::memo-part schem))
+(defmethod @top-level-schematic ((schem e/part:schematic))
+  (setf *top-level-part* schem)  ;; for debugging only
+  (e/dispatch::memo-part schem)) ;; always needed
 
 (defmethod @set-first-time-handler ((part e/part:part) fn)
   (setf (e/part::first-time-handler part) fn))
@@ -59,12 +59,12 @@
     (e/wire::ensure-receiver-not-already-on-wire wire rcv)
     (e/wire::add-receiver wire rcv)))
 
-(defmethod @add-source-to-schematic ((schem e/schematic:schematic) (pin e/pin:pin) (wire e/wire:wire))
+(defmethod @add-source-to-schematic ((schem e/part:schematic) (pin e/pin:pin) (wire e/wire:wire))
   (let ((s (e/source::new-source :pin pin :wire wire)))
     (e/schematic::ensure-source-not-already-present schem s)
     (e/schematic::add-source schem s)))
 
-(defmethod @add-part-to-schematic ((schem e/schematic:schematic) (part e/part:part))
+(defmethod @add-part-to-schematic ((schem e/part:schematic) (part e/part:part))
   (e/schematic::ensure-part-not-already-present schem part)
   (e/schematic::add-part schem part)
   (e/dispatch::memo-part part))
@@ -73,34 +73,30 @@
   (let ((out-pin (e/part::get-output-pin self out)))
     (@send self out-pin out-data)))
 
-(defmethod @send ((self e/part:part) (out-pin e/pin:pin) out-data)
+(defmethod @send ((self e/part:part) (pin e/pin:pin) data)
+  (if (e/dispatch::dispatcher-active-p);(eq self *top-level-part*)
+      (send-output self pin data)
+    (progn
+      (send-input self pin data)
+      (e/dispatch::start-dispatcher))))
+  
+(defmethod send-output ((self e/part:part) (out-pin e/pin:pin) out-data)
   (let ((e (@new-event :event-pin out-pin :data out-data)))
     (e/util:logging e)
     (push e (e/part:output-queue self))))
 
-(defmethod @inject ((part e/part:part) pin data)
-  (unless (eq part *top-level-part*)
+(defmethod send-input ((part e/part:part) pin data)
+  #+nil(unless (eq part *top-level-part*)
     (error (format nil "Should not call @inject on anything but the top level part ~S, but @inject(~S) is being called."
                    *top-level-part* part)))
   (let ((e (e/event::new-event :event-pin pin :data data)))
-    (run-first-times)
+    (e/dispatch::run-first-times)
     (e/util:logging e)
     (push e (e/part:input-queue part))
-    (e/dispatch::dispatch-single-input)
-    (run-dispatcher)))
+    (e/dispatch::start-dispatcher)))
 
 (defun @start-dispatcher ()
-  (run-first-times)
-  (run-dispatcher))
-
-(defun run-first-times ()
-  (e/dispatch::run-first-times))
-
-(defun run-dispatcher ()
-  (@:loop
-   (e/dispatch::dispatch-output-queues)
-   (@:exit-when (e/dispatch::all-parts-have-empty-input-queues-p))
-   (e/dispatch::dispatch-single-input)))
+  (e/dispatch::start-dispatcher))
 
 (defun @history ()
   (e/util::get-logging))

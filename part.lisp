@@ -13,6 +13,10 @@
 
 (defclass code (part) ())
 
+(defclass schematic (part)
+  ((sources :accessor sources :initform nil) ;; a list of Sources (which contain a list of Wires which contain a list of Receivers)
+   (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
+
 (defmethod make-in-pins ((pin-parent part) lis)
   (mapcar #'(lambda (sym-or-pin)
 	      (if (or (symbolp sym-or-pin)
@@ -44,18 +48,27 @@
     self)))
 
   
-(defmethod name ((p part))
-  (if (string= "" (debug-name p))
-      p
-    (debug-name p)))
+(defgeneric busy-p (self))
 
-(defmethod busy-p (self code)
+(defmethod busy-p ((self code))
   (busy-flag self))
 
-(defmethod has-input-queue-p (self part)
+(defmacro with-atomic-action (&body body)
+  ;; basically a no-op in this, CALL-RETURN (non-asynch) version of the code
+  ;; this matters only when running in a true interrupting environment (e.g. bare hardware, no O/S)
+  `(progn ,@body))
+
+(defmethod busy-p ((self schematic))
+  (with-atomic-action
+   (or (e/part:busy-flag self) ;; never practically true in this implementation (based on CALL-RETURN instead of true interrupts)
+       (some #'has-input-queue-p (internal-parts self))
+       (some #'has-output-queue-p (internal-parts self))
+       (some #'busy-p (internal-parts self)))))
+
+(defmethod has-input-queue-p ((self part))
   (not (null (input-queue self))))
 
-(defmethod has-output-queue-p (self part)
+(defmethod has-output-queue-p ((self part))
   (not (null (output-queue self))))
 
 (defun must-find-name-in-namespace (namespace sym)
@@ -72,3 +85,35 @@
 
 (defmethod get-output-pin ((self part) pin-sym)
   (must-find-name-in-namespace (namespace-output-pins self) pin-sym))
+
+;; part api
+
+(defmethod ready-p ((self part))
+  (and (input-queue self)
+       (not (busy-p self))))
+
+(defmethod exec1 ((self part))
+  ;; execute exactly one input event to completion, then RETURN
+  (let ((event (pop (input-queue self))))
+    (setf (busy-flag self) t)
+    (funcall (input-handler self) self event)
+    (setf (busy-flag self) nil)))
+
+(defmethod output-queue-as-list-and-delete ((self part))
+  ;; return output queue as a list of output events,
+  ;; null out the output queue
+  (let ((list (output-queue self)))
+    (setf (output-queue self) nil)
+    list))
+
+(defmethod name ((p part))
+  (if (string= "" (debug-name p))
+      p
+    (debug-name p)))
+
+(defmethod input-pins ((self part))
+  (namespace-input-pins self))
+
+(defmethod output-pins ((self part))
+  (namespace-output-pins self))
+

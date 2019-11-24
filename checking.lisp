@@ -2,7 +2,7 @@
 
 ;; error checks - debug only while we need to assemble diagrams by hand
 
-(defmethod check-top-level-schematic-sanity ((self e/schematic:schematic))
+(defmethod check-top-level-schematic-sanity ((self e/part:schematic))
   (check-part-sanity self))
 
 (defmethod check-top-level-schematic-sanity ((self e/part:code))
@@ -12,7 +12,7 @@
   (unless (e/part::input-handler self)
     (error (format nil "part ~S must have an input handler" self))))
 
-(defmethod check-part-sanity ((self e/schematic:schematic))
+(defmethod check-part-sanity ((self e/part:schematic))
   (e/schematic::ensure-source-sanity self))
 
 

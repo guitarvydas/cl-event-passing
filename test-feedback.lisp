@@ -19,7 +19,7 @@
                   (((filestream :fatal) (iter :fatal) (cat :fatal)) ((fatal :in))))))))
     (let ((ap e/dispatch::*all-parts*)) ;; testing only
       (assert (= 5 (length ap)))        ;; testing only
-      (@inject net
+      (@send net
                (e/part::get-input-pin net :in) (asdf:system-relative-pathname :cl-event-passing "test-feedback.lisp"))
       (@history))))
 

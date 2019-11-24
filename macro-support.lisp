@@ -7,7 +7,7 @@
     (let ((ibrcv (e/receiver::new-inbound-receiver :pin pin)))
       ibrcv)))
 
-(defmethod make-outbound-receiver ((part e/schematic:schematic) (pin-sym SYMBOL))
+(defmethod make-outbound-receiver ((part e/part:schematic) (pin-sym SYMBOL))
   (let ((pin (e/part::get-output-pin part pin-sym)))
     (let ((obrcv (e/receiver::new-outbound-receiver :pin pin)))
       obrcv)))
@@ -17,7 +17,7 @@
     (e/wire::set-receiver-list w receiver-list)
     w))
 
-(defmethod make-source-coming-from-outside ((schem e/schematic:schematic) sym)
+(defmethod make-source-coming-from-outside ((schem e/part:schematic) sym)
   (let ((pin (e/part::get-input-pin schem sym)))
     (e/source::new-source :pin pin :wire nil))) ;; wire is temporarily nil, will be set later
 
@@ -27,7 +27,7 @@
     (let ((pin (e/part::get-output-pin part sym)))
       (e/source::new-source :pin pin :wire nil)))) ;; wire is temporarily nil, will be set later
 
-(defmethod make-sources-for-wire ((self e/schematic:schematic) (wire e/wire:wire) list-of-sources)
+(defmethod make-sources-for-wire ((self e/part:schematic) (wire e/wire:wire) list-of-sources)
   (mapc #'(lambda (s)
             (e/source::set-wire-of-source s wire)
             (e/schematic::add-source-with-ensure self s))
