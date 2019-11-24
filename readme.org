@@ -48,7 +48,6 @@
 
 * branches
 ** master
-** pt-20191124-standalone - api for parts that makes them stand-alone and composable (after compilation)
 
 * todo
 
