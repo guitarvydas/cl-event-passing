@@ -33,7 +33,7 @@
   (e/util::reset)
   (e/dispatch::reset))
 
-(defmethod @top-level-schematic ((schem e/schematic:schematic))
+(defmethod @top-level-schematic ((schem e/part:schematic))
   (setf *top-level-part* schem)
   (e/dispatch::memo-part schem))
 
@@ -59,12 +59,12 @@
     (e/wire::ensure-receiver-not-already-on-wire wire rcv)
     (e/wire::add-receiver wire rcv)))
 
-(defmethod @add-source-to-schematic ((schem e/schematic:schematic) (pin e/pin:pin) (wire e/wire:wire))
+(defmethod @add-source-to-schematic ((schem e/part:schematic) (pin e/pin:pin) (wire e/wire:wire))
   (let ((s (e/source::new-source :pin pin :wire wire)))
     (e/schematic::ensure-source-not-already-present schem s)
     (e/schematic::add-source schem s)))
 
-(defmethod @add-part-to-schematic ((schem e/schematic:schematic) (part e/part:part))
+(defmethod @add-part-to-schematic ((schem e/part:schematic) (part e/part:part))
   (e/schematic::ensure-part-not-already-present schem part)
   (e/schematic::add-part schem part)
   (e/dispatch::memo-part part))

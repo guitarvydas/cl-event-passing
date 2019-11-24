@@ -30,6 +30,7 @@
   (:export
    #:part
    #:code
+   #:schematic
    #:name
    #:input-queue
    #:has-input-queue-p
@@ -40,6 +41,11 @@
    #:namespace-output-pins
    #:input-handler
    #:first-time-handler
+
+   #:sources
+   #:internal-parts
+   #:internal-wires
+
    #:parent-schem))
 
 (defpackage cl-event-passing-event
@@ -74,9 +80,6 @@
   (:use :cl)
   (:export
    #:name
-   #:schematic
-   #:internal-parts
-   #:internal-wires
    #:input-queue
    #:output-queue
    #:busy-flag

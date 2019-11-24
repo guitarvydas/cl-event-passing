@@ -13,6 +13,10 @@
 
 (defclass code (part) ())
 
+(defclass schematic (part)
+  ((sources :accessor sources :initform nil) ;; a list of Sources (which contain a list of Wires which contain a list of Receivers)
+   (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
+
 (defmethod make-in-pins ((pin-parent part) lis)
   (mapcar #'(lambda (sym-or-pin)
 	      (if (or (symbolp sym-or-pin)
@@ -49,8 +53,22 @@
       p
     (debug-name p)))
 
+(defgeneric busy-p (self))
+
 (defmethod busy-p ((self code))
   (busy-flag self))
+
+(defmacro with-atomic-action (&body body)
+  ;; basically a no-op in this, CALL-RETURN (non-asynch) version of the code
+  ;; this matters only when running in a true interrupting environment (e.g. bare hardware, no O/S)
+  `(progn ,@body))
+
+(defmethod busy-p ((self schematic))
+  (with-atomic-action
+   (or (e/part:busy-flag self) ;; never practically true in this implementation (based on CALL-RETURN instead of true interrupts)
+       (some #'has-input-queue-p (internal-parts self))
+       (some #'has-output-queue-p (internal-parts self))
+       (some #'busy-p (internal-parts self)))))
 
 (defmethod has-input-queue-p ((self part))
   (not (null (input-queue self))))
@@ -81,10 +99,10 @@
 
 (defmethod exec1 ((self part))
   ;; execute exactly one input event to completion, then RETURN
-  (let ((event (pop (input-queue part))))
-    (setf (busy-flag part) t)
-    (funcall (input-handler part) part event)
-    (setf (busy-flag part) nil)))
+  (let ((event (pop (input-queue self))))
+    (setf (busy-flag self) t)
+    (funcall (input-handler self) self event)
+    (setf (busy-flag self) nil)))
 
 (defmethod output-queue-as-list-and-delete ((self part))
   ;; return output queue as a list of output events,

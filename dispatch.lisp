@@ -19,19 +19,15 @@
 
 (defun dispatch-single-input ()
   (dolist (part *all-parts*)
-    (when (e/part::input-queue part)
-      (let ((event (pop (e/part::input-queue part))))
-        (setf (e/part:busy-flag part) t)
-        (funcall (e/part::input-handler part) part event)
-        (setf (e/part:busy-flag part) nil)
-        (return-from dispatch-single-input part))))
+    (when (e/part::ready-p part)
+      (e/part::exec1 part)
+      (return-from dispatch-single-input part)))
   (assert nil)) ;; can't happen
 
 (defun dispatch-output-queues ()
   (dolist (part *all-parts*)
     (when (e/part:output-queue part)
-      (let ((out-list (e/part:output-queue part)))
-        (setf (e/part::output-queue part) nil)
+      (let ((out-list (e/part::output-queue-as-list-and-delete part)))
         (dolist (out-event out-list)
           (if (cl-event-passing-user::is-top-level-p part)
               (progn
