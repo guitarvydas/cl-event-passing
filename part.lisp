@@ -49,13 +49,13 @@
       p
     (debug-name p)))
 
-(defmethod busy-p (self code)
+(defmethod busy-p ((self code))
   (busy-flag self))
 
-(defmethod has-input-queue-p (self part)
+(defmethod has-input-queue-p ((self part))
   (not (null (input-queue self))))
 
-(defmethod has-output-queue-p (self part)
+(defmethod has-output-queue-p ((self part))
   (not (null (output-queue self))))
 
 (defun must-find-name-in-namespace (namespace sym)
@@ -72,3 +72,24 @@
 
 (defmethod get-output-pin ((self part) pin-sym)
   (must-find-name-in-namespace (namespace-output-pins self) pin-sym))
+
+;; part api
+
+(defmethod ready-p ((self part))
+  (and (input-queue self)
+       (not (busy-p self))))
+
+(defmethod exec1 ((self part))
+  ;; execute exactly one input event to completion, then RETURN
+  (let ((event (pop (input-queue part))))
+    (setf (busy-flag part) t)
+    (funcall (input-handler part) part event)
+    (setf (busy-flag part) nil)))
+
+(defmethod output-queue-as-list-and-delete ((self part))
+  ;; return output queue as a list of output events,
+  ;; null out the output queue
+  (let ((list (output-queue self)))
+    (setf (output-queue self) nil)
+    list))
+
