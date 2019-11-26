@@ -4,8 +4,15 @@
   ((source-pin :accessor source-pin  :initarg :source-pin)
    (wire :accessor wire :initarg :wire)))
 
-(defun new-source (&key (pin nil) (wire nil))
-  (make-instance 'source :source-pin pin :wire wire))
+(defclass self-source (source) ())  ;; a source from :self (pin refers to self - a schematic)
+
+(defclass child-source (source) ()) ; a source from a child (the normal case - child outputting to another child)
+
+(defun new-self-source (&key (pin nil) (wire nil))
+  (make-instance 'self-source :source-pin pin :wire wire))
+
+(defun new-child-source (&key (pin nil) (wire nil))
+  (make-instance 'child-source :source-pin pin :wire wire))
 
 (defmethod source-pin-equal ((self source) (pin e/pin:pin))
   (e/pin::pin-equal (source-pin self)  pin))

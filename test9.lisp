@@ -29,9 +29,9 @@
     (@set-input-handler flow-through-2 #'flow-through)
 
     ;; wires that go INTO parts
-    (@add-receiver-to-wire  wire-main-to-child         ;; wire
+    (@add-child-receiver-to-wire  wire-main-to-child         ;; wire
                             (e/part::get-input-pin child-schem :child-schem-in)) ;; part / pin
-    (@add-receiver-to-wire  wire-child-to-flow-through-1
+    (@add-child-receiver-to-wire  wire-child-to-flow-through-1
                             (e/part::get-input-pin flow-through-1 :ft-in))
     #+nil(@add-inbound-receiver-to-wire  wire-flow-through-1-to-flow-through-2
                                     flow-through-2 :ft-in)
@@ -43,9 +43,9 @@
                                      main-schem :main-schem-out)
 
 
-    (@add-source-to-schematic main-schem (e/part::get-input-pin main-schem :main-schem-in) wire-main-to-child)
-    (@add-source-to-schematic child-schem (e/part::get-input-pin child-schem :child-schem-in) wire-child-to-flow-through-1)
-    (@add-source-to-schematic child-schem (e/part::get-output-pin flow-through-1 :ft-out) wire-flow-through-1-to-flow-through-2)
+    (@add-self-source-to-schematic main-schem (e/part::get-input-pin main-schem :main-schem-in) wire-main-to-child)
+    (@add-child-source-to-schematic child-schem (e/part::get-input-pin child-schem :child-schem-in) wire-child-to-flow-through-1)
+    (@add-child-source-to-schematic child-schem (e/part::get-output-pin flow-through-1 :ft-out) wire-flow-through-1-to-flow-through-2)
     #+nil(@add-source-to-schematic child-schem (e/part::get-output-pin flow-through-2 :ft-out) wire-flow-through-2-to-child)
     #+nil(@add-source-to-schematic main-schem (e/part::get-output-pin child-schem :child-schem-out) wire-child-to-main)
 

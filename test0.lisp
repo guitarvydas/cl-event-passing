@@ -16,8 +16,8 @@
     (@set-first-time-handler producer #'produce)
     (@set-input-handler consumer #'consume-and-print)
 
-    (@add-receiver-to-wire wire (e/part::get-input-pin consumer :in))
-    (@add-source-to-schematic schem (e/part::get-output-pin producer :out) wire)
+    (@add-child-receiver-to-wire wire (e/part::get-input-pin consumer :in))
+    (@add-child-source-to-schematic schem (e/part::get-output-pin producer :out) wire)
 
     (@start-dispatcher)))
 

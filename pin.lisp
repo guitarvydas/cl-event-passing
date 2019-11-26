@@ -2,7 +2,7 @@
 
 (defclass pin ()
   ((pin-name :accessor pin-name :initarg :pin-name)
-   (direction :accessor direction :initarg :direction)
+   (direction :accessor direction :initarg :direction) ;; this has become redundant since addition of child/self sources/receivers
    (pin-parent :accessor pin-parent :initarg :pin-parent)))
   
 

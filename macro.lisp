@@ -60,8 +60,8 @@
 
 (defun make-receiver (schem-name pair)
   (if (eq ':self (first pair))
-      `(make-outbound-receiver ,schem-name ,(second pair))
-    `(make-inbound-receiver ,(first pair) ,(second pair))))
+      `(make-self-receiver ,schem-name ,(second pair))
+    `(make-child-receiver ,(first pair) ,(second pair))))
 
 (defun make-source (schem-name pair)
   (if (eq ':self (first pair))
