@@ -23,6 +23,12 @@
     (setf (e/part:first-time-handler part) first-time-handler)
     part))
 
+(defun @reuse-part (proto &key (name "") (input-pins nil) (output-pins nil))
+  (let ((cloned-part (e/part::reuse-part proto :name name)))
+    (e/part::ensure-congruent-input-pins cloned-part input-pins)
+    (e/part::ensure-congruent-output-pins cloned-part output-pins)
+    cloned-part))
+
 (defun @new-wire (&key (name ""))
   (e/wire::new-wire :name name))
 
@@ -46,7 +52,7 @@
 (defmethod @add-receiver-to-wire ((wire e/wire:wire) (pin e/pin:pin))
   (if (e/pin::input-p pin)
       (-@add-inbound-receiver-to-wire wire (e/pin::pin-parent pin) pin)
-      (-@add-outbound-receiver-to-wire wire (e/pin::pin-parent pin) pin)))
+    (-@add-outbound-receiver-to-wire wire (e/pin::pin-parent pin) pin)))
 
 ;; -@ means deprecated - we've created a smarter (non-atomic) api call (using more atomic -@ calls)
 (defmethod -@add-inbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin)

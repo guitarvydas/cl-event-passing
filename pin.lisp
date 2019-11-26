@@ -3,8 +3,16 @@
 (defclass pin ()
   ((pin-name :accessor pin-name :initarg :pin-name)
    (direction :accessor direction :initarg :direction)
-   (pin-parent :accessor pin-parent :initarg :pin-parent)))
+   (pin-parent :accessor pin-parent :initarg :pin-parent)
+   (debug-name :accessor debug-name :initarg :debug-name :initform "")))
   
+(defmethod clone-with-parent (cloned-parent (proto pin))
+  (make-instance 'pin
+                 :pin-name (pin-name proto)
+                 :direction (direction proto)
+                 :pin-parent cloned-parent
+                 :debug-name (format nil "cloned pin ~S" (debug-name proto))))
+
 
 (defmethod input-p ((self pin))
   (eq :input (direction self)))

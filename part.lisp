@@ -17,6 +17,41 @@
   ((sources :accessor sources :initform nil) ;; a list of Sources (which contain a list of Wires which contain a list of Receivers)
    (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
 
+(defun clone-part (self proto)
+  (setf (input-queue self) nil)
+  (setf (output-queue self) nil)
+  (setf (busy-flag self) nil)
+  (setf (first-time-handler self) (first-time-handler proto))
+  (setf (input-handler self) (input-handler proto))
+  (setf  (debug-name self) (format nil "cloned ~S" (debug-name proto)))
+  ; (setf parent-schem ... fixed up later
+  (setf (namespace-input-pins self) (mapcar #'(lambda (pin)
+                                                (e/pin::clone-with-parent self pin))
+                                            (namespace-input-pins proto)))
+  (setf (namespace-output-pins self) (mapcar #'(lambda (pin)
+                                                (e/pin::clone-with-parent self pin))
+                                             (namespace-output-pins proto)))
+  self)
+ 
+(defmethod clone ((proto code))
+  (let ((new (make-instance 'code)))
+    (let ((cloned (clone-part new proto)))
+      cloned)))
+
+(defmethod clone ((proto schematic))
+  (let ((new (make-instance 'schematic)))
+    (let ((cloned (clone-part new proto)))
+      (setf (internal-parts cloned) (mapcar #'(lambda (p)
+                                             (let ((new-part (clone p)))
+                                               (setf (parent-schem new-part) cloned)
+                                               new-part))
+                                         (internal-parts proto)))
+      ;; sources must be cloned after internal-parts has been cloned, sources and wires refer to self or to internal-parts
+      (setf (sources cloned) (mapcar #'(lambda (s)
+                                      (e/source::clone-with-parent cloned s))
+                                  (sources proto)))
+      cloned)))
+  
 (defmethod make-in-pins ((pin-parent part) lis)
   (mapcar #'(lambda (sym-or-pin)
 	      (if (or (symbolp sym-or-pin)
@@ -47,6 +82,8 @@
     (setf (e/part:namespace-output-pins self) opins)
     self)))
 
+(defun reuse-part (proto &key (name ""))
+  (clone proto))
   
 (defgeneric busy-p (self))
 
@@ -71,14 +108,26 @@
 (defmethod has-output-queue-p ((self part))
   (not (null (output-queue self))))
 
-(defun must-find-name-in-namespace (namespace sym)
+(defun find-name-in-namespace (namespace sym)
   (mapc #'(lambda (pin)
 	    (when (if (symbolp sym)
                       (eq sym (e/pin:pin-name pin))
                     (string= sym (e/pin:pin-name pin)))
-	      (return-from must-find-name-in-namespace pin)))
+	      (return-from find-name-in-namespace pin)))
 	namespace)
-  (error (format nil "Name ~S not found in namespace ~S" sym namespace)))
+  nil)
+
+(defun must-find-name-in-namespace (namespace sym)
+  (let ((pin (find-name-in-namespace namespace sym)))
+    (unless pin
+      (error (format nil "Name ~S not found in namespace ~S" sym namespace)))
+    pin))
+
+(defun ensure-congruent-in-namespace (self namespace pin-list)
+  (mapc #'(lambda (pin-sym)
+            (unless (find-name-in-namespace namespace pin-sym)
+              (error (format nil "pin ~S not found in ~S of part ~S" pin-sym namespace (name self)))))
+        pin-list))
 
 (defmethod get-input-pin ((self part) pin-sym)
   (must-find-name-in-namespace (namespace-input-pins self) pin-sym))
@@ -117,3 +166,8 @@
 (defmethod output-pins ((self part))
   (namespace-output-pins self))
 
+(defmethod ensure-congruent-input-pins ((self part) input-pins)
+  (ensure-congruent-in-namespace self (namespace-input-pins self) input-pins))
+
+(defmethod ensure-congruent-output-pins ((self part) output-pins)
+  (ensure-congruent-in-namespace self (namespace-output-pins self) output-pins))

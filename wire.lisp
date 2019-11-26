@@ -4,10 +4,18 @@
 
 (defclass wire ()
   ((receivers :accessor receivers :initform nil)
-   (debug-name :accessor debug-name :initarg :name)))
+   (debug-name :accessor debug-name :initarg :name :initform "")))
 
 (defun new-wire (&key (name ""))
   (make-instance 'wire :name name))
+
+(defmethod clone-with-parent ((cloned-parent e/part:part) (proto wire))
+  (let ((new (make-instance 'wire :name (debug-name proto))))
+    (setf (debug-name new) (format nil "cloned wire ~S" (debug-name proto)))
+    (setf (receivers new) (mapcar #'(lambda (proto-receiver)
+                                      (e/receiver::clone-with-parent cloned-parent proto-receiver))
+                                  (receivers proto)))
+    new))
 
 (defmethod deliver-event ((wire wire) (e e/event:event))
   (e/util:logging wire)

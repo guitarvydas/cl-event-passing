@@ -2,7 +2,14 @@
 
 (defclass source ()
   ((source-pin :accessor source-pin  :initarg :source-pin)
-   (wire :accessor wire :initarg :wire)))
+   (wire :accessor wire :initarg :wire)
+   (debug-name :accessor debug-name :initarg :debug-name :initform "")))
+
+(defmethod clone-with-parent ((cloned-parent e/part:part) (proto source))
+  (make-instance 'source
+                :source-pin (e/pin::clone-with-parent cloned-parent (source-pin proto))
+                :wire (e/wire::clone-with-parent cloned-parent (wire proto))
+                :debug-name (format nil "cloned source ~S" (debug-name proto))))
 
 (defun new-source (&key (pin nil) (wire nil))
   (make-instance 'source :source-pin pin :wire wire))

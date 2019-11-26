@@ -17,6 +17,10 @@
     (let ((one
            (ecase (car def)
            
+             (:part
+              (destructuring-bind (code-name inputs outputs)
+                  (rest def)
+                `(let ((,part-name (cl-event-passing-user:@reuse-part :name ',code-name :input-pins ',inputs :output-pins ',outputs))))))
              (:code
               (destructuring-bind (code-name inputs outputs input-handler &optional (first-time-handler nil))
                   (rest def)

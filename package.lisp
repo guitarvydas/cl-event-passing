@@ -9,6 +9,7 @@
   (:export
    #:@new-schematic
    #:@new-code
+   #:@reuse-part
    #:@new-wire
    #:@new-event
    #:@initialize

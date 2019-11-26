@@ -15,5 +15,7 @@
   (cl-event-passing-user::test9)
   (format *standard-output* "~&test 16~%")
   (cl-event-passing-user::test16)
+  (format *standard-output* "~&reuse test~%")
+  (cl-event-passing-user::test-reuse)
   (format *standard-output* "~&feedback test~%")
   (cl-event-passing-user::test-feedback))

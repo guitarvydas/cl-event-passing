@@ -15,7 +15,7 @@
                                      (:file "event" :depends-on ("package"))
                                      (:file "source" :depends-on ("package" "pin" "event" "wire"))
                                      (:file "receiver" :depends-on ("package" "pin" "event" "part"))
-                                     (:file "wire" :depends-on ("package" "util" "receiver" ))
+                                     (:file "wire" :depends-on ("package" "util" "receiver" "pin"))
                                      (:file "dispatch" :depends-on ("package" "util" "part" "event"))
 				     (:file "macro-support"  :depends-on ("package" "util" "pin" "part" "schematic" "event"
                                                                           "source" "receiver" "wire" "dispatch"))
@@ -60,5 +60,6 @@
 				     (:file "test9")
 				     (:file "test16")
 				     (:file "test-feedback")
+				     (:file "test-reuse" :depends-on ("test6"))
                                      (:file "test-all" :depends-on ("test0" "test6" "test6a" "test7" "test8" "test9"
-                                                                    "test16" "test-feedback"))))))
+                                                                    "test16" "test-feedback" "test-reuse"))))))

@@ -18,6 +18,8 @@
 
     (@top-level-schematic main-schem)
 
+    (setf cl-event-passing-user::*test6-net* main-schem)
+
     (@add-part-to-schematic main-schem child-schem)
 
     (@add-part-to-schematic child-schem flow-through-1)
