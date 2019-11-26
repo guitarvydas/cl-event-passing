@@ -60,13 +60,27 @@
 
 (defun make-receiver (schem-name pair)
   (if (eq ':self (first pair))
-      `(make-self-receiver ,schem-name ,(second pair))
-    `(make-child-receiver ,(first pair) ,(second pair))))
+      `(e/receiver::new-self-receiver :pin (e/pin::new-pin
+                                            :pin-parent ,schem-name
+                                            :pin-name ,(second pair)
+                                            :direction :output))
+    `(e/receiver::new-child-receiver :pin (e/pin::new-pin
+                                           :pin-parent ,(first pair)
+                                           :pin-name ,(second pair)
+                                           :direction :input))))
 
 (defun make-source (schem-name pair)
   (if (eq ':self (first pair))
-      `(make-source-coming-from-outside ,schem-name ,(second pair))
-    `(make-source-from-child ,(first pair) ,(second pair))))
+      `(e/source::new-self-source :wire nil
+                                  :pin (e/pin::new-pin
+                                        :pin-parent ,schem-name
+                                        :pin-name ,(second pair)
+                                        :direction :input))
+    `(e/source::new-child-source :wire nil
+                                 :pin (e/pin::new-pin
+                                       :pin-parent ,(first pair)
+                                       :pin-name ,(second pair)
+                                       :direction :output))))
 
 (defun compile-nets (schem-name net-list)
   (let ((wires (mapcar #'(lambda (net)
