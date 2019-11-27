@@ -14,12 +14,12 @@
     (@top-level-schematic main-schem)
 
     ;; wires that go INTO parts
-    (@add-self-receiver-to-wire  wire
+    (@add-receiver-to-wire  wire
                             (e/part::get-output-pin main-schem "out"))
 
     ;; wire that go OUT OF parts
 
     ;; need 1 source
-    (@add-self-source-to-schematic main-schem (e/part::get-input-pin main-schem "in") wire)
+    (@add-source-to-schematic main-schem (e/part::get-input-pin main-schem "in") wire)
 
     (@send main-schem (e/part::get-input-pin main-schem "in") "test 7")))

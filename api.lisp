@@ -43,29 +43,13 @@
 (defmethod @set-input-handler ((part e/part:part) fn)
   (setf (e/part::input-handler part) fn))
 
-;; -@ means deprecated - we've created a smarter (non-atomic) api call (using more atomic -@ calls)
-(defmethod -@add-receiver-to-wire ((wire e/wire:wire) (pin e/pin:pin))
-  (if (e/pin::input-p pin)
-      (@add-child-receiver-to-wire wire (e/pin::pin-parent pin) pin)
-      (@add-self-receiver-to-wire wire (e/pin::pin-parent pin) pin)))
-
-(defmethod @add-child-receiver-to-wire ((wire e/wire:wire) (pin e/pin:pin))
-  (let ((rcv (e/receiver::new-child-receiver :pin pin)))
+(defmethod @add-receiver-to-wire ((wire e/wire:wire) (pin e/pin:pin))
+  (let ((rcv (e/receiver::new-receiver :pin pin)))
     (e/wire::ensure-receiver-not-already-on-wire wire rcv)
     (e/wire::add-receiver wire rcv)))
 
-(defmethod @add-self-receiver-to-wire ((wire e/wire:wire) (pin e/pin:pin))
-  (let ((rcv (e/receiver::new-self-receiver :pin pin)))
-    (e/wire::ensure-receiver-not-already-on-wire wire rcv)
-    (e/wire::add-receiver wire rcv)))
-
-(defmethod @add-child-source-to-schematic ((schem e/part:schematic) (pin e/pin:pin) (wire e/wire:wire))
-  (let ((s (e/source::new-child-source :pin pin :wire wire)))
-    (e/schematic::ensure-source-not-already-present schem s)
-    (e/schematic::add-source schem s)))
-
-(defmethod @add-self-source-to-schematic ((schem e/part:schematic) (pin e/pin:pin) (wire e/wire:wire))
-  (let ((s (e/source::new-self-source :pin pin :wire wire)))
+(defmethod @add-source-to-schematic ((schem e/part:schematic) (pin e/pin:pin) (wire e/wire:wire))
+  (let ((s (e/source::new-source :pin pin :wire wire)))
     (e/schematic::ensure-source-not-already-present schem s)
     (e/schematic::add-source schem s)))
 

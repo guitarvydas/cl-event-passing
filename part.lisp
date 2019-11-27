@@ -117,3 +117,5 @@
 (defmethod output-pins ((self part))
   (namespace-output-pins self))
 
+(defmethod has-parent-p ((self part))
+  (not (null (parent-schem self))))

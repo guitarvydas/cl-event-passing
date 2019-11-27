@@ -45,7 +45,7 @@
 
 (defmethod schematic-input-handler ((self e/part:schematic) (e e/event:event))
   (let ((s (lookup-source-in-self self e)))
-    (e/source::deliver-event s e)))
+    (e/source::source-event s e)))
 
 (defmethod ensure-sanity ((self e/part:schematic) (part e/part:part))
   (unless (eq self part)

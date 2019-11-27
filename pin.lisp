@@ -2,26 +2,46 @@
 
 (defclass pin ()
   ((pin-name :accessor pin-name :initarg :pin-name)
-   (direction :accessor direction :initarg :direction) ;; this has become redundant since addition of child/self sources/receivers
    (pin-parent :accessor pin-parent :initarg :pin-parent)))
   
+(defclass input-pin (pin) ())
+
+(defclass output-pin (pin) ())
 
 (defmethod input-p ((self pin))
-  (eq :input (direction self)))
+  (eq 'input-pin (type-of self)))
 
 (defmethod output-p ((self pin))
-  (eq :output (direction self)))
+  (eq 'output-pin (type-of self)))
 
-(defun new-pin (&key (pin-name "") (direction :in) pin-parent) ;; parent unbound by default - always an error if this happens
-  (make-instance 'pin :pin-name pin-name :direction direction :pin-parent pin-parent))
+(defun new-pin (&key (pin-name "") (direction :in) pin-parent) ;; parent is unbound by default - always an error if parent is not bound (later)
+  (make-instance
+   (if (eq :in direction)
+       'input-pin
+     'output-pin)
+   :pin-name pin-name
+   :pin-parent pin-parent))
 
 (defmethod pin-equal ((self pin) (other pin))
   (or (eq self other)
       (and
        (or (and (symbolp (pin-name self)) (equal (pin-name self) (pin-name other)))
            (and (stringp (pin-name self)) (string= (pin-name self) (pin-name other))))
-       (eq (direction self) (direction other))
+       (eq (type-of self) (type-of other))
        (eq (pin-parent self) (pin-parent other)))))
+
+(defmethod deliver-event ((self input-pin) (e e/event:event))
+  (let ((part (pin-parent self)))
+    (push e (e/part::input-queue part))))
+
+(defmethod deliver-event ((self output-pin) (e e/event:event))
+  (let ((part (pin-parent self)))
+    (let ((parent-of-part (and part (e/part::parent-schem part))))
+      (if (and part parent-of-part)
+          (push e (e/part::output-queue part))
+        (if parent-of-part
+            (assert nil) ;; can't happen
+          (format *standard-output* "~S" (e/event:data e))))))) ;; else - top level output to stdout
 
 (defmethod ensure-sanity (schem (self pin))
   (e/schematic::ensure-sanity schem (pin-parent self)))

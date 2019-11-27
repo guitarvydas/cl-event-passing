@@ -15,10 +15,8 @@
    #:@top-level-schematic
    #:@set-first-time-handler
    #:@set-input-handler
-   #:@add-child-receiver-to-wire
-   #:@add-self-receiver-to-wire
-   #:@add-child-source-to-schematic
-   #:@add-self-source-to-schematic
+   #:@add-receiver-to-wire
+   #:@add-source-to-schematic
    #:@add-part-to-schematic
    #:@send
    #:@start-dispatcher
@@ -64,8 +62,6 @@
   (:use :cl)
   (:export
    #:source
-   #:child-source
-   #:self-source
    #:source-pin
    #:wire))
 
@@ -75,9 +71,7 @@
   (:export
    #:receiver-part
    #:receiver-pin
-   #:receiver
-   #:child-receiver
-   #:self-receiver))
+   #:receiver))
 
 (defpackage cl-event-passing-schematic
   (:nicknames :e/schematic)
@@ -118,5 +112,4 @@
   (:export
    #:pin
    #:pin-name
-   #:direction
    #:pin-parent))
