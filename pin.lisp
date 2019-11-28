@@ -18,7 +18,9 @@
   (make-instance
    (if (eq :input direction)
        'input-pin
-     'output-pin)
+     (if (eq :output direction)
+         'output-pin
+       (error (format nil "pin direction must be specified as :input or :output, but ~S was given" direction))))
    :pin-name pin-name
    :pin-parent pin-parent))
 
