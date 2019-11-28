@@ -59,7 +59,7 @@
             (stringp s)))
          (already-an-input-pin-p (s)
            (and
-            (eq 'e/pin:pin (type-of s))
+            (eq 'e/pin:input-pin (type-of s))
             (e/pin::input-p s))))
     (mapcar #'(lambda (s)
                 (if (symbol-or-string-p s)
@@ -75,7 +75,7 @@
             (symbolp s)
             (stringp s)))
          (already-an-output-pin-p (s)
-           (and (eq 'e/pin:pin (type-of s))
+           (and (eq 'e/pin:output-pin (type-of s))
                 (e/pin::output-p s))))
     (mapcar #'(lambda (s)
                 (if (symbol-or-string-p s)

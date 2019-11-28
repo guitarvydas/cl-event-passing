@@ -53,6 +53,7 @@
   :components ((:module "examples"
                         :pathname "./"
                         :components ((:file "test0")
+				     (:file "test1")
 				     (:file "test6")
 				     (:file "test6a")
 				     (:file "test7")
@@ -61,5 +62,5 @@
 				     (:file "test16")
 				     (:file "test-feedback")
 				     (:file "test-reuse" :depends-on ("test6"))
-                                     (:file "test-all" :depends-on ("test0" "test6" "test6a" "test7" "test8" "test9"
+                                     (:file "test-all" :depends-on ("test0" "test1" "test6" "test6a" "test7" "test8" "test9"
                                                                     "test16" "test-feedback" "test-reuse"))))))

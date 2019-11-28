@@ -52,6 +52,8 @@
 ** master
 ** pt-20191126-reuse - attempt to reuse already exising components (in other directories)
 
+** pt-20191128-test1 - add test1() - simple schematic containing two code parts that outputs on schematic's output
+   step towards reuse - gives simple test of reuse
 
 * todo
-
+** mark all parents (recursively) that have first-time-handlers somewhere inside

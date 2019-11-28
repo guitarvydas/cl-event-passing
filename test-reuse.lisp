@@ -11,6 +11,8 @@
 
     (@top-level-schematic schem)
 
+    ;; at this point, child should be fully (deep) cloned, but not yet added to schem
+
     (@add-part-to-schematic schem child)
 
     ;; wires that go INTO parts

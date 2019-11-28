@@ -112,5 +112,7 @@
   (:use :cl)
   (:export
    #:pin
+   #:input-pin
+   #:output-pin
    #:pin-name
    #:pin-parent))
