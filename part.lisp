@@ -21,7 +21,7 @@
   (format out "<code[~a]>" (name obj)))
 
 (defmethod print-object ((obj schematic) out)
-  (format out "<schematic[~a]" (name obj)))
+  (format out "<schematic[~a]>" (name obj)))
 
 (defun clone-part (self proto)
   (setf (input-queue self) nil)
