@@ -8,7 +8,7 @@
   (let ((top-schem (@new-schematic :name "top-schem" :output-pins '(:top-schem-out)))
         (child (@reuse-part cl-event-passing-user::*test1-net*
                             :name "reused test1" :output-pins '(:schem-out)))
-        (wire2 (@new-wire :name "wire200")))
+        (wire200 (@new-wire :name "wire200")))
 
     (@top-level-schematic top-schem)
 
