@@ -14,6 +14,12 @@
       (return-from all-parts-have-empty-input-queues-p nil)))
   t)
 
+(defun all-parts-have-empty-output-queues-p ()
+  (dolist (part *all-parts*)
+    (when (e/part::output-queue part)
+      (return-from all-parts-have-empty-output-queues-p nil)))
+  t)
+
 
 (defmethod memo-part ((part e/part:part))
   (e/util:ensure-not-in-list *all-parts* part #'equal
@@ -28,21 +34,22 @@
   (assert nil)) ;; can't happen
 
 (defun dispatch-output-queues ()
-  (let ((state :keep-looping))
-    (@:loop
-      (@:exit-when (eq state :no-more-looping))
-      (setf state :no-more-looping)
-      (dolist (part *all-parts*)
-        (when (e/part::has-output-p part)
-          (let ((out-list (e/part::output-queue-as-list-and-delete part)))
-            (setf state :keep-looping)
-            (dolist (out-event out-list) ;; for every output event...
-              (if (e/part::has-parent-p part)    ;;   if part has a parent schematic, get the associated Source
-                  (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
-                    (when source ;; source is NIL if the pin is N.C. (no connection)
-                      (e/source::source-event source out-event)))
-                ;; else this is the top-level part (no parent schem), so just printf the event data to stdout
-                (format *standard-output* "~S" (e/event:data out-event))))))))))
+  (@:loop
+    (@:exit-when (all-parts-have-empty-output-queues-p))
+    (dispatch-some-output-queues)))
+
+(defun dispatch-some-output-queues()
+  (dolist (part *all-parts*)
+    (when (e/part::has-output-p part)
+      (let ((out-list (e/part::output-queue-as-list-and-delete part)))
+        (setf state :keep-looping)
+        (dolist (out-event out-list) ;; for every output event...
+          (if (e/part::has-parent-p part)    ;;   if part has a parent schematic, get the associated Source
+              (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
+                (when source ;; source is NIL if the pin is N.C. (no connection)
+                  (e/source::source-event source out-event)))
+            ;; else this is the top-level part (no parent schem), so just printf the event data to stdout
+            (format *standard-output* "~S" (e/event:data out-event))))))))
 
 (defun run-first-times ()
   (dolist (part *all-parts*)
