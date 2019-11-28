@@ -20,9 +20,9 @@
   (make-instance 'receiver :receiver-pin pin))
 
 (defmethod print-object ((obj receiver) out)
-  (format out "receiver<")
+  (format out "<receiver[")
   (print-object (receiver-pin obj) out)
-  (format out "~S>" (debug-name obj)))
+  (format out "/~a>" (debug-name obj)))
 
 (defmethod clone-with-part ((cloned-part e/part:part) (proto receiver))
   (let ((new (make-instance 'receiver)))

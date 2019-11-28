@@ -10,10 +10,10 @@
 (defclass output-pin (pin) ())
 
 (defmethod print-object ((obj input-pin) out)
-  (format out "input-pin<~a/~a/~a>" (e/part::name (pin-parent obj)) (pin-name obj) (debug-name obj)))
+  (format out "<input-pin[~a/~a/~a]>" (e/part::name (pin-parent obj)) (pin-name obj) (debug-name obj)))
 
 (defmethod print-object ((obj output-pin) out)
-  (format out "output-pin..~a/~a/~a" (e/part::name (pin-parent obj)) (pin-name obj) (debug-name obj)))
+  (format out "<output-pin[~a/~a/~a]>" (e/part::name (pin-parent obj)) (pin-name obj) (debug-name obj)))
 
 (defmethod clone-with-part (cloned-part (proto input-pin))
   (make-instance 'input-pin

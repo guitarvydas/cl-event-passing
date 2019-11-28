@@ -18,10 +18,10 @@
    (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
 
 (defmethod print-object ((obj code) out)
-  (format out "code<~S>" (name obj)))
+  (format out "<code[~a]>" (name obj)))
 
 (defmethod print-object ((obj schematic) out)
-  (format out "schematic<~S>" (name obj)))
+  (format out "<schematic[~a]" (name obj)))
 
 (defun clone-part (self proto)
   (setf (input-queue self) nil)

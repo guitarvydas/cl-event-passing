@@ -19,9 +19,9 @@
    (debug-name :accessor debug-name :initarg :debug-name :initform "")))
 
 (defmethod print-object ((obj source) out)
-  (format out "source<")
+  (format out "<source[")
   (print-object (source-pin obj) out)
-  (format out ">/~a" (debug-name obj)))
+  (format out "]/~a>" (debug-name obj)))
 
 (defmethod clone-with-part ((cloned-part e/part:part) (proto source))
   ;; part and its pins have been cloned, now use these existing pins to make new sources and wires
