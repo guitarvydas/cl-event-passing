@@ -4,7 +4,7 @@
   (format *standard-output* "~&test0~%")
   (cl-event-passing-user::test0)
   (format *standard-output* "~&test1~%")
-  (cl-event-passing-user::test0)
+  (cl-event-passing-user::test1)
   (format *standard-output* "~&test6~%")
   (cl-event-passing-user::test6)
   (format *standard-output* "~&test6a~%")
