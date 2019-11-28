@@ -57,7 +57,7 @@
       (let ((proto-sources (sources proto))
             (cloned-sources (sources cloned)))
         (setf (sources cloned) (mapcar #'(lambda (s)
-                                           (e/source::clone-with-mapping proto-sources cloned-sources cloned s))
+                                           (e/source::clone-with-mapping proto-sources cloned-sources s))
                                        (sources proto)))
         cloned))))
   
