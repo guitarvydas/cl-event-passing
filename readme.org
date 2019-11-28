@@ -52,9 +52,7 @@
 ** master
 ** pt-20191126-reuse - attempt to reuse already exising components (in other directories)
    test1() merged into this branch
+   test1 reused does not produce the same message as non-cloned test1
 
 * todo
 ** mark all parents (recursively) that have first-time-handlers somewhere inside
-** cloning producer output pin joins pin to schematic, not produce part
-   need to clone pins when making a part, then need to re-find those pins when creating sources and receivers
-   test1 produces incorrect output
