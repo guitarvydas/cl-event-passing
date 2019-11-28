@@ -15,6 +15,8 @@
     (@add-part-to-schematic top-schem child)
 
     (@add-receiver-to-wire wire200 (e/part::get-output-pin top-schem :top-schem-out))
+    (let ((opin-of-reused (e/part::get-output-pin child :schem-out)))
+      (@add-source-to-schematic top-schem opin-of-reused wire200))
 
     (@start-dispatcher)))
 
