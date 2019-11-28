@@ -53,10 +53,13 @@
                                                new-part))
                                          (internal-parts proto)))
       ;; sources must be cloned after internal-parts has been cloned, sources and wires refer to self or to internal-parts
-      (setf (sources cloned) (mapcar #'(lambda (s)
-                                      (e/source::clone-with-part cloned s))
-                                  (sources proto)))
-      cloned)))
+      ;; cloned.internal-parts maps 1:1 with proto.internal-parts
+      (let ((proto-sources (sources proto))
+            (cloned-sources (sources cloned)))
+        (setf (sources cloned) (mapcar #'(lambda (s)
+                                           (e/source::clone-with-mapping proto-sources cloned-sources cloned s))
+                                       (sources proto)))
+        cloned))))
   
 (defmethod make-in-pins ((pin-parent part) lis)
   (flet ((symbol-or-string-p (s)
@@ -195,3 +198,10 @@
 (defmethod has-output-p ((self part))
   (not (null (output-queue self))))
 
+(defmethod map-part ((proto-part part) proto-map cloned-map)
+  ;; find cloned part corresponding to proto-part, given a list of proto parts and a corresponding list
+  ;; of cloned parts
+  (assert (= (length proto-map) (length cloned-map)))
+  (let ((index (position proto-part proto-map)))
+    (assert index) ;; can't happen - we must be able to find the proto-part in the proto-map
+    (nth index cloned-map)))
