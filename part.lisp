@@ -54,8 +54,8 @@
                                          (internal-parts proto)))
       ;; sources must be cloned after internal-parts has been cloned, sources and wires refer to self or to internal-parts
       ;; cloned.internal-parts maps 1:1 with proto.internal-parts
-      (let ((proto-sources (sources proto))
-            (cloned-sources (sources cloned)))
+      (let ((proto-sources (internal-parts proto))
+            (cloned-sources (internal-parts cloned)))
         (setf (sources cloned) (mapcar #'(lambda (s)
                                            (e/source::clone-with-mapping proto-sources cloned-sources s))
                                        (sources proto)))
