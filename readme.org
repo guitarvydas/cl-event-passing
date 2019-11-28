@@ -49,9 +49,7 @@
 * branches
 ** master
 ** pt-20191124-reuse - make reusable components (stored in other directories)
-** pt-20191124b-self - make self/child sources and self/child receivers
-   getting rid of self/child-source and self/child-receiver
+
 
 * todo
-** get rid of macro-support/make-source-coming-from-outside() and make-source-from-child()
 
