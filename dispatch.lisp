@@ -20,7 +20,6 @@
       (return-from all-parts-have-empty-output-queues-p nil)))
   t)
 
-
 (defmethod memo-part ((part e/part:part))
   (e/util:ensure-not-in-list *all-parts* part #'equal
                              "part ~S already on dispatcher list" (e/part::name part))

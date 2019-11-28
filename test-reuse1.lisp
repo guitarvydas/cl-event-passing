@@ -24,4 +24,5 @@
 (defun cl-user::rtest()
   ;; convenience function - to be deleted
   (cl-event-passing-user::test1)
+  (format *standard-output* "~&about to tune test-reuse1~%")
   (cl-event-passing-user::test-reuse1))
