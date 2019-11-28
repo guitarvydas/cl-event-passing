@@ -26,4 +26,3 @@
     (@add-source-to-schematic schem (e/part::get-output-pin child :main-schem-out) wire-child-to-main)
 
     (@send schem (e/part::get-input-pin schem :in) "reuse test")))
-
