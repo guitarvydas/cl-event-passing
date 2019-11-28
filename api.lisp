@@ -88,7 +88,10 @@
     (e/dispatch::start-dispatcher)))
 
 (defun @start-dispatcher ()
-  (e/dispatch::start-dispatcher))
+  (unless (e/dispatch::dispatcher-active-p)
+    (e/dispatch::run-first-times)
+    (e/util:logging e)
+    (e/dispatch::start-dispatcher)))
 
 (defun @history ()
   (e/util::get-logging))
