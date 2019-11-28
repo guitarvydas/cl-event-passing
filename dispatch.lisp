@@ -36,11 +36,9 @@
               (progn
                 (e/util::logging "output to console")
                 (print (e/event:data out-event) *standard-output*))
-              #+nil(format *standard-output* "~&part ~S outputs ~S on pin ~S~%"
-                      (e/part::name part) (e/event:data out-event) (e/event:pin out-event))
             (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
               (when source ;; nil if NC
-                (e/source::deliver-event source out-event)
+                (e/source::source-event source out-event)
                 (dispatch-output-queues))))))))) ;; if any part had an output, start all over again (this is loop - tail recursive?)
 
 
