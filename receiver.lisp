@@ -19,6 +19,11 @@
 (defun new-receiver (&key (pin nil))
   (make-instance 'receiver :receiver-pin pin))
 
+(defmethod print-object ((obj receiver) out)
+  (format out "receiver<")
+  (print-object (reciever-pin obj) out)
+  (format out "~S>" (debug-name obj)))
+
 (defmethod clone-with-part ((cloned-part e/part:part) (proto receiver))
   (let ((new (make-instance 'receiver)))
     (setf (receiver-pin new) (e/pin::dup-pin cloned-part (receiver-pin proto)))

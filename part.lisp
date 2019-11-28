@@ -17,9 +17,11 @@
   ((sources :accessor sources :initform nil) ;; a list of Sources (which contain a list of Wires which contain a list of Receivers)
    (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
 
-(defmethod print-object ((obj part) out)
-  (print-unreadable-object (obj out :type t)
-    (format out "~S" (name obj))))
+(defmethod print-object ((obj code) out)
+  (format out "code<~S>" (name obj)))
+
+(defmethod print-object ((obj schematic) out)
+  (format out "schematic<~S>" (name obj)))
 
 (defun clone-part (self proto)
   (setf (input-queue self) nil)

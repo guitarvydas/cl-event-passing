@@ -9,6 +9,9 @@
 (defun new-wire (&key (name ""))
   (make-instance 'wire :name name))
 
+(defmethod print-object ((obj wire) out)
+  (format out "wire<~S>" (debug-name obj)))
+
 (defmethod clone-with-part ((cloned-part e/part:part) (proto wire))
   (let ((new (make-instance 'wire :name (debug-name proto))))
     (setf (debug-name new) (format nil "cloned wire ~S" (debug-name proto)))
