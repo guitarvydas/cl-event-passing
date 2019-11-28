@@ -10,9 +10,9 @@
                             :name "reused test1" :output-pins '(:schem-out)))
         (wire2 (@new-wire :name "wire200")))
 
-    (@top-level-schematic schem)
+    (@top-level-schematic top-schem)
 
-    (@add-part-to-schematic schem child)
+    (@add-part-to-schematic top-schem child)
 
     (@add-receiver-to-wire wire200 (e/part::get-output-pin top-schem :top-schem-out))
 
