@@ -23,11 +23,11 @@
   (print-object (source-pin obj) out)
   (format out "]/~a>" (debug-name obj)))
 
-(defmethod clone-with-mapping (proto-map cloned-map (proto source))
+(defmethod clone-with-mapping (proto-self proto-map cloned-self cloned-map (proto source))
   ;; part and its pins have been cloned, now use these existing pins to make new sources and wires
   (make-instance 'source
-                :source-pin (e/pin::dup-pin proto-map cloned-map (source-pin proto))
-                :wire (e/wire::clone-with-mapping proto-map cloned-map (wire proto))
+                :source-pin (e/pin::dup-pin proto-self proto-map cloned-self cloned-map (source-pin proto))
+                :wire (e/wire::clone-with-mapping proto-self proto-map cloned-self cloned-map (wire proto))
                 :debug-name (format nil "cloned source ~S" (debug-name proto))))
 
 (defun new-source (&key (pin nil) (wire nil))

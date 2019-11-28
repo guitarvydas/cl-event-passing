@@ -24,9 +24,9 @@
   (print-object (receiver-pin obj) out)
   (format out "/~a>" (debug-name obj)))
 
-(defmethod clone-with-mapping (proto-map cloned-map (proto receiver))
+(defmethod clone-with-mapping (proto-self proto-map cloned-self cloned-map (proto receiver))
   (let ((new (make-instance 'receiver)))
-    (setf (receiver-pin new) (e/pin::dup-pin proto-map cloned-map (receiver-pin proto)))
+    (setf (receiver-pin new) (e/pin::dup-pin proto-self proto-map cloned-self cloned-map (receiver-pin proto)))
     (setf (debug-name new) (format nil "cloned receiver ~S" (debug-name proto)))
     new))
 

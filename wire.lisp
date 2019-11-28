@@ -12,11 +12,11 @@
 (defmethod print-object ((obj wire) out)
   (format out "<wire[~a]>" (debug-name obj)))
 
-(defmethod clone-with-mapping (proto-map cloned-map (proto wire))
+(defmethod clone-with-mapping (proto-self proto-map cloned-self cloned-map (proto wire))
   (let ((new (make-instance 'wire :name (debug-name proto))))
     (setf (debug-name new) (format nil "cloned wire ~S" (debug-name proto)))
     (setf (receivers new) (mapcar #'(lambda (proto-receiver)
-                                      (e/receiver::clone-with-mapping proto-map cloned-map proto-receiver))
+                                      (e/receiver::clone-with-mapping proto-self proto-map cloned-self cloned-map proto-receiver))
                                   (receivers proto)))
     new))
 

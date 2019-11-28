@@ -35,7 +35,7 @@
                                                 (e/pin::clone-with-part self pin))
                                             (namespace-input-pins proto)))
   (setf (namespace-output-pins self) (mapcar #'(lambda (pin)
-                                                (e/pin::clone-with-part self pin))
+                                                 (e/pin::clone-with-part self pin))
                                              (namespace-output-pins proto)))
   self)
  
@@ -57,7 +57,7 @@
       (let ((proto-sources (internal-parts proto))
             (cloned-sources (internal-parts cloned)))
         (setf (sources cloned) (mapcar #'(lambda (s)
-                                           (e/source::clone-with-mapping proto-sources cloned-sources s))
+                                           (e/source::clone-with-mapping proto proto-sources cloned cloned-sources s))
                                        (sources proto)))
         cloned))))
   
@@ -198,10 +198,14 @@
 (defmethod has-output-p ((self part))
   (not (null (output-queue self))))
 
-(defmethod map-part ((proto-part part) proto-map cloned-map)
+(defmethod map-part (proto-self proto-map cloned-self cloned-map (proto-part part))
   ;; find cloned part corresponding to proto-part, given a list of proto parts and a corresponding list
   ;; of cloned parts
-  (assert (= (length proto-map) (length cloned-map)))
-  (let ((index (position proto-part proto-map)))
-    (assert index) ;; can't happen - we must be able to find the proto-part in the proto-map
-    (nth index cloned-map)))
+  ;; edge case: if proto-part == proto-self then return cloned-self
+  (if (eq proto-part proto-self)
+      cloned-self
+    (progn
+      (assert (= (length proto-map) (length cloned-map)))
+      (let ((index (position proto-part proto-map)))
+        (assert index) ;; can't happen - we must be able to find the proto-part in the proto-map
+        (nth index cloned-map)))))

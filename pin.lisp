@@ -27,15 +27,15 @@
                  :pin-parent cloned-part
                  :debug-name (format nil "cloned output pin ~S" (debug-name proto))))
 
-(defmethod dup-pin (proto-map cloned-map (proto input-pin))
-  (let ((proto-part (pin-parent proto)))
-    (let ((cloned-part (e/part::map-part proto-part proto-map cloned-map)))
-      (e/part::get-input-pin cloned-part (pin-name proto)))))
+(defmethod dup-pin (proto-self proto-map cloned-self cloned-map (proto-pin input-pin))
+  (let ((proto-part (pin-parent proto-pin)))
+    (let ((cloned-part (e/part::map-part proto-self proto-map cloned-self cloned-map (pin-parent proto-pin))))
+      (e/part::get-input-pin cloned-part (pin-name proto-pin)))))
 
-(defmethod dup-pin (proto-map cloned-map (proto output-pin))
-  (let ((proto-part (pin-parent proto)))
-    (let ((cloned-part (e/part::map-part proto-part proto-map cloned-map)))
-      (e/part::get-output-pin cloned-part (pin-name proto)))))
+(defmethod dup-pin (proto-self proto-map cloned-self cloned-map (proto-pin output-pin))
+  (let ((proto-part (pin-parent proto-pin)))
+    (let ((cloned-part (e/part::map-part proto-self proto-map cloned-self cloned-map (pin-parent proto-pin))))
+      (e/part::get-output-pin cloned-part (pin-name proto-pin)))))
 
 (defmethod input-p ((self pin))
   (eq 'input-pin (type-of self)))
