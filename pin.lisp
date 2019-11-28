@@ -16,7 +16,7 @@
 
 (defun new-pin (&key (pin-name "") (direction :in) pin-parent) ;; parent is unbound by default - always an error if parent is not bound (later)
   (make-instance
-   (if (eq :in direction)
+   (if (eq :input direction)
        'input-pin
      'output-pin)
    :pin-name pin-name
@@ -36,12 +36,7 @@
 
 (defmethod deliver-event ((self output-pin) (e e/event:event))
   (let ((part (pin-parent self)))
-    (let ((parent-of-part (and part (e/part::parent-schem part))))
-      (if (and part parent-of-part)
-          (push e (e/part::output-queue part))
-        (if parent-of-part
-            (assert nil) ;; can't happen
-          (format *standard-output* "~S" (e/event:data e))))))) ;; else - top level output to stdout
+    (push e (e/part::output-queue part))))
 
 (defmethod ensure-sanity (schem (self pin))
   (e/schematic::ensure-sanity schem (pin-parent self)))
