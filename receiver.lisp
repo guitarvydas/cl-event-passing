@@ -19,18 +19,11 @@
 (defun new-receiver (&key (pin nil))
   (make-instance 'receiver :receiver-pin pin))
 
-(defmethod clone-with-parent ((cloned-parent e/part:part) (proto inbound-receiver))
-  (let ((new (make-instance 'inbound-receiver)))
+(defmethod clone-with-parent ((cloned-parent e/part:part) (proto receiver))
+  (let ((new (make-instance 'receiver)))
     (setf (receiver-pin new) (e/pin::clone-with-parent cloned-parent (receiver-pin proto)))
     (setf (debug-name new) (format nil "cloned receiver ~S" (debug-name proto)))
     new))
-
-(defmethod clone-with-parent ((cloned-parent e/part:part) (proto outbound-receiver))
-  (let ((new (make-instance 'outbound-receiver)))
-    (setf (receiver-pin new) (e/pin::clone-with-parent cloned-parent (receiver-pin proto)))
-    (setf (debug-name new) (format nil "cloned receiver ~S" (debug-name proto)))
-    new))
-
 
 ;; two receivers are equal if they have the same type, same part and same pin symbol
 
