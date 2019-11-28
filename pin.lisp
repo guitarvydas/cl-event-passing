@@ -21,6 +21,12 @@
                  :pin-parent cloned-part
                  :debug-name (format nil "cloned output pin ~S" (debug-name proto))))
 
+(defmethod dup-pin (cloned-part (proto input-pin))
+  (e/part::get-input-pin cloned-part (pin-name proto)))
+
+(defmethod dup-pin (cloned-part (proto output-pin))
+  (e/part::get-output-pin cloned-part (pin-name proto)))
+
 (defmethod input-p ((self pin))
   (eq 'input-pin (type-of self)))
 

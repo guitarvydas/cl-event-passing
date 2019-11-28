@@ -21,7 +21,7 @@
 (defmethod clone-with-part ((cloned-part e/part:part) (proto source))
   ;; part and its pins have been cloned, now use these existing pins to make new sources and wires
   (make-instance 'source
-                :source-pin (e/pin::clone-with-part cloned-part (source-pin proto))
+                :source-pin (e/pin::dup-pin cloned-part (source-pin proto))
                 :wire (e/wire::clone-with-part cloned-part (wire proto))
                 :debug-name (format nil "cloned source ~S" (debug-name proto))))
 

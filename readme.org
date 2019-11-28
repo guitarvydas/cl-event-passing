@@ -57,3 +57,4 @@
 ** mark all parents (recursively) that have first-time-handlers somewhere inside
 ** cloning producer output pin joins pin to schematic, not produce part
    need to clone pins when making a part, then need to re-find those pins when creating sources and receivers
+   test1 produces incorrect output
