@@ -50,18 +50,7 @@
   (setf (e/part::input-handler part) fn))
 
 (defmethod @add-receiver-to-wire ((wire e/wire:wire) (pin e/pin:pin))
-  (if (e/pin::input-p pin)
-      (-@add-inbound-receiver-to-wire wire (e/pin::pin-parent pin) pin)
-    (-@add-outbound-receiver-to-wire wire (e/pin::pin-parent pin) pin)))
-
-;; -@ means deprecated - we've created a smarter (non-atomic) api call (using more atomic -@ calls)
-(defmethod -@add-inbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin)
-  (let ((rcv (e/receiver::new-inbound-receiver :pin pin)))
-    (e/wire::ensure-receiver-not-already-on-wire wire rcv)
-    (e/wire::add-receiver wire rcv)))
-
-(defmethod -@add-outbound-receiver-to-wire ((wire e/wire:wire) (part e/part:part) pin)
-  (let ((rcv (e/receiver::new-outbound-receiver :pin pin)))
+  (let ((rcv (e/receiver::new-receiver :pin pin)))
     (e/wire::ensure-receiver-not-already-on-wire wire rcv)
     (e/wire::add-receiver wire rcv)))
 

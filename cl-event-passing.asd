@@ -9,7 +9,7 @@
                         :pathname "./"
                         :components ((:file "package")
                                      (:file "util" :depends-on ("package"))
-                                     (:file "pin" :depends-on ("package"))
+                                     (:file "pin" :depends-on ("package" "event"))
                                      (:file "part" :depends-on ("package" "pin"))
                                      (:file "schematic" :depends-on ("package" "pin" "part" "source" "event"))
                                      (:file "event" :depends-on ("package"))

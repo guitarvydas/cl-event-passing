@@ -53,26 +53,37 @@
       cloned)))
   
 (defmethod make-in-pins ((pin-parent part) lis)
-  (mapcar #'(lambda (sym-or-pin)
-	      (if (or (symbolp sym-or-pin)
-                      (stringp sym-or-pin))
-		  (e/pin::new-pin :pin-name sym-or-pin :direction :input :pin-parent pin-parent)
-		  (if (and (eq 'e/pin:pin (type-of sym-or-pin))
-			   (e/pin::input-p sym-or-pin))
-		      sym-or-pin
-		      (error (format nil "input pin given as ~S but must be a symbol, string or an input pin" sym-or-pin)))))
-	  lis))
+  (flet ((symbol-or-string-p (s)
+           (or
+            (symbolp s)
+            (stringp s)))
+         (already-an-input-pin-p (s)
+           (and
+            (eq 'e/pin:pin (type-of s))
+            (e/pin::input-p s))))
+    (mapcar #'(lambda (s)
+                (if (symbol-or-string-p s)
+                    (e/pin::new-pin :pin-name s :direction :input :pin-parent pin-parent)
+                  (if (already-an-input-pin-p s)
+                      s
+                    (error (format nil "input pin given as ~S but must be a symbol, string or an input pin" s)))))
+            lis)))
 
 (defmethod make-out-pins ((pin-parent part) lis)
-  (mapcar #'(lambda (sym-or-pin)
-	      (if (or (symbolp sym-or-pin)
-                      (stringp sym-or-pin))
-		  (e/pin::new-pin :pin-name sym-or-pin :direction :output :pin-parent pin-parent)
-		  (if (and (eq 'e/pin:pin (type-of sym-or-pin))
-			   (e/pin::output-p sym-or-pin))
-		      sym-or-pin
-		      (error (format nil "input pin given as ~S but must be a symbol, string or an output pin" sym-or-pin)))))
-	  lis))
+  (flet ((symbol-or-string-p (s)
+           (or
+            (symbolp s)
+            (stringp s)))
+         (already-an-output-pin-p (s)
+           (and (eq 'e/pin:pin (type-of s))
+                (e/pin::output-p s))))
+    (mapcar #'(lambda (s)
+                (if (symbol-or-string-p s)
+                    (e/pin::new-pin :pin-name s :direction :output :pin-parent pin-parent)
+                  (if (already-an-output-pin-p s)
+                      s
+                    (error (format nil "output pin given as ~S but must be a symbol, string or an output pin" s)))))
+            lis)))
 
 (defun new-code (&key (name "") (input-pins nil) (output-pins nil))
   (let ((self (make-instance 'code :name name)))
@@ -171,3 +182,10 @@
 
 (defmethod ensure-congruent-output-pins ((self part) output-pins)
   (ensure-congruent-in-namespace self (namespace-output-pins self) output-pins))
+
+(defmethod has-parent-p ((self part))
+  (not (null (parent-schem self))))
+
+(defmethod has-output-p ((self part))
+  (not (null (output-queue self))))
+

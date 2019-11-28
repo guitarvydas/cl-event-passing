@@ -43,39 +43,38 @@
           (append one (list compiled-tail))
         one)))
 
-(defun compile-inputs (part-name input-list)
-  (mapcar #'(lambda (id)
-              `(add-input-for-part ,part-name ,id))
-          input-list))
-
-(defun compile-outputs (part-name output-list)
-  (mapcar #'(lambda (id)
-              `(add-output-for-part ,part-name ,id))
-          output-list))
-
 (defun compile-parts (schem-name part-list)
   (mapcar #'(lambda (id)
               `(cl-event-passing-user:@add-part-to-schematic ,schem-name ,id))
           part-list))
 
-(defun flatten (lis)
-  (when lis
-    (append (car lis) (flatten (cdr lis)))))
-
 (defun make-receiver (schem-name pair)
-  (if (eq ':self (first pair))
-      `(make-outbound-receiver ,schem-name ,(second pair))
-    `(make-inbound-receiver ,(first pair) ,(second pair))))
+  (if (eq :self (first pair))
+      `(e/receiver::new-receiver
+        :pin (e/pin::new-pin
+              :pin-parent ,schem-name
+              :pin-name ,(second pair)
+              :direction :output))
+    `(e/receiver::new-receiver
+      :pin (e/pin::new-pin
+            :pin-parent ,(first pair)
+            :pin-name ,(second pair)
+            :direction :input))))
 
 (defun make-source (schem-name pair)
-  (if (eq ':self (first pair))
-      `(make-source-coming-from-outside ,schem-name ,(second pair))
-    `(make-source-from-child ,(first pair) ,(second pair))))
+  (if (eq :self (first pair))
+      `(e/source::new-source :pin (e/pin::new-pin
+                                   :pin-parent ,schem-name
+                                   :pin-name ,(second pair)
+                                   :direction :input))
+    `(e/source::new-source :pin (e/pin::new-pin
+                                 :pin-parent ,(first pair)
+                                 :pin-name ,(second pair)
+                                 :direction :output))))
 
 (defun compile-nets (schem-name net-list)
   (let ((wires (mapcar #'(lambda (net)
                                     (assert (= 2 (length net)))
-                                    ;; if contains SELF, then outgoing receiver, else ingoing
                                     `(,(gensym "WIRE-") (make-wire (list ,@(mapcar #'(lambda (part-pin-pair)
                                                                                        (make-receiver schem-name part-pin-pair))
                                                                                    (second net))))))

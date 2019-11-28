@@ -33,21 +33,13 @@
                             (e/part::get-input-pin child-schem :child-schem-in)) ;; part / pin
     (@add-receiver-to-wire  wire-child-to-flow-through-1
                             (e/part::get-input-pin flow-through-1 :ft-in))
-    #+nil(@add-inbound-receiver-to-wire  wire-flow-through-1-to-flow-through-2
-                                    flow-through-2 :ft-in)
 
     ;; wire that go OUT OF parts
-    #+nil(@add-outbound-receiver-to-wire  wire-flow-through-2-to-child
-                                     child-schem :child-schem-out)
-    #+nil(@add-outbound-receiver-to-wire  wire-child-to-main
-                                     main-schem :main-schem-out)
-
+    ;; none
 
     (@add-source-to-schematic main-schem (e/part::get-input-pin main-schem :main-schem-in) wire-main-to-child)
     (@add-source-to-schematic child-schem (e/part::get-input-pin child-schem :child-schem-in) wire-child-to-flow-through-1)
     (@add-source-to-schematic child-schem (e/part::get-output-pin flow-through-1 :ft-out) wire-flow-through-1-to-flow-through-2)
-    #+nil(@add-source-to-schematic child-schem (e/part::get-output-pin flow-through-2 :ft-out) wire-flow-through-2-to-child)
-    #+nil(@add-source-to-schematic main-schem (e/part::get-output-pin child-schem :child-schem-out) wire-child-to-main)
 
     (@send main-schem (e/part::get-input-pin main-schem :main-schem-in) "test 9")))
   

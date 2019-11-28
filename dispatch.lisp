@@ -28,21 +28,21 @@
   (assert nil)) ;; can't happen
 
 (defun dispatch-output-queues ()
-  (dolist (part *all-parts*)
-    (when (e/part:output-queue part)
-      (let ((out-list (e/part::output-queue-as-list-and-delete part)))
-        (dolist (out-event out-list)
-          (if (cl-event-passing-user::is-top-level-p part)
-              (progn
-                (e/util::logging "output to console")
-                (print (e/event:data out-event) *standard-output*))
-              #+nil(format *standard-output* "~&part ~S outputs ~S on pin ~S~%"
-                      (e/part::name part) (e/event:data out-event) (e/event:pin out-event))
-            (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
-              (when source ;; nil if NC
-                (e/source::deliver-event source out-event)
-                (dispatch-output-queues))))))))) ;; if any part had an output, start all over again (this is loop - tail recursive?)
-
+  (let ((state :keep-looping))
+    (@:loop
+      (@:exit-when (eq state :no-more-looping))
+      (setf state :no-more-looping)
+      (dolist (part *all-parts*)
+        (when (e/part::has-output-p part)
+          (let ((out-list (e/part::output-queue-as-list-and-delete part)))
+            (setf state :keep-looping)
+            (dolist (out-event out-list) ;; for every output event...
+              (if (e/part::has-parent-p part)    ;;   if part has a parent schematic, get the associated Source
+                  (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
+                    (when source ;; source is NIL if the pin is N.C. (no connection)
+                      (e/source::source-event source out-event)))
+                ;; else this is the top-level part (no parent schem), so just printf the event data
+                (format *standard-output* "~S" (e/event:data out-event))))))))))
 
 (defun run-first-times ()
   (dolist (part *all-parts*)

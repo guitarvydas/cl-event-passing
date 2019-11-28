@@ -72,9 +72,7 @@
   (:export
    #:receiver-part
    #:receiver-pin
-   #:receiver
-   #:inbound-receiver
-   #:outbound-receiver))
+   #:receiver))
 
 (defpackage cl-event-passing-schematic
   (:nicknames :e/schematic)
@@ -115,5 +113,4 @@
   (:export
    #:pin
    #:pin-name
-   #:direction
    #:pin-parent))

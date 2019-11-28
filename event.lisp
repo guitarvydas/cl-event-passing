@@ -10,5 +10,3 @@
 (defmethod sym ((e e/event:event))
   (e/pin::pin-name (event-pin e)))
 
-(defmethod dir ((e e/event:event))
-  (e/pin::direction (event-pin e)))

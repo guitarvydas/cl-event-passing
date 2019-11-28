@@ -13,23 +13,41 @@
                  :pin-parent cloned-parent
                  :debug-name (format nil "cloned pin ~S" (debug-name proto))))
 
+(defclass input-pin (pin) ())
+
+(defclass output-pin (pin) ())
 
 (defmethod input-p ((self pin))
-  (eq :input (direction self)))
+  (eq 'input-pin (type-of self)))
 
 (defmethod output-p ((self pin))
-  (eq :output (direction self)))
+  (eq 'output-pin (type-of self)))
 
-(defun new-pin (&key (pin-name "") (direction :in) pin-parent) ;; parent unbound by default - always an error if this happens
-  (make-instance 'pin :pin-name pin-name :direction direction :pin-parent pin-parent))
+(defun new-pin (&key (pin-name "") (direction :in) pin-parent) ;; parent is unbound by default - always an error if parent is not bound (later)
+  (make-instance
+   (if (eq :input direction)
+       'input-pin
+     (if (eq :output direction)
+         'output-pin
+       (error (format nil "pin direction must be specified as :input or :output, but ~S was given" direction))))
+   :pin-name pin-name
+   :pin-parent pin-parent))
 
 (defmethod pin-equal ((self pin) (other pin))
   (or (eq self other)
       (and
        (or (and (symbolp (pin-name self)) (equal (pin-name self) (pin-name other)))
            (and (stringp (pin-name self)) (string= (pin-name self) (pin-name other))))
-       (eq (direction self) (direction other))
+       (eq (type-of self) (type-of other))
        (eq (pin-parent self) (pin-parent other)))))
+
+(defmethod deliver-event ((self input-pin) (e e/event:event))
+  (let ((part (pin-parent self)))
+    (push e (e/part::input-queue part))))
+
+(defmethod deliver-event ((self output-pin) (e e/event:event))
+  (let ((part (pin-parent self)))
+    (push e (e/part::output-queue part))))
 
 (defmethod ensure-sanity (schem (self pin))
   (e/schematic::ensure-sanity schem (pin-parent self)))
