@@ -17,13 +17,17 @@
   ((sources :accessor sources :initform nil) ;; a list of Sources (which contain a list of Wires which contain a list of Receivers)
    (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
 
+(defmethod print-object ((obj part) out)
+  (print-unreadable-object (obj out :type t)
+    (format out "~S" (name obj))))
+
 (defun clone-part (self proto)
   (setf (input-queue self) nil)
   (setf (output-queue self) nil)
   (setf (busy-flag self) nil)
   (setf (first-time-handler self) (first-time-handler proto))
   (setf (input-handler self) (input-handler proto))
-  (setf  (debug-name self) (format nil "cloned ~S" (debug-name proto)))
+  (setf  (debug-name self) (format nil "cloned ~a" (debug-name proto)))
   ; (setf parent-schem ... fixed up later
   (setf (namespace-input-pins self) (mapcar #'(lambda (pin)
                                                 (e/pin::clone-with-part self pin))
