@@ -9,11 +9,11 @@
 (defun new-wire (&key (name ""))
   (make-instance 'wire :name name))
 
-(defmethod clone-with-parent ((cloned-parent e/part:part) (proto wire))
+(defmethod clone-with-part ((cloned-part e/part:part) (proto wire))
   (let ((new (make-instance 'wire :name (debug-name proto))))
     (setf (debug-name new) (format nil "cloned wire ~S" (debug-name proto)))
     (setf (receivers new) (mapcar #'(lambda (proto-receiver)
-                                      (e/receiver::clone-with-parent cloned-parent proto-receiver))
+                                      (e/receiver::clone-with-part cloned-part proto-receiver))
                                   (receivers proto)))
     new))
 

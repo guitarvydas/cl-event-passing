@@ -26,10 +26,10 @@
   (setf  (debug-name self) (format nil "cloned ~S" (debug-name proto)))
   ; (setf parent-schem ... fixed up later
   (setf (namespace-input-pins self) (mapcar #'(lambda (pin)
-                                                (e/pin::clone-with-parent self pin))
+                                                (e/pin::clone-with-part self pin))
                                             (namespace-input-pins proto)))
   (setf (namespace-output-pins self) (mapcar #'(lambda (pin)
-                                                (e/pin::clone-with-parent self pin))
+                                                (e/pin::clone-with-part self pin))
                                              (namespace-output-pins proto)))
   self)
  
@@ -48,7 +48,7 @@
                                          (internal-parts proto)))
       ;; sources must be cloned after internal-parts has been cloned, sources and wires refer to self or to internal-parts
       (setf (sources cloned) (mapcar #'(lambda (s)
-                                      (e/source::clone-with-parent cloned s))
+                                      (e/source::clone-with-part cloned s))
                                   (sources proto)))
       cloned)))
   

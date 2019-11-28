@@ -9,16 +9,16 @@
 
 (defclass output-pin (pin) ())
 
-(defmethod clone-with-parent (cloned-parent (proto input-pin))
+(defmethod clone-with-part (cloned-part (proto input-pin))
   (make-instance 'input-pin
                  :pin-name (pin-name proto)
-                 :pin-parent cloned-parent
+                 :pin-parent cloned-part
                  :debug-name (format nil "cloned input pin ~S" (debug-name proto))))
 
-(defmethod clone-with-parent (cloned-parent (proto output-pin))
+(defmethod clone-with-part (cloned-part (proto output-pin))
   (make-instance 'output-pin
                  :pin-name (pin-name proto)
-                 :pin-parent cloned-parent
+                 :pin-parent cloned-part
                  :debug-name (format nil "cloned output pin ~S" (debug-name proto))))
 
 (defmethod input-p ((self pin))

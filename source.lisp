@@ -18,10 +18,11 @@
    (wire :accessor wire :initarg :wire :initform nil)
    (debug-name :accessor debug-name :initarg :debug-name :initform "")))
 
-(defmethod clone-with-parent ((cloned-parent e/part:part) (proto source))
+(defmethod clone-with-part ((cloned-part e/part:part) (proto source))
+  ;; part and its pins have been cloned, now use these existing pins to make new sources and wires
   (make-instance 'source
-                :source-pin (e/pin::clone-with-parent cloned-parent (source-pin proto))
-                :wire (e/wire::clone-with-parent cloned-parent (wire proto))
+                :source-pin (e/pin::clone-with-part cloned-part (source-pin proto))
+                :wire (e/wire::clone-with-part cloned-part (wire proto))
                 :debug-name (format nil "cloned source ~S" (debug-name proto))))
 
 (defun new-source (&key (pin nil) (wire nil))
