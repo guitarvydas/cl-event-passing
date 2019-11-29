@@ -61,11 +61,11 @@
        (eq (type-of self) (type-of other))
        (eq (pin-parent self) (pin-parent other)))))
 
-(defmethod deliver-event ((self input-pin) (e e/event:event))
+(defmethod receive-event ((self input-pin) (e e/event:event))
   (let ((part (pin-parent self)))
     (push e (e/part::input-queue part))))
 
-(defmethod deliver-event ((self output-pin) (e e/event:event))
+(defmethod receive-event ((self output-pin) (e e/event:event))
   (let ((part (pin-parent self)))
     (push e (e/part::output-queue part))))
 
