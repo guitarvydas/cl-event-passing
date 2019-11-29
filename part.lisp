@@ -23,11 +23,15 @@
 (defmethod print-object ((obj schematic) out)
   (format out "<schematic[~a]>" (name obj)))
 
+(defmethod list-parts ((self (eql nil)))
+  nil)
+
 (defmethod list-parts ((self code))
   (list self))
 
 (defmethod list-parts ((self schematic))
-  (cons self (mapcar #'list-parts (internal-parts self))))
+  (let ((lists (mapcar #'list-parts (internal-parts self))))
+    (cons self (apply #'append lists))))
 
 (defun clone-part (self proto)
   (setf (input-queue self) nil)
@@ -109,7 +113,9 @@
     self)))
 
 (defun reuse-part (proto &key (name ""))
-  (clone proto))
+  (let ((cloned (clone proto)))
+    (let ((parts-list (e/part::list-parts cloned)))
+      (mapc #'e/dispatch::memo-part parts-list))))
   
 (defgeneric busy-p (self))
 
