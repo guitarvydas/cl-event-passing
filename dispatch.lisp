@@ -52,9 +52,7 @@
 (defun run-first-times ()
   (dolist (part *all-parts*)
     (let ((fn (e/part:first-time-handler part)))
-      (format *standard-output* "~&checking first time of ~S ~S~%" part fn)
       (when fn
-        (format *standard-output* "~&calling first time of ~S~%" part)
         (funcall fn part)))))
 
 (defun run ()
