@@ -22,6 +22,7 @@
     (@start-dispatcher)))
 
 (defmethod test1-produce-first-time ((self e/part:part))
+  (format *standard-output* "~&test1 produce first time~%")
   (@send self (e/part::get-output-pin self :producer-out) "hello from test 1"))
 
   
