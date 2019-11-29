@@ -21,9 +21,8 @@
   t)
 
 (defmethod memo-part ((part e/part:part))
-  (e/util:ensure-not-in-list *all-parts* part #'equal
-                             "part ~S already on dispatcher list" (e/part::name part))
-  (push part *all-parts*))
+  (unless (e/util::in-list-p *all-parts* part #'equal)
+    (push part *all-parts*)))
 
 (defun dispatch-single-input ()
   (dolist (part *all-parts*)
