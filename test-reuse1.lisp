@@ -19,9 +19,3 @@
       (@add-source-to-schematic top-schem opin-of-reused wire200))
 
     (@start-dispatcher)))
-
-  
-(defun cl-user::rtest()
-  ;; convenience function - to be deleted
-  (cl-event-passing-user::test1)
-  (cl-event-passing-user::test-reuse1))
