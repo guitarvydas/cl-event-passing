@@ -20,7 +20,13 @@
              (:part
               (destructuring-bind (code-name inputs outputs)
                   (rest def)
-                `(let ((,part-name (cl-event-passing-user:@reuse-part :name ',code-name :input-pins ',inputs :output-pins ',outputs))))))
+                `(let ((,part-name (cl-event-passing-user:@reuse-part
+                                    :name ',code-name
+                                    :input-pins ',inputs
+                                    :output-pins ',outputs)))
+                   (let ((parts-list (e/part::list-parts ,part-name)))
+                     (mapc #'e/dispatch::memo-part parts-list)))))
+
              (:code
               (destructuring-bind (code-name inputs outputs input-handler &optional (first-time-handler nil))
                   (rest def)
