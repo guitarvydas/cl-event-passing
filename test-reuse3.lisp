@@ -12,8 +12,3 @@
 
     (@start-dispatcher)))
   
-(defun cl-user::rtest()
-  ;; convenience function - to be deleted
-  (cl-event-passing-user::test1)
-  (test-reuse3))
-
