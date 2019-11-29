@@ -176,7 +176,7 @@
 
 (defmethod exec1 ((self part))
   ;; execute exactly one input event to completion, then RETURN
-  (let ((event (pop (input-queue self))))
+  (let ((event (dequeue-input self)))
     (setf (busy-flag self) t)
     (e/util::logging self)
     (funcall (input-handler self) self event)
@@ -223,3 +223,10 @@
       (let ((index (position proto-part proto-map)))
         (assert index) ;; can't happen - we must be able to find the proto-part in the proto-map
         (nth index cloned-map)))))
+
+(defmethod dequeue-input ((self part))
+  (let ((e ((first (last (input-queue self))))))
+    (setf (input-queue self) (butlast (input-queue self)))
+    e))
+
+        
