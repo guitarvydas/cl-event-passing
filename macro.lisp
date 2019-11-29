@@ -18,10 +18,10 @@
            (ecase (car def)
            
              (:part
-              (destructuring-bind (code-name inputs outputs)
+              (destructuring-bind (reused-net-name new-part-name inputs outputs)
                   (rest def)
-                `(let ((,part-name (cl-event-passing-user:@reuse-part
-                                    :name ',code-name
+                `(let ((,new-part-name (cl-event-passing-user:@reuse-part
+                                    :name ',new-part-name
                                     :input-pins ',inputs
                                     :output-pins ',outputs))))))
 
