@@ -20,10 +20,11 @@
              (:part
               (destructuring-bind (reused-net-name new-part-name inputs outputs)
                   (rest def)
-                `(let ((,new-part-name (cl-event-passing-user:@reuse-part
-                                    :name ',new-part-name
-                                    :input-pins ',inputs
-                                    :output-pins ',outputs))))))
+                `(let ((,new-part-name
+                        (cl-event-passing-user:@reuse-part ,reused-net-name
+                         :name ',new-part-name
+                         :input-pins ',inputs
+                         :output-pins ',outputs))))))
 
              (:code
               (destructuring-bind (code-name inputs outputs input-handler &optional (first-time-handler nil))
