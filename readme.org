@@ -37,6 +37,7 @@
 * Incoming vs Outgoing
 ** An Outgoing Receiver is one who's target is an output pin
 ** Everything else is Incoming (there is only one other direction :in)
+** obsoleted (information subsumed into input-pin and output-pin)
 
 * Todo examples
 ** character pipeline
