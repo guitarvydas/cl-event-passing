@@ -24,10 +24,7 @@
    NIL
 
 * Status
-** test0, test6, test6a, test7, test8, test9, test-feedback working
-
-** complicated example test-feedback working - contrived example shows how to create a feedback loop
-** working on test-reuse
+** test-reuse3 working
 
 * Design Intention
 ** FYI - when an event arrives at a Code part (aka Leaf), it runs some code (usually a CASE on the pin name) to completion then returns.  When an event arrives at a Schematic, the "same" thing happens - the event is passed into the bowels of the schematic and is processed to completion by the graph of parts.
@@ -49,8 +46,7 @@
 
 
 * branches
-** master
-** pt-20191129 - try reuse of test1 with macro (test-reuse3.lisp)
+** master 
 
 * todo
 ** think about if this is needed: mark all parents (recursively) that have first-time-handlers somewhere inside
