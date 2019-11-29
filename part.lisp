@@ -225,7 +225,7 @@
         (nth index cloned-map)))))
 
 (defmethod dequeue-input ((self part))
-  (let ((e ((first (last (input-queue self))))))
+  (let ((e (first (last (input-queue self)))))
     (setf (input-queue self) (butlast (input-queue self)))
     e))
 
