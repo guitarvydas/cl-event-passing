@@ -115,7 +115,8 @@
 (defun reuse-part (proto &key (name ""))
   (let ((cloned (clone proto)))
     (let ((parts-list (e/part::list-parts cloned)))
-      (mapc #'e/dispatch::memo-part parts-list))))
+      (mapc #'e/dispatch::memo-part parts-list))
+    cloned))
   
 (defgeneric busy-p (self))
 
