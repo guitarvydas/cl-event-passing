@@ -17,6 +17,12 @@
      (format nil "wire ~S" (e/wire::name w))
      *sent-events*)))
 
+(defmethod logging ((p e/part:part))
+  (when *logging*
+    (push
+     (format nil "part ~S" (e/part::name p))
+     *sent-events*)))
+
 (defmethod logging ((other T))
   (when *logging*
     (push other *sent-events*)))

@@ -178,6 +178,7 @@
   ;; execute exactly one input event to completion, then RETURN
   (let ((event (pop (input-queue self))))
     (setf (busy-flag self) t)
+    (e/util::logging self)
     (funcall (input-handler self) self event)
     (setf (busy-flag self) nil)))
 
