@@ -50,7 +50,7 @@
 
 * branches
 ** master
-** pt-20191129 - try reuse with macro (test-reuse3.lisp)
+** pt-20191129 - try reuse of test1 with macro (test-reuse3.lisp)
 
 * todo
 ** think about if this is needed: mark all parents (recursively) that have first-time-handlers somewhere inside
