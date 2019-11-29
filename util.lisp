@@ -1,12 +1,16 @@
 (in-package :e/util)
 
-(defun ensure-in-list (list object equality-test fmt-msg &rest fmt-args)
+(defun in-list-p (list object equality-test)
   (mapc #'(lambda (item)
             (let ((exists (funcall equality-test item object)))
               (when exists
-                (return-from ensure-in-list item))))
+                (return-from in-list-p item))))
         list)
-  (error (apply #'cl:format nil fmt-msg fmt-args)))
+  nil)
+
+(defun ensure-in-list (list object equality-test fmt-msg &rest fmt-args)
+  (unless (in-list-p list object equality-test)
+    (error (apply #'cl:format nil fmt-msg fmt-args))))
 
 (defun ensure-not-in-list (list object equality-test fmt-msg &rest fmt-args)
   (mapc #'(lambda (item)
