@@ -64,5 +64,7 @@
 				     (:file "test-reuse1" :depends-on ("test1"))
 				     (:file "test-reuse" :depends-on ("test6"))
 				     (:file "test-reuse3" :depends-on ("test1"))
+				     (:file "test-reuse4" :depends-on ("test6"))
                                      (:file "test-all" :depends-on ("test0" "test1" "test6" "test6a" "test7" "test8" "test9"
-                                                                    "test16" "test-feedback" "test-reuse" "test-reuse1" "test-reuse3"))))))
+                                                                    "test16" "test-feedback" "test-reuse"
+                                                                    "test-reuse1" "test-reuse3" "test-reuse4"))))))
