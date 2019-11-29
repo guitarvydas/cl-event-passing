@@ -23,6 +23,12 @@
 (defmethod print-object ((obj schematic) out)
   (format out "<schematic[~a]>" (name obj)))
 
+(defmethod list-parts ((self code))
+  (list self))
+
+(defmethod list-parts ((self schematic))
+  (cons self (mapcar #'list-parts (internal-parts self))))
+
 (defun clone-part (self proto)
   (setf (input-queue self) nil)
   (setf (output-queue self) nil)
