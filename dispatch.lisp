@@ -34,6 +34,7 @@
 (defun dispatch-output-queues ()
   (@:loop
     (@:exit-when (all-parts-have-empty-output-queues-p))
+    (e/util::logging "   dispatching output queues")
     (dispatch-some-output-queues)))
 
 (defun dispatch-some-output-queues()
@@ -71,3 +72,7 @@
 
 (defun dispatcher-active-p ()
   *dispatcher-running*)
+
+(defun ensure-correct-number-of-parts (n)
+  (unless (= n (length *all-parts*))
+    (error (format nil "expected ~a parts, got ~a" n (length *all-parts*)))))
