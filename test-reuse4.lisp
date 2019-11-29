@@ -11,7 +11,7 @@
                  ((((child :main-schem-out)) ((:self :main-out)))
                   (((:self :main-in)) ((child :main-schem-in))))))))
     
-    (@send net (e/part::get-input-pin main :main-in) " testing reuse of part test6 (test-reuse4) ")))
+    (@send net (e/part::get-input-pin net :main-in) " testing reuse of part test6 (test-reuse4) ")))
 
 (defun cl-user::rtest()
   ;; convenience function - to be deleted
