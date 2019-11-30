@@ -56,23 +56,23 @@
 (defun make-receiver (schem-name pair)
   (if (eq :self (first pair))
       `(e/receiver::new-receiver
-        :pin (e/pin::new-pin
+        :pin (e/pin::existing-pin
               :pin-parent ,schem-name
               :pin-name ,(second pair)
               :direction :output))
     `(e/receiver::new-receiver
-      :pin (e/pin::new-pin
+      :pin (e/pin::existing-pin
             :pin-parent ,(first pair)
             :pin-name ,(second pair)
             :direction :input))))
 
 (defun make-source (schem-name pair)
   (if (eq :self (first pair))
-      `(e/source::new-source :pin (e/pin::new-pin
+      `(e/source::new-source :pin (e/pin::existing-pin
                                    :pin-parent ,schem-name
                                    :pin-name ,(second pair)
                                    :direction :input))
-    `(e/source::new-source :pin (e/pin::new-pin
+    `(e/source::new-source :pin (e/pin::existing-pin
                                  :pin-parent ,(first pair)
                                  :pin-name ,(second pair)
                                  :direction :output))))
