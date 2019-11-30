@@ -168,10 +168,16 @@
 (defmethod get-output-pin ((self part) pin-sym)
   (must-find-name-in-namespace (namespace-output-pins self) pin-sym))
 
-(defmethod ensure-valid-input-pin ((self part) pin-sym)
+(defmethod ensure-valid-input-pin ((self part) (pin e/pin:pin))
+  (get-input-pin self (e/pin::get-sym pin))
+
+(defmethod ensure-valid-input-pin ((self part) (pin-sym symbol))
   (get-input-pin self pin-sym))
 
-(defmethod ensure-valid-output-pin ((self part) pin-sym)
+(defmethod ensure-valid-output-pin ((self part) (pin e/pin:pin))
+  (get-output-pin self (e/pin::get-sym pin)))
+
+(defmethod ensure-valid-output-pin ((self part) (pin-sym symbol))
   (get-output-pin self pin-sym))
 
 ;; part api

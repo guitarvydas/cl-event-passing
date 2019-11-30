@@ -81,3 +81,6 @@
 
 (defmethod get-part ((self pin))
   (pin-parent self))
+
+(defmethod get-sym ((self pin))
+  (pin-name self))
