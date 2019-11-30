@@ -169,7 +169,7 @@
   (must-find-name-in-namespace (namespace-output-pins self) pin-sym))
 
 (defmethod ensure-valid-input-pin ((self part) (pin e/pin:pin))
-  (get-input-pin self (e/pin::get-sym pin))
+  (get-input-pin self (e/pin::get-sym pin)))
 
 (defmethod ensure-valid-input-pin ((self part) (pin-sym symbol))
   (get-input-pin self pin-sym))
