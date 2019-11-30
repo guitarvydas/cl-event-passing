@@ -50,7 +50,7 @@
 (defmethod ensure-sanity ((self e/part:schematic) (part e/part:part))
   (unless (eq self part)
     (e/util:ensure-in-list (e/part:internal-parts self) part #'equal
-                           "part ~S does not appear in its parent schematic ~S" (e/part::name part) (e/part::name self))))
+                           "part ~S does not appear in its parent schematic ~S (check parts-list of schematic)" (e/part::name part) (e/part::name self))))
 
 (defmethod ensure-source-sanity ((self e/part:schematic))
   (mapc
