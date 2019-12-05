@@ -9,6 +9,7 @@
    (input-handler :accessor input-handler :initform nil :initarg :input-handler) ;; nil or a function
    (first-time-handler :accessor first-time-handler :initform nil) ;; nil or a function
    (parent-schem :accessor parent-schem :initform nil :initarg :parent-schem)
+   (instance-variables :accessor instance-variables :initform (make-hash-table :equal))
    (debug-name :accessor debug-name :initarg :name :initform ""))) ;; for debug
 
 (defclass code (part) ())
@@ -241,4 +242,9 @@
     (setf (input-queue self) (butlast (input-queue self)))
     e))
 
-        
+(defmethod get-instance-var ((self part) name)
+  (gethash name (instance-variables self)))
+
+(defmethod set-instance-var ((self part) name val)
+  (setf (gethash name (instance-variables self)) val))
+

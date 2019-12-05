@@ -95,3 +95,22 @@
 
 (defun @enable-logging ()
   (e/util::enable-logging))
+
+(defmethod @get-pin ((self e/part:part) (e e/event:event))
+  ;; return symbol for input pin of e
+  (declare (ignore self))
+  (e/part::ensure-valid-input-pin part e)
+  (e/event::sym e))
+
+(defmethod @get-data ((self e/part:part) (e e/event:event))
+  ;; return data from event
+  (declare (ignore self))
+  (e/event::data e))
+
+(defmethod @get-instance-var ((self e/part:part) name)
+  (e/part::get-instance-var self name))
+
+(defmethod @set-instance-var ((self e/part:part) name val)
+  (e/part::set-instance-var self name val))
+
+
