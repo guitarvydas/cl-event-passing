@@ -19,6 +19,7 @@
     (@add-receiver-to-wire wire (e/part::get-input-pin consumer :in))
     (@add-source-to-schematic schem (e/part::get-output-pin producer :out) wire)
 
+    ;; don't do this - this was early testing, see test16.lisp for an example of how to do things
     (@start-dispatcher)))
 
 (defmethod produce ((self e/part:part))

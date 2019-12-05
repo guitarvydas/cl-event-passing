@@ -18,8 +18,9 @@
                   (((child :childout)) ((:self :out))))))))
   (let ((ap e/dispatch::*all-parts*))  ;; testing only
     (assert (= 4 (length ap)))         ;; testing only
-    (@send net
-             (e/part::get-input-pin net :in) "test 16"))))
+    (@with-dispatch
+     (@inject net
+              (e/part::get-input-pin net :in) "test 16")))))
 
 (defmethod flow-through16 ((self e/part:part) (e e/event:event))
   (@send self (e/part::get-output-pin self :ftout) (e/event:data e)))

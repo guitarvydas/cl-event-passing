@@ -64,32 +64,22 @@
   (e/schematic::add-part schem part)
   (e/dispatch::memo-part part))
 
+(defmacro @with-dispatch (&body body)
+  `(flet ((@inject (part pin data)
+            (let ((e (e/event::new-event :event-pin pin :data data)))
+              (e/util:logging e)
+              (push e (e/part:input-queue part))
+              (e/dispatch::start-dispatcher))))
+     (e/dispatch::run-first-times)
+     ,@body))
+
 (defmethod @send ((self e/part:part) (sym SYMBOL) data)
-  (if (e/dispatch::dispatcher-active-p)
-      (let ((out-pin (e/part::get-output-pin self sym)))
-        (@send self out-pin data))
-    (let ((in-pin (e/part::get-input-pin self sym)))
-      (@send self in-pin data))))
-  
+  (@send self (e/part::get-output-pin self sym) data))
 
 (defmethod @send ((self e/part:part) (pin e/pin:pin) data)
-  (if (e/dispatch::dispatcher-active-p)
-      (send-output self pin data)
-    (progn
-      (send-input self pin data)
-      (e/dispatch::start-dispatcher))))
-  
-(defmethod send-output ((self e/part:part) (out-pin e/pin:pin) out-data)
-  (let ((e (@new-event :event-pin out-pin :data out-data)))
+  (let ((e (e/event:new-event :event-pin pin :data data)))
     (e/util:logging e)
     (push e (e/part:output-queue self))))
-
-(defmethod send-input ((part e/part:part) pin data)
-  (let ((e (e/event::new-event :event-pin pin :data data)))
-    (e/dispatch::run-first-times)
-    (e/util:logging e)
-    (push e (e/part:input-queue part))
-    (e/dispatch::start-dispatcher)))
 
 (defun @start-dispatcher ()
   (e/dispatch::start-dispatcher))
