@@ -48,8 +48,6 @@
 
 * branches
 ** master 
-** pt-20191205c - rewind to no-class implementation (this is not OOP, it is something else)
-
 
 * todo
 ** think about if this is needed: mark all parents (recursively) that have first-time-handlers somewhere inside
