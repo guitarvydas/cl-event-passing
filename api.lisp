@@ -103,7 +103,7 @@
 (defmethod @get-pin ((self e/part:part) (e e/event:event))
   ;; return symbol for input pin of e
   (declare (ignore self))
-  (e/part::ensure-valid-input-pin part e)
+  (e/part::ensure-valid-input-pin self e)
   (e/event::sym e))
 
 (defmethod @get-data ((self e/part:part) (e e/event:event))
