@@ -22,8 +22,9 @@
    #:@send
    #:@start-dispatcher
    #:@history
-   #:@enable-loggin
-   #:@defnetwork))
+   #:@enable-logging
+   #:@defnetwork
+   #:@with-dispatch))
 
 (defpackage cl-event-passing-part
   (:nicknames :e/part)
