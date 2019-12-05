@@ -9,7 +9,7 @@
    (input-handler :accessor input-handler :initform nil :initarg :input-handler) ;; nil or a function
    (first-time-handler :accessor first-time-handler :initform nil) ;; nil or a function
    (parent-schem :accessor parent-schem :initform nil :initarg :parent-schem)
-   (instance-variables :accessor instance-variables :initform (make-hash-table :equal))
+   (instance-variables :accessor instance-variables :initform (make-hash-table :test 'equal))
    (debug-name :accessor debug-name :initarg :name :initform ""))) ;; for debug
 
 (defclass code (part) ())
@@ -17,6 +17,18 @@
 (defclass schematic (part)
   ((sources :accessor sources :initform nil) ;; a list of Sources (which contain a list of Wires which contain a list of Receivers)
    (internal-parts :accessor internal-parts :initform nil))) ; a list of Parts
+
+(defgeneric first-time (part))
+(defgeneric react (part event))
+
+;; default implementations
+(defmethod first-time ((self part))
+  (let ((fn (first-time-handler self)))
+    (when fn
+      (funcall fn self))))
+
+(defmethod react ((self part) (e e/event:event))
+  (funcall (input-handler self) self e))
 
 (defmethod print-object ((obj code) out)
   (format out "<code[~a]>" (name obj)))
@@ -192,7 +204,7 @@
   (let ((event (dequeue-input self)))
     (setf (busy-flag self) t)
     (e/util::logging self)
-    (funcall (input-handler self) self event)
+    (react self event)
     (setf (busy-flag self) nil)))
 
 (defmethod output-queue-as-list-and-delete ((self part))
