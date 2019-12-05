@@ -64,9 +64,13 @@
   (e/schematic::add-part schem part)
   (e/dispatch::memo-part part))
 
-(defmethod @send ((self e/part:part) (out SYMBOL) out-data)
-  (let ((out-pin (e/part::get-output-pin self out)))
-    (@send self out-pin out-data)))
+(defmethod @send ((self e/part:part) (sym SYMBOL) data)
+  (if (e/dispatch::dispatcher-active-p)
+      (let ((out-pin (e/part::get-output-pin self sym)))
+        (@send self out-pin data))
+    (let ((in-pin (e/part::get-input-pin self sym)))
+      (@send self in-pin data))))
+  
 
 (defmethod @send ((self e/part:part) (pin e/pin:pin) data)
   (if (e/dispatch::dispatcher-active-p)
