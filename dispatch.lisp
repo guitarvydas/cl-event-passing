@@ -52,9 +52,7 @@
 
 (defun run-first-times ()
   (dolist (part *all-parts*)
-    (let ((fn (e/part:first-time-handler part)))
-      (when fn
-        (funcall fn part)))))
+    (e/part::first-time part)))
 
 (defun run ()
   (@:loop
