@@ -49,5 +49,7 @@
 * branches
 ** master 
 
+** pt-20191205 - transforming first-time handler and react into methods
+
 * todo
 ** think about if this is needed: mark all parents (recursively) that have first-time-handlers somewhere inside
