@@ -27,7 +27,7 @@
                          :output-pins ',outputs))))))
 
              (:code
-              (destructuring-bind (code-name inputs outputs input-handler &optional (first-time-handler nil))
+              (destructuring-bind (code-name inputs outputs &optional (input-handler nil) (first-time-handler nil))
                   (rest def)
                 `(let ((,code-name (cl-event-passing-user:@new-code :name ',code-name :input-handler ,input-handler
                                                                     :input-pins ',inputs :output-pins ',outputs
