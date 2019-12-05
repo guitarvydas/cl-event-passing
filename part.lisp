@@ -187,6 +187,10 @@
 (defmethod ensure-valid-input-pin ((self part) (pin-sym symbol))
   (get-input-pin self pin-sym))
 
+(defmethod ensure-valid-input-pin ((self part) (e e/event:event))
+  (let ((sym (e/event::sym e)))
+    (get-input-pin self sym)))
+
 (defmethod ensure-valid-output-pin ((self part) (pin e/pin:pin))
   (get-output-pin self (e/pin::get-sym pin)))
 
