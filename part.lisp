@@ -213,10 +213,10 @@
 
 (defmethod output-queue-as-list-and-delete ((self part))
   ;; return output queue as a list of output events,
-  ;; null out the output queue
+  ;; and null out the output queue
   (let ((list (output-queue self)))
     (setf (output-queue self) nil)
-    list))
+    (reverse list))) ;; ensure output events are in the order that was sent
 
 (defmethod name ((p part))
   (if (string= "" (debug-name p))
