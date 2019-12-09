@@ -166,7 +166,7 @@
 (defun must-find-name-in-namespace (namespace sym self pin-direction)
   (let ((pin (find-name-in-namespace namespace sym)))
     (unless pin
-      (error (format nil "Name ~S not found in namespace ~S (~a of ~s)" sym namespace pin-direction self)))
+      (error (format nil "Name ~S not found in ~a namespace of ~s ~S" sym pin-direction self namespace)))
     pin))
 
 (defun ensure-congruent-in-namespace (self namespace pin-list)
