@@ -8,7 +8,7 @@
 (defmethod logging ((e e/event:event))
   (when *logging*
     (push
-     (format nil "event pin=~S[~S] data=~S" (e/event::sym e)  (type-of e) (e/event::data e) *sent-events*)
+     (format nil "event pin=~S data=~S" (e/event::sym e) (e/event::data e))
      *sent-events*)))
 
 (defmethod logging ((w e/wire:wire))
