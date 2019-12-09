@@ -207,7 +207,7 @@
   ;; execute exactly one input event to completion, then RETURN
   (let ((event (dequeue-input self)))
     (setf (busy-flag self) t)
-    (e/util::logging self)
+    (e/util::logging self "exec1")
     (react self event)
     (setf (busy-flag self) nil)))
 
