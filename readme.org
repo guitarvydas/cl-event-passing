@@ -1,5 +1,6 @@
 * Usage
 ** (ql:quickload :cl-event-passing/examples) (cl-user::test-all)
+   
    expected result:
    test0
    consumed message "hello" on incoming pin :IN of "consumer"

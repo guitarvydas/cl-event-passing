@@ -66,6 +66,8 @@
 
 (defmacro @with-dispatch (&body body)
   `(flet ((@inject (part pin data)
+            (unless (eq 'e/pin:input-pin (type-of pin))
+              (error "pin must be specified with get-pin (~s)" pin))
             (let ((e (e/event::new-event :event-pin pin :data data)))
               (e/util:logging e)
               (push e (e/part:input-queue part)))))

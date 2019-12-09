@@ -163,10 +163,10 @@
 	namespace)
   nil)
 
-(defun must-find-name-in-namespace (namespace sym)
+(defun must-find-name-in-namespace (namespace sym self pin-direction)
   (let ((pin (find-name-in-namespace namespace sym)))
     (unless pin
-      (error (format nil "Name ~S not found in namespace ~S" sym namespace)))
+      (error (format nil "Name ~S not found in namespace ~S (~a of ~s)" sym namespace pin-direction self)))
     pin))
 
 (defun ensure-congruent-in-namespace (self namespace pin-list)
@@ -176,10 +176,10 @@
         pin-list))
 
 (defmethod get-input-pin ((self part) pin-sym)
-  (must-find-name-in-namespace (namespace-input-pins self) pin-sym))
+  (must-find-name-in-namespace (namespace-input-pins self) pin-sym self 'input))
 
 (defmethod get-output-pin ((self part) pin-sym)
-  (must-find-name-in-namespace (namespace-output-pins self) pin-sym))
+  (must-find-name-in-namespace (namespace-output-pins self) pin-sym self 'output))
 
 (defmethod ensure-valid-input-pin ((self part) (pin e/pin:pin))
   (get-input-pin self (e/pin::get-sym pin)))
