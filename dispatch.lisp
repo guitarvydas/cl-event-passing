@@ -34,7 +34,6 @@
 (defun dispatch-output-queues ()
   (@:loop
     (@:exit-when (all-parts-have-empty-output-queues-p))
-    (e/util::logging "   dispatching output queues")
     (dispatch-some-output-queues)))
 
 (defun dispatch-some-output-queues()
