@@ -8,20 +8,24 @@
 (defmethod logging ((e e/event:event))
   (when *logging*
     (push
-     (format nil "event pin=~S data=~S" (e/event::sym e) (e/event::data e))
+     (format nil "event pin=~a data=~S" (e/event::sym e) (e/event::data e))
      *sent-events*)))
 
 (defmethod logging ((w e/wire:wire))
   (when *logging*
     (push
-     (format nil "wire ~S" (e/wire::name w))
+     (format nil "wire ~a" (e/wire::name w))
      *sent-events*)))
 
 (defmethod logging ((p e/part:part))
   (when *logging*
-    (push
-     (format nil "part ~S" (e/part::name p))
-     *sent-events*)))
+    (multiple-value-bind (val sucess)
+        (e/part::get-instance-var p :state)
+      (let ((name (e/part::name p)))
+        (let ((log-message (if success
+                               (format nil "Part ~a state ~a" name state)
+                             (format nil "Part ~a" name))))
+          (push log-message *sent-events*))))))
 
 (defmethod logging ((other T))
   (when *logging*
