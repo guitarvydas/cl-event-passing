@@ -19,7 +19,7 @@
 
 (defmethod logging ((p e/part:part))
   (when *logging*
-    (multiple-value-bind (val sucess)
+    (multiple-value-bind (state sucxess)
         (e/part::get-instance-var p :state)
       (let ((name (e/part::name p)))
         (let ((log-message (if success
