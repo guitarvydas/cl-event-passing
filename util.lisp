@@ -20,6 +20,7 @@
         list))
 
 (defparameter *sent-events* nil)
+(defparameter *logs* nil)
 (defparameter *wire-number* 0)
 
 (defun reset ()

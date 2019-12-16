@@ -1,9 +1,24 @@
 (in-package :e/util)
 
 (defparameter *logging* nil)
+(defparameter *log-inputs* nil)
+(defparameter *log-outputs* nil)
+(defparameter *log-parts* :all)
 
-(defun enable-logging ()
-  (setf *logging* t))
+(defun enable-logging (n)
+  (setf *log-inputs* t)
+  (setf *log-outputs* t)
+  (if (> n 1)
+      (setf *logging* t)))
+
+(defun log-part (instance)
+  (when (eq :all *log-parts*)
+      (setf *log-parts* nil))
+  (push instance *log-parts*))
+
+(defmethod log-all-parts ((self e/part:schematic))
+  (dolist (p (e/part::internal-parts self))
+    (log-part p)))
 
 (defmethod logging ((e e/event:event) &optional (message nil))
   (when *logging*
@@ -33,6 +48,23 @@
     (push other *sent-events*)))
 
 (defun get-logging ()
-  (when *logging*
-    *sent-events*))
+  (when (or *logging* *log-inputs* *log-outputs*)
+    (list *logs* *sent-events*)))
+
+(defmethod loggable ((self e/part:part))
+  (or (eq :all *log-parts*)
+      (member self *log-parts*)))
+
+(defmethod log-input ((self e/part:part) (e e/event:event))
+  (when (and *log-inputs* (loggable self))
+    (push
+     (format nil "part ~a input ~a" (e/part::name self) (e/event::sym e))
+     *logs*)))
+
+(defmethod log-outputs ((self e/part:part))
+  (when (and *log-outputs* (loggable self))
+    (dolist (out-event (e/part::output-queue-as-list self))
+      (push
+       (format nil "part ~a output ~a" (e/part::name self) (e/event::sym out-event))
+       *logs*))))
 

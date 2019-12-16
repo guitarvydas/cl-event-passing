@@ -208,8 +208,15 @@
   (let ((event (dequeue-input self)))
     (setf (busy-flag self) t)
     (e/util::logging self "exec1")
+    (e/util::log-input self event)
     (react self event)
+    (e/util::log-outputs self)
     (setf (busy-flag self) nil)))
+
+(defmethod output-queue-as-list ((self part))
+  ;; return output queue as a list of output events,
+  (let ((list (output-queue self)))
+    (reverse list))) ;; ensure output events are in the order that was sent
 
 (defmethod output-queue-as-list-and-delete ((self part))
   ;; return output queue as a list of output events,

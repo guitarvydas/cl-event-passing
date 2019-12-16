@@ -89,8 +89,8 @@
 (defun @history ()
   (e/util::get-logging))
 
-(defun @enable-logging ()
-  (e/util::enable-logging))
+(defun @enable-logging (&optional (n 2))
+  (e/util::enable-logging n))
 
 (defmethod @get-pin ((self e/part:part) (e e/event:event))
   ;; return symbol for input pin of e
