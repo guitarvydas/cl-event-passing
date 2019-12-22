@@ -45,6 +45,7 @@
 
 (defmethod schematic-input-handler ((self e/part:schematic) (e e/event:event))
   (let ((s (lookup-source-in-self self e)))
+    (format *standard-output* "~&schematic-input-handler busy=~A~%" (e/part::busy-p self))
     (e/source::source-event s e)))
 
 (defmethod ensure-sanity ((self e/part:schematic) (part e/part:part))

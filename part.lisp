@@ -85,7 +85,7 @@
         cloned))))
   
 (defmethod make-in-pins ((pin-parent part) lis)
-  (flet ((symbol-or-string-p (s)
+  (flet ((symbol-or-string-or-integer-p (s)
            (or
             (symbolp s)
             (stringp s)))
@@ -94,27 +94,28 @@
             (eq 'e/pin:input-pin (type-of s))
             (e/pin::input-p s))))
     (mapcar #'(lambda (s)
-                (if (symbol-or-string-p s)
+                (if (symbol-or-string-or-integer-p s)
                     (e/pin::new-pin :pin-name s :direction :input :pin-parent pin-parent)
                   (if (already-an-input-pin-p s)
                       s
-                    (error (format nil "input pin given as ~S but must be a symbol, string or an input pin" s)))))
+                    (error (format nil "input pin given as ~S but must be a symbol, string, integer or an input pin" s)))))
             lis)))
 
 (defmethod make-out-pins ((pin-parent part) lis)
-  (flet ((symbol-or-string-p (s)
+  (flet ((symbol-or-string-or-integer-p (s)
            (or
             (symbolp s)
-            (stringp s)))
+            (stringp s)
+            (numberp s)))
          (already-an-output-pin-p (s)
            (and (eq 'e/pin:output-pin (type-of s))
                 (e/pin::output-p s))))
     (mapcar #'(lambda (s)
-                (if (symbol-or-string-p s)
+                (if (symbol-or-string-or-integer-p s)
                     (e/pin::new-pin :pin-name s :direction :output :pin-parent pin-parent)
                   (if (already-an-output-pin-p s)
                       s
-                    (error (format nil "output pin given as ~S but must be a symbol, string or an output pin" s)))))
+                    (error (format nil "output pin given as ~S but must be a symbol, string, integer or an output pin" s)))))
             lis)))
 
 (defun new-code (&key (name "") (input-pins nil) (output-pins nil))
@@ -158,9 +159,11 @@
   (mapc #'(lambda (pin)
 	    (when (if (symbolp sym)
                       (eq sym (e/pin:pin-name pin))
-                    (string= sym (e/pin:pin-name pin)))
-	      (return-from find-name-in-namespace pin)))
-	namespace)
+                    (if (numberp sym)
+                        (= sym (e/pin:pin-name pin))
+                      (string= sym (e/pin:pin-name pin))))
+              (return-from find-name-in-namespace pin)))
+            namespace)
   nil)
 
 (defun must-find-name-in-namespace (namespace sym self pin-direction)
