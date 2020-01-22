@@ -45,6 +45,7 @@
           (if (e/part::has-parent-p part)    ;;   if part has a parent schematic, get the associated Source
               (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))
                 (when source ;; source is NIL if the pin is N.C. (no connection)
+                  (e/util::trace)
                   (e/source::source-event source out-event)))
             ;; else this is the top-level part (no parent schem), so just printf the event data to stdout
             (format *standard-output* "~&~S" (e/event:data out-event))))))))

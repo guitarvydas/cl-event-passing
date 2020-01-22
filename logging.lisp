@@ -1,9 +1,21 @@
 (in-package :e/util)
 
+(defparameter *tracing-stream* nil)
 (defparameter *logging* nil)
 (defparameter *log-inputs* nil)
 (defparameter *log-outputs* nil)
 (defparameter *log-parts* :all)
+
+(defun enable-tracing (stream)
+  (setf *tracing-stream* stream)
+  (if *tracing-stream*
+      (enable-logging 2)
+    (enable-logging 0)))
+
+(defun trace ()
+  (when *tracing-stream*
+    (let ((history (get-logging)))
+      (format *tracing-stream* "~&log: ~S~%~S~%" (first history) (second history)))))
 
 (defun enable-logging (n)
   (setf *log-inputs* t)

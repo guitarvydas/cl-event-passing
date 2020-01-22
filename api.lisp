@@ -86,6 +86,9 @@
 (defun @start-dispatcher ()
   (e/dispatch::start-dispatcher))
 
+(defun @enable-tracing (stream)
+  (e/util::enable-tracing stream))
+
 (defun @history ()
   (e/util::get-logging))
 
@@ -110,3 +113,8 @@
   (e/part::set-instance-var self name val))
 
 
+(defmethod @get-input-pin ((self e/part:part) name)
+  (e/part::get-input-pin self name))
+
+(defmethod @get-output-pin ((self e/part:part) name)
+  (e/part::get-output-pin self name))
