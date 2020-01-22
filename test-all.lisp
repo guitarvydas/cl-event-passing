@@ -26,4 +26,6 @@
   (format *standard-output* "~&reuse test~%")
   (cl-event-passing-user::test-reuse)
   (format *standard-output* "~&reuse test 4~%")
-  (cl-event-passing-user::test-reuse4))
+  (cl-event-passing-user::test-reuse4)
+  (format *standard-output* "~&test 26~%")
+  (cl-event-passing-user::test26))

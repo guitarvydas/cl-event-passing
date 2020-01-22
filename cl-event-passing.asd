@@ -1,5 +1,5 @@
 (defsystem "cl-event-passing"
-  :depends-on (loops)
+  :depends-on (:loops :esrap)
   :around-compile (lambda (next)
                     (proclaim '(optimize (debug 3)
                                          (safety 3)
@@ -19,8 +19,9 @@
                                      (:file "dispatch" :depends-on ("package" "util" "part" "event"))
 				     (:file "macro-support"  :depends-on ("package" "util" "pin" "part" "schematic" "event"
                                                                           "source" "receiver" "wire" "dispatch"))
+                                     (:file "net-parser" :depends-on ("package"))
 				     (:file "macro"  :depends-on ("package" "util" "pin" "part" "schematic" "event"
-                                                                          "source" "receiver" "wire" "dispatch"))
+                                                                          "source" "receiver" "wire" "dispatch" "net-parser"))
 				     (:file "api"  :depends-on ("package" "util" "pin" "part"
                                                                 "schematic" "event" "source" "receiver" "wire" "dispatch"))
 				     (:file "logging"  :depends-on ("api" "macro" "macro-support" "package" "util" "pin" "part"
@@ -60,6 +61,7 @@
 				     (:file "test8")
 				     (:file "test9")
 				     (:file "test16")
+				     (:file "test26")
 				     (:file "test-feedback")
 				     (:file "test-reuse1" :depends-on ("test1"))
 				     (:file "test-reuse" :depends-on ("test6"))
@@ -67,4 +69,5 @@
 				     (:file "test-reuse4" :depends-on ("test6"))
                                      (:file "test-all" :depends-on ("test0" "test1" "test6" "test6a" "test7" "test8" "test9"
                                                                     "test16" "test-feedback" "test-reuse"
-                                                                    "test-reuse1" "test-reuse3" "test-reuse4"))))))
+                                                                    "test-reuse1" "test-reuse3" "test-reuse4"
+                                                                    "test26"))))))

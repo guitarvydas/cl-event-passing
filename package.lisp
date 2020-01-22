@@ -5,7 +5,6 @@
 (defpackage cl-event-passing-user
   ;; top level API
   (:use :cl)
-  (:nicknames :aa)
   (:export
    #:@new-schematic
    #:@new-code
@@ -23,8 +22,16 @@
    #:@start-dispatcher
    #:@history
    #:@enable-logging
+   #:@enable-tracing
    #:@defnetwork
-   #:@with-dispatch))
+   #:@with-dispatch
+
+   #:@get-input-pin
+   #:@get-output-pin
+
+   #:@set-instance-var
+   #:@get-instance-var
+   ))
 
 (defpackage cl-event-passing-part
   (:nicknames :e/part)
@@ -117,3 +124,4 @@
    #:output-pin
    #:pin-name
    #:pin-parent))
+

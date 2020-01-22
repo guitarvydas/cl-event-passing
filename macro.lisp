@@ -40,7 +40,7 @@
                                                                           :input-pins ',inputs :output-pins ',outputs
                                                                           :first-time-handler ,first-time-handler)))
                    ,@(compile-parts schem-name parts-list)
-                   ,@(compile-nets schem-name nets))))))
+                   ,@(compile-nets schem-name (net-parser nets)))))))
           
            (compiled-tail (compile-network name tail)))
           
@@ -83,7 +83,7 @@
                                     `(,(gensym "WIRE-") (make-wire (list ,@(mapcar #'(lambda (part-pin-pair)
                                                                                        (make-receiver schem-name part-pin-pair))
                                                                                    (second net))))))
-                                net-list)))
+                        net-list)))
     (let ((wire-names (mapcar #'first wires))
           (sources-for-each-wire (mapcar #'first net-list)))
       (let ((sources
