@@ -4,7 +4,11 @@
 (esrap:defrule <arrow> (and "->" (* <ws>)) (:constant :arrow))
 (esrap:defrule <dot> (and "." (* <ws>)) (:constant :dot))
 (esrap:defrule <comma> (and "," (* <ws>)))
-(esrap:defrule <ident> (and (esrap:character-ranges (#\a #\z) (#\A #\Z)) (* (esrap:character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9)))) (:text t))
+;; exclude . and -
+(esrap:defrule <lisp-id-char-first> (esrap:character-ranges (#\a #\z) (#\A #\Z) #\@ #\* #\~ #\! #\$ #\% #\^ #\- #\+ #\_ #\= #\{ #\} #\[ #\] #\\ #\/ #\< #\> #\?))
+;; exclude .
+(esrap:defrule <lisp-id-char-follow> (or (esrap:character-ranges (#\0 #\9)) #\- <lisp-id-char-first>))
+(esrap:defrule <ident> (and <lisp-id-char-first> (* <lisp-id-char-follow>)) (:text t))
 (esrap:defrule <part> <ident>)
 (esrap:defrule <pin> <ident>)
 (esrap:defrule <part-pin> (and <part> <dot> <pin> (* <ws>))
