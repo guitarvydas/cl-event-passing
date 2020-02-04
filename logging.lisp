@@ -12,7 +12,7 @@
       (enable-logging 2)
     (enable-logging 0)))
 
-(defun trace ()
+(defun util-trace ()
   (when *tracing-stream*
     (let ((history (get-logging)))
       (format *tracing-stream* "~&log: ~S~%~S~%" (first history) (second history)))))
