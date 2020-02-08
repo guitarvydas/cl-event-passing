@@ -1,10 +1,10 @@
 (in-package :e/schematic)
 
 (defun new-schematic (&key (name "") (input-pins nil) (output-pins nil) (first-time-handler nil))
-  (let ((self (make-instance 'e/part:schematic :name name :input-handler #'schematic-input-handler)))
+  (let ((self (make-instance 'e/part:schematic :name name :input-handler #'e/schematic::schematic-input-handler)))
     (setf (e/part:namespace-input-pins self) (e/part::make-in-pins self input-pins))
     (setf (e/part:namespace-output-pins self) (e/part::make-out-pins self output-pins))
-    (setf (e/part:first-time-handler self) first-time-handler)
+    #+nil(setf (e/part:first-time-handler self) first-time-handler)
     self))
 
 (defmethod ensure-source-not-already-present ((self e/part:schematic) (s e/source:source))
@@ -43,6 +43,7 @@
         (return-from lookup-source-in-self s)))
     (assert nil)) ;; shouldn't happen
 
+
 (defmethod schematic-input-handler ((self e/part:schematic) (e e/event:event))
   (let ((s (lookup-source-in-self self e)))
     (e/source::source-event s e)))
@@ -57,3 +58,10 @@
    #'(lambda (source)
        (e/source::ensure-source-sanity self source))
    (e/part:sources self)))
+
+(defmethod e/part:first-time ((self e/part:schematic))
+  (declare (ignore self)))
+
+(defmethod e/part:react ((self e/part:schematic) (e e/event:event))
+  (schematic-input-handler self e))
+

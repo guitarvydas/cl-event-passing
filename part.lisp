@@ -23,12 +23,10 @@
 
 ;; default implementations
 (defmethod first-time ((self part))
-  (let ((fn (first-time-handler self)))
-    (when fn
-      (funcall fn self))))
+  (declare (ignore self)))
 
 (defmethod react ((self part) (e e/event:event))
-  (funcall (input-handler self) self e))
+  (declare (ignore self e)))
 
 (defmethod print-object ((obj code) out)
   (format out "<code[~a]>" (name obj)))
@@ -118,8 +116,10 @@
                     (error (format nil "output pin given as ~S but must be a symbol, string, integer or an output pin" s)))))
             lis)))
 
-(defun new-code (&key (name "") (input-pins nil) (output-pins nil))
-  (let ((self (make-instance 'code :name name)))
+(defun new-code (&key (class nil) (name "") (input-pins nil) (output-pins nil))
+  (let ((self (if (null class)
+                  (make-instance 'code :name name)
+                (make-instance class :name name))))
     (let ((inpins (make-in-pins self input-pins))
 	  (opins  (make-out-pins self output-pins)))
     (setf (e/part:namespace-input-pins self) inpins)
@@ -135,6 +135,9 @@
 (defgeneric busy-p (self))
 
 (defmethod busy-p ((self code))
+  (busy-flag self))
+
+(defmethod busy-p ((self part))
   (busy-flag self))
 
 (defmacro with-atomic-action (&body body)
