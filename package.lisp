@@ -23,6 +23,7 @@
    #:@add-source-to-schematic
    #:@add-part-to-schematic
    #:@send
+   #:@send-event
    #:@start-dispatcher
    #:@history
    #:@enable-logging
