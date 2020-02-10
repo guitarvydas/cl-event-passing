@@ -66,14 +66,19 @@
 
 (defun find-any-symbol-helper (body)
   (cond ((null body) nil)
-        ((symbolp body) body)
+        ((symbolp body)
+         (if (or (eq (find-package "COMMON-LISP") (symbol-package body))
+                 (eq (find-package "CL-EVENT-PASSING-USER") (symbol-package body)))
+             nil
+           body))
         ((atom body) nil)
         ((listp body)
-         (let ((item (find-any-symbol (car body))))
-           (when item (return-from find-any-symbol-helper item))
-           (let ((item (find-any-symbol (cdr body))))
-             (when item (return-from find-any-symbol-helper item)))))))
-  
+         (dolist (i body)
+           (let ((sym (find-any-symbol-helper i)))
+             (when sym
+               (return-from find-any-symbol-helper sym)))))
+        (t (assert nil)))) ;; can't happen
+
 (defun find-any-symbol (body)
   (let ((item (find-any-symbol-helper body)))
     (unless item
