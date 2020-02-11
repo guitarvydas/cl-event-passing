@@ -23,10 +23,12 @@
 
 ;; default implementations
 (defmethod first-time ((self part))
-  (declare (ignore self)))
+  (declare (ignore self))
+  (assert nil))
 
 (defmethod react ((self part) (e e/event:event))
-  (declare (ignore self e)))
+  (declare (ignore self e))
+  (assert nil))
 
 (defmethod print-object ((obj code) out)
   (format out "<code[~a]>" (name obj)))
@@ -147,10 +149,10 @@
 
 (defmethod busy-p ((self schematic))
   (with-atomic-action
-   (or (e/part:busy-flag self) ;; never practically true in this implementation (based on CALL-RETURN instead of true interrupts)
-       (some #'has-input-queue-p (internal-parts self))
-       (some #'has-output-queue-p (internal-parts self))
-       (some #'busy-p (internal-parts self)))))
+    (or (e/part:busy-flag self) ;; never practically true in this implementation (based on CALL-RETURN instead of true interrupts)
+        (some #'has-input-queue-p (internal-parts self))
+        (some #'has-output-queue-p (internal-parts self))
+        (some #'busy-p (internal-parts self)))))
 
 (defmethod has-input-queue-p ((self part))
   (not (null (input-queue self))))
