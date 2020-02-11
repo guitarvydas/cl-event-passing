@@ -1,11 +1,15 @@
 (defpackage cl-event-passing
-  (:nicknames :a)
   (:use :cl))
 
 (defpackage cl-event-passing-user
   ;; top level API
   (:use :cl)
   (:export
+
+   #:@data
+   #:@pin
+   #:@defnetwork
+   
    #:@new-schematic
    #:@new-code
    #:@reuse-part
@@ -19,6 +23,7 @@
    #:@add-source-to-schematic
    #:@add-part-to-schematic
    #:@send
+   #:@send-event
    #:@start-dispatcher
    #:@history
    #:@enable-logging
@@ -29,14 +34,18 @@
    #:@get-input-pin
    #:@get-output-pin
 
-   #:@set-instance-var
-   #:@get-instance-var
+   #:@set
+   #:@get
    ))
 
 (defpackage cl-event-passing-part
   (:nicknames :e/part)
   (:use :cl)
   (:export
+   #:busy-p
+   #:react
+   #:first-time
+
    #:part
    #:code
    #:schematic

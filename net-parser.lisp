@@ -1,6 +1,6 @@
 (in-package :cl-event-passing)
 
-(esrap:defrule <ws> (or #\Space #\Newline))
+(esrap:defrule <ws> (or #\Space #\Newline #\Tab))
 (esrap:defrule <arrow> (and "->" (* <ws>)) (:constant :arrow))
 (esrap:defrule <dot> (and "." (* <ws>)) (:constant :dot))
 (esrap:defrule <comma> (and "," (* <ws>)))

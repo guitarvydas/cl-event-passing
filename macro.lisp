@@ -36,16 +36,18 @@
                                                                                                     (eq 'function (first input-handler)))
                                                                                            (second input-handler))
                                                                                          input-handler
-                                                                                          (let ((fn (intern (format nil "~a-REACT" code-name) dest-pkg)))
-                                                                                            fn))
+                                                                                         'e/part::react)
+;                                                                                          (let ((fn (intern "REACT" dest-pkg)))
+;                                                                                            fn))
                                                                       :input-pins ',inputs :output-pins ',outputs
                                                                       :first-time-handler #',(or 
                                                                                               (when (and (listp first-time-handler)
                                                                                                          (eq 'function (first first-time-handler)))
                                                                                                 (second first-time-handler))
                                                                                               first-time-handler
-                                                                                              (let ((fn (intern (format nil "~a-FIRST-TIME" code-name) dest-pkg)))
-                                                                                                 fn)))))))))
+                                                                                              'e/part::first-time))))))))
+                                                                                              ;(let ((fn (intern "FIRST-TIME" dest-pkg)))
+                                                                                               ;  fn)))))))))
            (:schem
               (destructuring-bind (schem-name inputs outputs parts-list nets &optional (first-time-handler nil))
                   (rest def)

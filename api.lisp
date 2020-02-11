@@ -16,11 +16,11 @@
     schem))
 
 (defun @new-code (&key (name "") (input-pins nil) (output-pins nil) (input-handler nil) (first-time-handler nil))
-  (let ((part (e/part::new-code :name name)))
+  (let ((part (e/part::new-code :name name :class name)))
     (setf (e/part:namespace-input-pins part) (e/part::make-in-pins part input-pins))
     (setf (e/part:namespace-output-pins part) (e/part::make-out-pins part output-pins))
-    (setf (e/part:input-handler part) input-handler)
-    (setf (e/part:first-time-handler part) first-time-handler)
+    #+nil(setf (e/part:input-handler part) input-handler)
+    #+nil(setf (e/part:first-time-handler part) first-time-handler)
     part))
 
 (defun @reuse-part (proto &key (name "") (input-pins nil) (output-pins nil))
@@ -64,16 +64,39 @@
   (e/schematic::add-part schem part)
   (e/dispatch::memo-part part))
 
+(defun find-any-symbol-helper (body)
+  (cond ((null body) nil)
+        ((symbolp body)
+         (if (or (eq (find-package "COMMON-LISP") (symbol-package body))
+                 (eq (find-package "CL-EVENT-PASSING-USER") (symbol-package body)))
+             nil
+           body))
+        ((atom body) nil)
+        ((listp body)
+         (dolist (i body)
+           (let ((sym (find-any-symbol-helper i)))
+             (when sym
+               (return-from find-any-symbol-helper sym)))))
+        (t (assert nil)))) ;; can't happen
+
+(defun find-any-symbol (body)
+  (let ((item (find-any-symbol-helper body)))
+    (unless item
+      (error "can't find any symbol in /~s/ when trying to determine user's package" body))
+    item))
+
 (defmacro @with-dispatch (&body body)
-  `(flet ((@inject (part pin data)
-            (unless (eq 'e/pin:input-pin (type-of pin))
-              (error "pin must be specified with get-pin (~s)" pin))
-            (let ((e (e/event::new-event :event-pin pin :data data)))
-              (e/util:logging e)
-              (push e (e/part:input-queue part)))))
-     (e/dispatch::run-first-times)
-     ,@body
-     (e/dispatch::run))) ;; this might create huge input queues ; maybe we want @with-dispatch-loop where the body contains no loops
+  (let ((user-package (find-package (symbol-package (find-any-symbol body)))))
+    (let ((inj (intern "@INJECT" user-package)))
+      `(flet ((,inj (part pin data)
+                (unless (eq 'e/pin:input-pin (type-of pin))
+                  (error "pin must be specified with get-pin (~s)" pin))
+                (let ((e (e/event::new-event :event-pin pin :data data)))
+                  (e/util:logging e)
+                  (push e (e/part:input-queue part)))))
+         (e/dispatch::run-first-times)
+         ,@body
+         (e/dispatch::run))))) ;; this might create huge input queues ; maybe we want @with-dispatch-loop where the body contains no loops
 
 (defmethod @send ((self e/part:part) (sym SYMBOL) data)
   (@send self (e/part::get-output-pin self sym) data))
@@ -95,21 +118,21 @@
 (defun @enable-logging (&optional (n 2))
   (e/util::enable-logging n))
 
-(defmethod @get-pin ((self e/part:part) (e e/event:event))
+(defmethod @pin ((self e/part:part) (e e/event:event))
   ;; return symbol for input pin of e
   (declare (ignore self))
   (e/part::ensure-valid-input-pin self e)
   (e/event::sym e))
 
-(defmethod @get-data ((self e/part:part) (e e/event:event))
+(defmethod @data ((self e/part:part) (e e/event:event))
   ;; return data from event
   (declare (ignore self))
   (e/event::data e))
 
-(defmethod @get-instance-var ((self e/part:part) name)
+(defmethod @get ((self e/part:part) name)
   (e/part::get-instance-var self name))
 
-(defmethod @set-instance-var ((self e/part:part) name val)
+(defmethod @set ((self e/part:part) name val)
   (e/part::set-instance-var self name val))
 
 

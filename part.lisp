@@ -23,12 +23,12 @@
 
 ;; default implementations
 (defmethod first-time ((self part))
-  (let ((fn (first-time-handler self)))
-    (when fn
-      (funcall fn self))))
+  (declare (ignore self))
+  (assert nil))
 
 (defmethod react ((self part) (e e/event:event))
-  (funcall (input-handler self) self e))
+  (declare (ignore self e))
+  (assert nil))
 
 (defmethod print-object ((obj code) out)
   (format out "<code[~a]>" (name obj)))
@@ -118,8 +118,10 @@
                     (error (format nil "output pin given as ~S but must be a symbol, string, integer or an output pin" s)))))
             lis)))
 
-(defun new-code (&key (name "") (input-pins nil) (output-pins nil))
-  (let ((self (make-instance 'code :name name)))
+(defun new-code (&key (class nil) (name "") (input-pins nil) (output-pins nil))
+  (let ((self (if (null class)
+                  (make-instance 'code :name name)
+                (make-instance class :name name))))
     (let ((inpins (make-in-pins self input-pins))
 	  (opins  (make-out-pins self output-pins)))
     (setf (e/part:namespace-input-pins self) inpins)
@@ -137,6 +139,9 @@
 (defmethod busy-p ((self code))
   (busy-flag self))
 
+(defmethod busy-p ((self part))
+  (busy-flag self))
+
 (defmacro with-atomic-action (&body body)
   ;; basically a no-op in this, CALL-RETURN (non-asynch) version of the code
   ;; this matters only when running in a true interrupting environment (e.g. bare hardware, no O/S)
@@ -144,10 +149,10 @@
 
 (defmethod busy-p ((self schematic))
   (with-atomic-action
-   (or (e/part:busy-flag self) ;; never practically true in this implementation (based on CALL-RETURN instead of true interrupts)
-       (some #'has-input-queue-p (internal-parts self))
-       (some #'has-output-queue-p (internal-parts self))
-       (some #'busy-p (internal-parts self)))))
+    (or (e/part:busy-flag self) ;; never practically true in this implementation (based on CALL-RETURN instead of true interrupts)
+        (some #'has-input-queue-p (internal-parts self))
+        (some #'has-output-queue-p (internal-parts self))
+        (some #'busy-p (internal-parts self)))))
 
 (defmethod has-input-queue-p ((self part))
   (not (null (input-queue self))))
