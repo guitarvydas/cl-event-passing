@@ -106,10 +106,6 @@
     (e/util:logging e)
     (push e (e/part:output-queue self))))
 
-(defmethod @send-event ((self e/part:part) (e e/event:event))
-    (e/util:logging e)
-    (push e (e/part:output-queue self)))
-
 (defun @start-dispatcher ()
   (e/dispatch::start-dispatcher))
 
