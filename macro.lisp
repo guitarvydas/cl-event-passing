@@ -30,28 +30,30 @@
               (destructuring-bind (code-name inputs outputs &optional (input-handler nil) (first-time-handler nil))
                   (rest def)
                 (let ((dest-pkg (find-package (symbol-package code-name))))
-                  `(let ((,code-name (cl-event-passing-user:@new-code :name ',code-name
-                                                                      :input-handler #',(or
-                                                                                         (when (and (listp input-handler)
-                                                                                                    (eq 'function (first input-handler)))
-                                                                                           (second input-handler))
-                                                                                         input-handler
-                                                                                         'e/part::react)
+                  `(let ((,code-name (cl-event-passing-user:@new-code
+                                      :kind ',code-name
+                                      :name ,(symbol-name code-name)
+                                      :input-handler #',(or
+                                                         (when (and (listp input-handler)
+                                                                    (eq 'function (first input-handler)))
+                                                           (second input-handler))
+                                                         input-handler
+                                                         'e/part::react)
 ;                                                                                          (let ((fn (intern "REACT" dest-pkg)))
 ;                                                                                            fn))
-                                                                      :input-pins ',inputs :output-pins ',outputs
-                                                                      :first-time-handler #',(or 
-                                                                                              (when (and (listp first-time-handler)
-                                                                                                         (eq 'function (first first-time-handler)))
-                                                                                                (second first-time-handler))
-                                                                                              first-time-handler
-                                                                                              'e/part::first-time))))))))
+                                      :input-pins ',inputs :output-pins ',outputs
+                                      :first-time-handler #',(or 
+                                                              (when (and (listp first-time-handler)
+                                                                         (eq 'function (first first-time-handler)))
+                                                                (second first-time-handler))
+                                                              first-time-handler
+                                                              'e/part::first-time))))))))
                                                                                               ;(let ((fn (intern "FIRST-TIME" dest-pkg)))
                                                                                                ;  fn)))))))))
-           (:schem
+             (:schem
               (destructuring-bind (schem-name inputs outputs parts-list nets &optional (first-time-handler nil))
                   (rest def)
-                `(let ((,schem-name (cl-event-passing-user:@new-schematic :name ',schem-name
+                `(let ((,schem-name (cl-event-passing-user:@new-schematic :name ,(symbol-name schem-name)
                                                                           :input-pins ',inputs :output-pins ',outputs
                                                                           :first-time-handler ,first-time-handler)))
                    ,@(compile-parts schem-name parts-list)
