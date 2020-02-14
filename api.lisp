@@ -15,8 +15,8 @@
                                            :first-time-handler first-time-handler)))
     schem))
 
-(defun @new-code (&key (name "") (input-pins nil) (output-pins nil) (input-handler nil) (first-time-handler nil))
-  (let ((part (e/part::new-code :name name :class name)))
+(defun @new-code (&key (kind nil) (name "") (input-pins nil) (output-pins nil) (input-handler nil) (first-time-handler nil))
+  (let ((part (e/part::new-code :class kind :name name :class name)))
     (setf (e/part:namespace-input-pins part) (e/part::make-in-pins part input-pins))
     (setf (e/part:namespace-output-pins part) (e/part::make-out-pins part output-pins))
     #+nil(setf (e/part:input-handler part) input-handler)
