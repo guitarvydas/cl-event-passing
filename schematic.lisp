@@ -41,7 +41,7 @@
     (dolist (s (e/part:sources self))
       (when (e/source::source-pin-equal s (e/event:event-pin e))
         (return-from lookup-source-in-self s)))
-    (assert nil)) ;; shouldn't happen
+    (error "input pin ~a not found in schematic ~s" (e/event::sym e) self)) ;; shouldn't happen
 
 
 (defmethod schematic-input-handler ((self e/part:schematic) (e e/event:event))
