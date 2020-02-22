@@ -62,7 +62,7 @@
   self)
  
 (defmethod clone ((proto code))
-  (let ((new (make-instance 'code)))
+  (let ((new (make-instance (type-of proto))))
     (let ((cloned (clone-part new proto)))
       cloned)))
 
