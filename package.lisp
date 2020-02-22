@@ -45,6 +45,7 @@
    #:busy-p
    #:react
    #:first-time
+   #:clone
 
    #:part
    #:code
@@ -95,6 +96,7 @@
   (:nicknames :e/schematic)
   (:use :cl)
   (:export
+   #:clone
    #:name
    #:input-queue
    #:output-queue
