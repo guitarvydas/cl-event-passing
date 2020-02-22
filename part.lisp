@@ -23,8 +23,7 @@
 
 ;; default implementations
 (defmethod first-time ((self part))
-  (declare (ignore self))
-  (assert nil))
+  (error "~&no first-time for ~S~%" self))
 
 (defmethod react ((self part) (e e/event:event))
   (declare (ignore self e))
