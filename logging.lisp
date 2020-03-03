@@ -46,11 +46,10 @@
 
 (defmethod logging ((p e/part:part) &optional (message nil))
   (when *logging*
-    (multiple-value-bind (state success)
-        (e/part::get-instance-var p :state)
+    (let ((state (e/part::state p)))
       (let ((name (e/part::name p))
             (m (or message "")))
-        (let ((log-message (if success
+        (let ((log-message (if state
                                (format nil "~a part ~a state ~a" m name state)
                              (format nil "~a part ~a" m name))))
           (push log-message *sent-events*))))))
@@ -69,9 +68,8 @@
 
 (defmethod log-input ((self e/part:part) (e e/event:event))
   (when (and *log-inputs* (loggable self))
-    (push
-     (format nil "part ~a input ~a" (e/part::name self) (e/event::sym e))
-     *logs*)))
+    (let ((message (format nil "part ~a input ~a" (e/part::name self) (e/event::sym e))))
+      (push message *logs*))))
 
 (defmethod log-outputs ((self e/part:part))
   (when (and *log-outputs* (loggable self))
