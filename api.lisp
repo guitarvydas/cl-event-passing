@@ -129,13 +129,6 @@
   (declare (ignore self))
   (e/event::data e))
 
-(defmethod @get ((self e/part:part) name)
-  (e/part::get-instance-var self name))
-
-(defmethod @set ((self e/part:part) name val)
-  (e/part::set-instance-var self name val))
-
-
 (defmethod @get-input-pin ((self e/part:part) name)
   (e/part::get-input-pin self name))
 
