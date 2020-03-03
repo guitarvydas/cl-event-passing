@@ -39,8 +39,8 @@
                                                            (second input-handler))
                                                          input-handler
                                                          'e/part::react)
-;                                                                                          (let ((fn (intern "REACT" dest-pkg)))
-;                                                                                            fn))
+                                                                                          ;(let ((fn (intern "REACT" dest-pkg)))
+                                                                                          ;  fn))
                                       :input-pins ',inputs :output-pins ',outputs
                                       :first-time-handler #',(or 
                                                               (when (and (listp first-time-handler)
