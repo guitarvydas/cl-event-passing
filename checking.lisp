@@ -9,11 +9,11 @@
   (error (format nil "top level part must be a schematic, but is a code part ~S" self)))
 
 (defmethod check-part-sanity ((self e/part:code))
-  (unless (e/part::input-handler self)
-    (error (format nil "part ~S must have an input handler" self))))
+)
 
 (defmethod check-part-sanity ((self e/part:schematic))
-  (e/schematic::ensure-source-sanity self))
+  (e/schematic::ensure-source-sanity self)
+  (mapc #'check-part-sanity (e/part:internal-parts self)))
 
 
 
