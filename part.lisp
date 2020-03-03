@@ -9,7 +9,6 @@
    (input-handler :accessor input-handler :initform nil :initarg :input-handler) ;; nil or a function
    (first-time-handler :accessor first-time-handler :initform nil) ;; nil or a function
    (parent-schem :accessor parent-schem :initform nil :initarg :parent-schem)
-   (instance-variables :accessor instance-variables :initform (make-hash-table :test 'equal))
    (debug-name :accessor debug-name :initarg :name :initform ""))) ;; for debug
 
 (defclass code (part) ())
@@ -23,11 +22,14 @@
 
 ;; default implementations
 (defmethod first-time ((self part))
-  (error "~&no first-time for ~S~%" self))
+  )
+
+(defmethod state ((self part))
+  nil)
 
 (defmethod react ((self part) (e e/event:event))
   (declare (ignore self e))
-  (assert nil))
+  (assert nil)) ;; if you get this assertion, it probably means that you haven't defined e/part:react
 
 (defmethod print-object ((obj code) out)
   (format out "<code[~a]>" (name obj)))
@@ -271,10 +273,4 @@
   (let ((e (first (last (input-queue self)))))
     (setf (input-queue self) (butlast (input-queue self)))
     e))
-
-(defmethod get-instance-var ((self part) name)
-  (gethash name (instance-variables self)))
-
-(defmethod set-instance-var ((self part) name val)
-  (setf (gethash name (instance-variables self)) val))
 
