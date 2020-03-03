@@ -63,7 +63,7 @@
    (e/part:sources self)))
 
 (defmethod e/part:first-time ((self e/part:schematic))
-  (declare (ignore self)))
+  )
 
 (defmethod e/part:react ((self e/part:schematic) (e e/event:event))
   (schematic-input-handler self e))
