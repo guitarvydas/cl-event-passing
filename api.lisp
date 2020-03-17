@@ -68,7 +68,9 @@
   (cond ((null body) nil)
         ((symbolp body)
          (if (or (eq (find-package "COMMON-LISP") (symbol-package body))
-                 (eq (find-package "CL-EVENT-PASSING-USER") (symbol-package body)))
+                 (eq (find-package "CL-EVENT-PASSING-USER") (symbol-package body))
+                 (eq (find-package "KEYWORD") (symbol-package body))
+                 (eq (find-package "CL-EVENT-PASSING-PART") (symbol-package body)))
              nil
            body))
         ((atom body) nil)
@@ -81,9 +83,10 @@
 
 (defun find-any-symbol (body)
   (let ((item (find-any-symbol-helper body)))
-    (unless item
-      (error "can't find any symbol in /~s/ when trying to determine user's package" body))
-    item))
+;(format *standard-output* "~&~%find-any-symbol = ~s~%~%" item)
+    (if item
+        item
+      'cl-event-passing-user::find-any-symbol-helper)))
 
 (defmacro @with-dispatch (&body body)
   (let ((user-package (find-package (symbol-package (find-any-symbol body)))))

@@ -71,3 +71,27 @@
                                                                     "test16" "test-feedback" "test-reuse"
                                                                     "test-reuse1" "test-reuse3" "test-reuse4"
                                                                     "test26"))))))
+
+
+(defsystem "cl-event-passing/nesting-test"
+  :depends-on (cl-event-passing)
+  :around-compile (lambda (next)
+                    (proclaim '(optimize (debug 3)
+                                         (safety 3)
+                                         (speed 0)))
+                    (funcall next))
+  :components ((:module "src"
+                        :pathname "./nesting/"
+                        :components ((:file "lowA")
+				     (:file "capA")
+				     (:file "lowB")
+				     (:file "capB")
+				     (:file "lowC")
+				     (:file "capC")
+				     (:file "nesting" :depends-on ("lowA" 
+								   "capA"
+								   "lowB"
+								   "capB"
+								   "lowC"
+								   "capC"))))))
+									  

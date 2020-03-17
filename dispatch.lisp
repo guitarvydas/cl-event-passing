@@ -25,11 +25,14 @@
     (push part *all-parts*)))
 
 (defun dispatch-single-input ()
-  (dolist (part *all-parts*)
-    (when (e/part::ready-p part)
+  (let ((ready-list nil))
+    (dolist (part *all-parts*)
+      (when (e/part::ready-p part)
+        (push part ready-list)))
+    (let ((part (nth (random (length ready-list)) ready-list)))
       (e/part::exec1 part)
-      (return-from dispatch-single-input part)))
-  (assert nil)) ;; can't happen
+      (return-from dispatch-single-input part))
+    (assert nil))) ;; can't happen
 
 (defun dispatch-output-queues ()
   (@:loop
