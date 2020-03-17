@@ -135,19 +135,29 @@
       (mapc #'e/dispatch::memo-part parts-list))
     cloned))
   
-(defgeneric busy-p (self))
-
-(defmethod busy-p ((self code))
-  (busy-flag self))
-
-(defmethod busy-p ((self part))
-  (busy-flag self))
 
 (defmacro with-atomic-action (&body body)
   ;; basically a no-op in this, CALL-RETURN (non-asynch) version of the code
   ;; this matters only when running in a true interrupting environment (e.g. bare hardware, no O/S)
   `(progn ,@body))
 
+
+(defgeneric ready-p (self))
+
+(defmethod ready-p ((self e/part:code))
+  (with-atomic-action
+    (not (null (input-queue self)))))
+
+(defmethod ready-p ((self e/part:schematic))
+  (with-atomic-action
+    (and (not (null (input-queue self)))
+         (not (busy-p self)))))
+
+(defgeneric busy-p (self))
+
+(defmethod busy-p ((self code))
+  (busy-flag self))
+  
 (defmethod busy-p ((self schematic))
   (with-atomic-action
     (or (e/part:busy-flag self) ;; never practically true in this implementation (based on CALL-RETURN instead of true interrupts)
@@ -155,6 +165,13 @@
         (some #'has-output-queue-p (internal-parts self))
         (some #'busy-p (internal-parts self)))))
 
+(defgeneric busy-siblings-p (self))
+
+(defmethod busy-siblings-p ((child e/part:part))
+  (let ((parent (parent-schem child)))
+    (or (null parent)
+        (not (busy-p parent)))))
+  
 (defmethod has-input-queue-p ((self part))
   (not (null (input-queue self))))
 
@@ -207,10 +224,6 @@
   (get-output-pin self pin-sym))
 
 ;; part api
-
-(defmethod ready-p ((self part))
-  (and (input-queue self)
-       (not (busy-p self))))
 
 (defmethod exec1 ((self part))
   ;; execute exactly one input event to completion, then RETURN

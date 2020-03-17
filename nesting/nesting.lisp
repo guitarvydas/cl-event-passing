@@ -1,3 +1,7 @@
+;; usage:
+;; (ql:quickload :cl-event-passing/nesting-test)
+;; (cl-event-passing-user::nesting)
+
 (in-package :cl-event-passing-user)
 
 (defun nesting ()
@@ -9,21 +13,37 @@
 		(:code capB (:in) ())
 		(:code lowC (:in) ())
 		(:code capC (:in) ())
+		(:code lowD (:in) ())
+		(:code capD (:in) ())
+		(:code lowE (:in) ())
+		(:code capE (:in) ())
+		(:code lowF (:in) ())
+		(:code capF (:in) ())
 
 		(:schem lowest (:in) ()
-			(lowA capA)
+			(lowA lowB lowC)
 			"
-                        self.in -> lowA.in, capA.in
+                        self.in -> lowA.in, lowB.in, lowC.in
                         ")
 		(:schem middle (:in) ()
-			(lowB capB lowest)
+			(capA capB capC lowest)
 			"
-                        self.in -> lowest.in, lowB.in, capB.in
+                        self.in -> lowest.in,capA.in, capB.in, capC.in
+                        ")
+		(:schem lowest2 (:in) ()
+			(lowD lowE lowF)
+			"
+                        self.in -> lowD.in, lowE.in, lowF.in
+                        ")
+		(:schem middle2 (:in) ()
+			(capD capE capF lowest2)
+			"
+                        self.in -> lowest2.in,capD.in, capE.in, capF.in
                         ")
 		(:schem nest (:in) ()
-			(lowC capC middle)
+			(middle middle2)
 			"
-                        self.in -> middle.in, lowC.in, capC.in
+                        self.in -> middle.in,middle2.in
                         ")
 		)))
     (@with-dispatch

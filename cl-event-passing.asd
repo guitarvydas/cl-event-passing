@@ -88,10 +88,23 @@
 				     (:file "capB")
 				     (:file "lowC")
 				     (:file "capC")
+				     (:file "lowD")
+				     (:file "capD")
+				     (:file "lowE")
+				     (:file "capE")
+				     (:file "lowF")
+				     (:file "capF")
 				     (:file "nesting" :depends-on ("lowA" 
 								   "capA"
 								   "lowB"
 								   "capB"
 								   "lowC"
-								   "capC"))))))
+								   "capC"
+								   "lowD"
+								   "capD"
+								   "lowE"
+								   "capE"
+								   "lowF"
+								   "capF"
+                                                                   ))))))
 									  

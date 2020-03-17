@@ -29,7 +29,11 @@
     (dolist (part *all-parts*)
       (when (e/part::ready-p part)
         (push part ready-list)))
+    ;(format *standard-output* "~&dispatch ready list /~s/~%" ready-list)
+    (unless ready-list
+      (return-from dispatch-single-input nil))
     (let ((part (nth (random (length ready-list)) ready-list)))
+      ;(format *standard-output* "~&dispatching part /~s/~%" part)
       (e/part::exec1 part)
       (return-from dispatch-single-input part))
     (assert nil))) ;; can't happen
@@ -62,8 +66,10 @@
   (@:loop
    (e/dispatch::dispatch-output-queues)
    (@:exit-when (e/dispatch::all-parts-have-empty-input-queues-p))
-   (e/dispatch::dispatch-single-input))
-  (setf *dispatcher-running* nil))
+   (@:exit-when (null (e/dispatch::dispatch-single-input))))
+  (format *standard-output* "~&terminating - ready list is nil")
+  (setf *dispatcher-running* nil)
+  *all-parts*)
 
 ;; api
 (defun start-dispatcher ()
