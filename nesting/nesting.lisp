@@ -1,6 +1,7 @@
 ;; usage:
 ;; (ql:quickload :cl-event-passing/nesting-test)
 ;; (cl-event-passing-user::nesting)
+;; strcat1 should always print abCdeF regardless of (printed) execution order
 
 (in-package :cl-event-passing-user)
 
