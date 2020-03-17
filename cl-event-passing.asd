@@ -94,6 +94,13 @@
 				     (:file "capE")
 				     (:file "lowF")
 				     (:file "capF")
+
+				     (:file "strcat1")
+				     (:file "strcat2")
+				     (:file "strcat3")
+				     (:file "strcat4")
+				     (:file "strcat5")
+
 				     (:file "nesting" :depends-on ("lowA" 
 								   "capA"
 								   "lowB"
@@ -106,5 +113,10 @@
 								   "capE"
 								   "lowF"
 								   "capF"
+                                                                   "strcat1"
+                                                                   "strcat2"
+                                                                   "strcat3"
+                                                                   "strcat4"
+                                                                   "strcat5"
                                                                    ))))))
 									  

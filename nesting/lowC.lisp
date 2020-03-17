@@ -12,4 +12,5 @@
 )
 
 (defmethod e/part:react ((self lowC) (e e/event:event))
-  (format *standard-output* "c"))
+  (format *standard-output* "c")
+  (cl-event-passing-user:@send self :out "c"))

@@ -12,4 +12,6 @@
 )
 
 (defmethod e/part:react ((self capE) (e e/event:event))
-  (format *standard-output* "E"))
+  (format *standard-output* "E")
+  (cl-event-passing-user:@send self :out "E"))
+
