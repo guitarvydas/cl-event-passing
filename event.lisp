@@ -20,7 +20,11 @@
        (format *error-output* "~&~a ~s [~s]~%" direction self (e/event:tag event))))
     (:pin
      (when (e/event:tag event)
-       (format *error-output* "~&~a ~s [~s][~s]~%" direction self (e/event:tag event) (e/event:event-pin event))))
+       (format *error-output* "~&~a ~s [~s][~s]~%" 
+	       direction 
+	       self 
+	       (e/event:tag event) 
+	       (e/pin::pin-name (e/event:event-pin event)))))
     (:data
      (when (e/event:tag event)
        (format *error-output* "~&~a ~s [~s][~s][~s]~%" 
@@ -32,20 +36,21 @@
 
 (defmethod tag-merge ((e1 event) (e2 event))
   (cond ((null (tag e1)) (tag e2))
-        (t (cons (tag e1) (tag e2)))))
+        (t (tag e1))))
 
 (defmethod detail-merge ((e1 event) (e2 event))
   (cond ((eq :none (detail e1)) (detail e2))
         ((eq :data (detail e1)) :data)
         ((eq :pin (detail e1))
-         (if (eq :data (detail e2))
-             :data
-           :pin))
+         (let ((d (if (eq :data (detail e2))
+		      :data
+		      :pin)))
+	   d))
         (t :tag)))
 
 (defmethod display-and-propogate-event (self (prototype-e e/event:event) (e e/event:event) direction)
-  (setf (tag e) (tag-merge e prototype-e))
-  (setf (detail e) (detail-merge e prototype-e))
+  (setf (tag e) (tag-merge prototype-e e))
+  (setf (detail e) (detail-merge prototype-e e))
   (display-event self e direction))
 
 (defmethod display-output-events (self (input-e e/event:event) e-list)

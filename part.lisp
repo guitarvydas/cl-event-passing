@@ -10,6 +10,7 @@
    (first-time-handler :accessor first-time-handler :initform nil) ;; nil or a function
    (parent-schem :accessor parent-schem :initform nil :initarg :parent-schem)
    (debug-name :accessor debug-name :initarg :name :initform "") ;; for debug
+   ;(current-input-event :accessor current-input-event :initform nil) ;; we might keep the latest event and form a call-back trace (a tree, not a stack)
    ))
 
 (defclass code (part) ())
