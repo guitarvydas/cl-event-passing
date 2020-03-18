@@ -44,7 +44,7 @@
 
 (defmethod deliver-event ((r receiver) (e e/event:event))
   (let ((pin (receiver-pin r)))
-    (let ((new-e (e/event::new-event :event-pin pin :data (e/event:data e))))
+    (let ((new-e (e/event::new-event :event-pin pin :data (e/event:data e) :tag (e/event:tag e) :detail (e/event:detail e))))
       (e/pin::receive-event pin new-e))))
 
 (defmethod ensure-receiver-sanity (schem (self receiver))

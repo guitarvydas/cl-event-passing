@@ -74,7 +74,12 @@
    #:event
    #:new-event
    #:event-pin
-   #:data))
+   #:data
+   #:tag
+   #:detail
+   #:display-event
+   #:display-output-events
+   ))
 
 (defpackage cl-event-passing-source
   (:nicknames :e/source)

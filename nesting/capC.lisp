@@ -13,4 +13,4 @@
 
 (defmethod e/part:react ((self capC) (e e/event:event))
   (format *standard-output* "C")
-  (cl-event-passing-user:@send self :out "C"))
+  (cl-event-passing-user:@send self :out "C" :tag "C"))

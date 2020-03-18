@@ -29,11 +29,11 @@
     (dolist (part *all-parts*)
       (when (e/part::ready-p part)
         (push part ready-list)))
-    ;(format *standard-output* "~&dispatch ready list /~s/~%" ready-list)
+    #+nil (format *standard-output* "~&dispatch ready list /~s/~%" ready-list)
     (unless ready-list
       (return-from dispatch-single-input nil))
     (let ((part (nth (random (length ready-list)) ready-list)))
-      ;(format *standard-output* "~&dispatching part /~s/~%" part)
+      #+nil (format *standard-output* "~&dispatching part /~s/~%" part)
       (e/part::exec1 part)
       (return-from dispatch-single-input part))
     (assert nil))) ;; can't happen
@@ -47,7 +47,6 @@
   (dolist (part *all-parts*)
     (when (e/part::has-output-p part)
       (let ((out-list (e/part::output-queue-as-list-and-delete part)))
-        (setf state :keep-looping)
         (dolist (out-event out-list) ;; for every output event...
           (if (e/part::has-parent-p part)    ;;   if part has a parent schematic, get the associated Source
               (let ((source (e/schematic::lookup-source-in-parent (e/part:parent-schem part) part out-event)))

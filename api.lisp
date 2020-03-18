@@ -32,8 +32,8 @@
 (defun @new-wire (&key (name ""))
   (e/wire::new-wire :name name))
 
-(defun @new-event (&key (event-pin nil) (data nil))
-  (e/event::new-event :event-pin event-pin :data data))
+(defun @new-event (&key (event-pin nil) (data nil) (tag nil) (detail :tag))
+  (e/event::new-event :event-pin event-pin :data data :tag tag :detail detail))
 
 (defun @initialize ()
   (e/util::reset)
@@ -91,21 +91,21 @@
 (defmacro @with-dispatch (&body body)
   (let ((user-package (find-package (symbol-package (find-any-symbol body)))))
     (let ((inj (intern "@INJECT" user-package)))
-      `(flet ((,inj (part pin data)
+      `(flet ((,inj (part pin data &key (tag nil) (detail :tag))
                 (unless (eq 'e/pin:input-pin (type-of pin))
                   (error "pin must be specified with get-pin (~s)" pin))
-                (let ((e (e/event::new-event :event-pin pin :data data)))
+                (let ((e (e/event::new-event :event-pin pin :data data :tag tag :detail detail)))
                   (e/util:logging e)
                   (push e (e/part:input-queue part)))))
          (e/dispatch::run-first-times)
          ,@body
          (e/dispatch::run))))) ;; this might create huge input queues ; maybe we want @with-dispatch-loop where the body contains no loops
 
-(defmethod @send ((self e/part:part) (sym SYMBOL) data)
-  (@send self (e/part::get-output-pin self sym) data))
+(defmethod @send ((self e/part:part) (sym SYMBOL) data &key (tag nil) (detail :tag))
+  (@send self (e/part::get-output-pin self sym) data :tag tag :detail detail))
 
-(defmethod @send ((self e/part:part) (pin e/pin:pin) data)
-  (let ((e (e/event:new-event :event-pin pin :data data)))
+(defmethod @send ((self e/part:part) (pin e/pin:pin) data &key (tag nil) (detail :tag))
+  (let ((e (e/event:new-event :event-pin pin :data data :tag tag :detail detail)))
     (e/util:logging e)
     (push e (e/part:output-queue self))))
 

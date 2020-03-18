@@ -9,7 +9,8 @@
    (input-handler :accessor input-handler :initform nil :initarg :input-handler) ;; nil or a function
    (first-time-handler :accessor first-time-handler :initform nil) ;; nil or a function
    (parent-schem :accessor parent-schem :initform nil :initarg :parent-schem)
-   (debug-name :accessor debug-name :initarg :name :initform ""))) ;; for debug
+   (debug-name :accessor debug-name :initarg :name :initform "") ;; for debug
+   ))
 
 (defclass code (part) ())
 
@@ -231,7 +232,9 @@
     (setf (busy-flag self) t)
     (e/util::logging self "exec1")
     (e/util::log-input self event)
+    (e/event:display-event self event "input ")
     (react self event)
+    (e/event:display-output-events self event (output-queue self))
     (e/util::log-outputs self)
     (setf (busy-flag self) nil)))
 

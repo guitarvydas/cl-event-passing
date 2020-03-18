@@ -13,4 +13,4 @@
 
 (defmethod e/part:react ((self lowE) (e e/event:event))
   (format *standard-output* "e")
-  (cl-event-passing-user:@send self :out "e"))
+  (cl-event-passing-user:@send self :out "e" :tag "e"))
