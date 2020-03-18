@@ -23,6 +23,41 @@
                 (:schem middle (:in) (:out)
                  (inner unity1 unity2)
                  "
+                 self.in,unity2.out -> unity1.in
+                 unity1.out -> inner.in
+                 inner.out -> unity2.in
+                 "
+                 )
+
+		(:schem forever-schem (:in) (:out)
+			(middle)
+			"
+                        self.in -> middle.in
+                        "
+                        )
+                
+		)))
+    (@with-dispatch
+      (let ((top-pin (e/part::get-input-pin net :in)))
+        (@inject net top-pin t)))))
+
+(defun forever4 ()
+  (let ((net (@defnetwork forever-schem
+		(:code unity (:in) (:out))
+		(:code unity1 (:in) (:out))
+		(:code unity2 (:in) (:out))
+
+		(:schem inner (:in) (:out)
+                 (unity)
+                 "
+                        self.in -> unity.in
+                        unity.out -> self.out
+                        "
+                 )
+                
+                (:schem middle (:in) (:out)
+                 (inner unity1 unity2)
+                 "
                  self.in -> unity1.in
                  unity1.out -> inner.in
                  inner.out -> unity2.in
