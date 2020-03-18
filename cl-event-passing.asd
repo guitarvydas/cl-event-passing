@@ -120,3 +120,17 @@
                                                                    "strcat5"
                                                                    ))))))
 									  
+
+(defsystem "cl-event-passing/forever"
+  :depends-on (cl-event-passing)
+  :around-compile (lambda (next)
+                    (proclaim '(optimize (debug 3)
+                                         (safety 3)
+                                         (speed 0)))
+                    (funcall next))
+  :components ((:module "src"
+                        :pathname "./forever/"
+                        :components ((:file "unity")
+                                     (:file "unity1")
+                                     (:file "unity2")
+				     (:file "forever" :depends-on ("unity" "unity1" "unity2"))))))
