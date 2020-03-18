@@ -36,7 +36,10 @@
 
 (defmethod tag-merge ((e1 event) (e2 event))
   (cond ((null (tag e1)) (tag e2))
-        (t (tag e1))))
+        (t 
+	 (if (tag e2)
+	     (cons (tag e1) (tag e2))
+	     (tag e1)))))
 
 (defmethod detail-merge ((e1 event) (e2 event))
   (cond ((eq :none (detail e1)) (detail e2))
