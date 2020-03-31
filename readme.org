@@ -1,3 +1,8 @@
+* deprecated
+** abandoning the tests for this project in lieue of Arrowgrams and its tests, both of which should be simpler
+** still bootstrapping Arrowgrams
+** making band-aid fixes to get Arrowgrams bootstrap working
+
 * Usage
 ** (ql:quickload :cl-event-passing/examples) (cl-user::test-all)
    

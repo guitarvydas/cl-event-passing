@@ -9,7 +9,7 @@
    (input-handler :accessor input-handler :initform nil :initarg :input-handler) ;; nil or a function
    (first-time-handler :accessor first-time-handler :initform nil) ;; nil or a function
    (parent-schem :accessor parent-schem :initform nil :initarg :parent-schem)
-   (debug-name :accessor debug-name :initarg :name :initform "") ;; for debug
+   (debug-name :accessor debug-name :initarg :debug-name :initform "") ;; for debug
    ;(current-input-event :accessor current-input-event :initform nil) ;; we might keep the latest event and form a call-back trace (a tree, not a stack)
    ))
 
@@ -31,13 +31,14 @@
 
 (defmethod react ((self part) (e e/event:event))
   (declare (ignore self e))
-  (assert nil)) ;; if you get this assertion, it probably means that you haven't defined e/part:react
+  (format *error-output* "~&part ~s using default react method (nothing)~%" self)
+  #+nil(assert nil)) ;; if you get this assertion, it probably means that you haven't defined e/part:react
 
 (defmethod print-object ((obj code) out)
-  (format out "<code[~a]>" (name obj)))
+  (format out "<code[~a]>" (debug-name obj)))
 
 (defmethod print-object ((obj schematic) out)
-  (format out "<schematic[~a]>" (name obj)))
+  (format out "<schematic[~a]>" (debug-name obj)))
 
 (defmethod list-parts ((self (eql nil)))
   nil)
@@ -123,8 +124,8 @@
 
 (defun new-code (&key (class nil) (name "") (input-pins nil) (output-pins nil))
   (let ((self (if (null class)
-                  (make-instance 'code :name name)
-                (make-instance class :name name))))
+                  (make-instance 'code :debug-name name)
+                (make-instance class :debug-name name))))
     (let ((inpins (make-in-pins self input-pins))
 	  (opins  (make-out-pins self output-pins)))
     (setf (e/part:namespace-input-pins self) inpins)
@@ -200,7 +201,7 @@
 (defun ensure-congruent-in-namespace (self namespace pin-list)
   (mapc #'(lambda (pin-sym)
             (unless (find-name-in-namespace namespace pin-sym)
-              (error (format nil "pin ~S not found in ~S of part ~S" pin-sym namespace (name self)))))
+              (error (format nil "pin ~S not found in ~S of part ~S" pin-sym namespace (debug-name self)))))
         pin-list))
 
 (defmethod get-input-pin ((self part) pin-sym)

@@ -1,7 +1,7 @@
 (in-package :e/schematic)
 
 (defun new-schematic (&key (name "") (input-pins nil) (output-pins nil) (first-time-handler nil))
-  (let ((self (make-instance 'e/part:schematic :name name :input-handler #'e/schematic::schematic-input-handler)))
+  (let ((self (make-instance 'e/part:schematic :debug-name name :input-handler #'e/schematic::schematic-input-handler)))
     (setf (e/part:namespace-input-pins self) (e/part::make-in-pins self input-pins))
     (setf (e/part:namespace-output-pins self) (e/part::make-out-pins self output-pins))
     #+nil(setf (e/part:first-time-handler self) first-time-handler)
@@ -9,7 +9,7 @@
 
 (defmethod ensure-source-not-already-present ((self e/part:schematic) (s e/source:source))
   (e/util:ensure-not-in-list (e/part:sources self) s #'equal
-                             "source ~S already present in schematic ~S" s (e/part::name self)))
+                             "source ~S already present in schematic ~S" s (e/part::debug-name self)))
 
 (defmethod add-source ((self e/part:schematic) (s e/source:source))
   (push s (e/part:sources self)))
@@ -23,7 +23,7 @@
 
 (defmethod ensure-part-not-already-present ((self e/part:schematic) (p e/part:part))
   (e/util:ensure-not-in-list (e/part:internal-parts self) p #'equal
-                             "part ~S already present in schematic ~S" p (e/part::name self)))
+                             "part ~S already present in schematic ~S" p (e/part::debug-name self)))
 
 (defmethod add-part ((self e/part:schematic) (p e/part:part))
   (setf (e/part:parent-schem p) self)
@@ -54,7 +54,7 @@
 (defmethod ensure-sanity ((self e/part:schematic) (part e/part:part))
   (unless (eq self part)
     (e/util:ensure-in-list (e/part:internal-parts self) part #'equal
-                           "part ~S does not appear in its parent schematic ~S (check parts-list of schematic)" (e/part::name part) (e/part::name self))))
+                           "part ~S does not appear in its parent schematic ~S (check parts-list of schematic)" (e/part::debug-name part) (e/part::debug-name self))))
 
 (defmethod ensure-source-sanity ((self e/part:schematic))
   (mapc
