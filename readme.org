@@ -1,3 +1,12 @@
+* bug
+** to duplicate:
+   git checkout name-bug
+   > (ql:quickload :(cl-event-passing/examples)
+   > (cl-user::est-all)
+
+   This will fail on an assertion but prints <code[flow-through 1]> in backtrace, 2:.
+   This calls print-object in part.lisp which refers to the non-existent field "NAME".
+
 * Usage
 ** (ql:quickload :cl-event-passing/examples) (cl-user::test-all)
    
